@@ -1,0 +1,23 @@
+.ag-theme-quartz .ag-header-cell {
+  padding: 0 !important;
+}
+.ag-theme-quartz .ag-header {
+  background-color: white !important;
+  height: 32px !important;
+}
+.ag-theme-quartz .ag-root-wrapper {
+  border-collapse: collapse;
+}
+
+.ag-theme-quartz .ag-cell {
+  border-right: 1px solid rgb(209 213 219) !important;
+  padding: 0 !important;
+  padding: 5px !important;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+.ag-theme-quartz .ag-cell :focus {
+  border-right: 1px solid rgb(209 213 219) !important;
+}
+.ag-cell-focus {
+  border: 1px solid transparent !important;
+}
