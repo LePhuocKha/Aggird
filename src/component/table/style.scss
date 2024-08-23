@@ -1,9 +1,17 @@
-.ag-theme-quartz .ag-header-cell {
-  padding: 0 !important;
-}
 .ag-theme-quartz .ag-header {
   background-color: white !important;
   height: 32px !important;
+  min-height: 32px !important;
+}
+.ag-header-row {
+  height: 100% !important;
+}
+.ag-header-cell {
+  height: 100% !important;
+}
+
+.ag-theme-quartz .ag-header-cell {
+  padding: 0 !important;
 }
 .ag-theme-quartz .ag-root-wrapper {
   border-collapse: collapse;

@@ -1,7 +1,9 @@
 import {useRef, useState} from 'react'
 import {Api} from '../data-fake/Api'
-import {formatDate} from '../utils/common'
+import {formatDate} from '../../utils/common'
 import InputCheckBox from '../checkbox/InputCheckBox'
+import HoverTippyCell from './HoverTippyCell'
+import HeaderComponent from './HeaderComponent'
 import Status from './Status'
 
 import {AgGridReact} from 'ag-grid-react'
@@ -18,8 +20,6 @@ import './style.scss'
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
-import HoverTippyHeader from './HoverTippyHeader'
-import HoverTippyCell from './HoverTippyCell'
 
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
@@ -102,10 +102,8 @@ const Aggird = () => {
   const CustomCampaignTimeLine = (props: any) => {
     return (
       <HoverTippyCell classCSS='h-[100%] w-[100%] '>
-        <div className='flex  items-center h-[43px]'>
-          <p className='font-medium'>
-            {formatDate(props?.data?.start_time)} - {formatDate(props?.data?.end_time)}
-          </p>
+        <div className='flex font-medium items-center h-[43px]'>
+          {formatDate(props?.data?.start_time)} - {formatDate(props?.data?.end_time)}
         </div>
       </HoverTippyCell>
     )
@@ -134,7 +132,12 @@ const Aggird = () => {
       id: 1,
       headerComponent: () => {
         return (
-          <div className='border-r-[1px] border-gray-300 w-[100%] h-[100%] flex justify-center items-center'>
+          <HeaderComponent
+            classCSS='border-r-[1px] border-gray-300 justify-center'
+            Tippy={false}
+            id={2}
+            setColumnDefs={setColumnDefs}
+          >
             <InputCheckBox
               checked={selectRow.length === Api.length}
               onChange={() => {
@@ -145,7 +148,7 @@ const Aggird = () => {
                 }
               }}
             />
-          </div>
+          </HeaderComponent>
         )
       },
 
@@ -178,9 +181,14 @@ const Aggird = () => {
       id: 2,
       headerComponent: () => {
         return (
-          <div className='flex justify-center h-[100%] w-[100%] items-center'>
+          <HeaderComponent
+            classCSS='justify-center'
+            Tippy={false}
+            id={2}
+            setColumnDefs={setColumnDefs}
+          >
             <SlExclamation className='SlExclamation' />
-          </div>
+          </HeaderComponent>
         )
       },
       cellRenderer: (props: any) => {
@@ -195,16 +203,7 @@ const Aggird = () => {
     {
       id: 3,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 3])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Marketplace</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={3} setColumnDefs={setColumnDefs} title='Marketplace' />
       },
       cellRenderer: (props: any) => {
         return (
@@ -220,16 +219,7 @@ const Aggird = () => {
     {
       id: 4,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 4])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Ad Tool</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={4} setColumnDefs={setColumnDefs} title='Ad Tool' />
       },
       cellRenderer: CustomAdTool,
       flex: 5,
@@ -238,17 +228,9 @@ const Aggird = () => {
       id: 5,
       headerComponent: () => {
         return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 5])
-            }}
-          >
-            <div className='flex items-center gap-[3px] px-[2px] py-[10px]'>
-              <p className='render-title'>Campaign</p>
-              <SlExclamation className='SlExclamation' />
-            </div>
-          </HoverTippyHeader>
+          <HeaderComponent id={5} setColumnDefs={setColumnDefs} title='Campaign'>
+            <SlExclamation className='SlExclamation' />
+          </HeaderComponent>
         )
       },
       cellRenderer: CustomCampaign,
@@ -257,16 +239,7 @@ const Aggird = () => {
     {
       id: 6,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 6])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Country</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={6} setColumnDefs={setColumnDefs} title='Country' />
       },
       cellRenderer: CustomCountry,
       flex: 4,
@@ -275,16 +248,7 @@ const Aggird = () => {
     {
       id: 7,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 7])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Storefront</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={7} setColumnDefs={setColumnDefs} title='Storefront' />
       },
       cellRenderer: CustomStore,
       autoHeight: true,
@@ -294,17 +258,9 @@ const Aggird = () => {
       id: 8,
       headerComponent: () => {
         return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 8])
-            }}
-          >
-            <div className='px-[2px] py-[10px] flex items-center cursor-pointer'>
-              <p className='render-title'>First search...</p>
-              <SlExclamation className='SlExclamation' />
-            </div>
-          </HoverTippyHeader>
+          <HeaderComponent id={8} setColumnDefs={setColumnDefs} title='First search...'>
+            <SlExclamation className='SlExclamation' />
+          </HeaderComponent>
         )
       },
       flex: 3,
@@ -312,16 +268,7 @@ const Aggird = () => {
     {
       id: 9,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 9])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Campaign note</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={9} setColumnDefs={setColumnDefs} title='Campaign note' />
       },
       flex: 4,
       cellRenderer: CustomNote,
@@ -330,17 +277,9 @@ const Aggird = () => {
       id: 10,
       headerComponent: () => {
         return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 10])
-            }}
-          >
-            <div className='px-[2px] py-[10px] flex items-center gap-[3px]'>
-              <p className='render-title'>Campaign timeLine</p>
-              <SlExclamation className='SlExclamation' />
-            </div>
-          </HoverTippyHeader>
+          <HeaderComponent id={10} setColumnDefs={setColumnDefs} title='Campaign timeLine'>
+            <SlExclamation className='SlExclamation' />
+          </HeaderComponent>
         )
       },
 
@@ -350,16 +289,7 @@ const Aggird = () => {
     {
       id: 11,
       headerComponent: () => {
-        return (
-          <HoverTippyHeader
-            classCSS='h-[100%] w-[100%]'
-            onClickHide={() => {
-              setColumnDefs((prevDefs) => [...prevDefs, 11])
-            }}
-          >
-            <div className='px-[2px] py-[10px]'>Campaign status</div>
-          </HoverTippyHeader>
-        )
+        return <HeaderComponent id={11} setColumnDefs={setColumnDefs} title='Campaign status' />
       },
       cellRenderer: CustomStatus,
       flex: 5,

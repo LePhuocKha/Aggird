@@ -39,7 +39,7 @@ const HoverTippyCell = ({children, classCSS}: Props) => {
       <Tippy
         visible={outerVisible}
         trigger='mouseenter'
-        offset={[-10, -30]}
+        offset={[-20, -30]}
         appendTo={document.body}
         placement='right'
         interactive={true}
@@ -57,7 +57,7 @@ const HoverTippyCell = ({children, classCSS}: Props) => {
               onClick={() => {
                 setInnerVisible(true)
               }}
-              className={`text-gray-900 p-2 hover:bg-sky-500 hover:cursor-help hover:text-white bg-white rounded shadow-lg ${
+              className={`text-gray-900 p-[3px] hover:bg-sky-500 hover:cursor-help hover:text-white bg-white rounded shadow-lg ${
                 !!innerVisible && 'bg-sky-500 text-white'
               }`}
             >

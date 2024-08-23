@@ -1,4 +1,4 @@
-import {getMonthsIsTheTime} from '../utils/common'
+import {getMonthsIsTheTime} from '../../utils/common'
 
 const status_type = [
   {
