@@ -21,10 +21,11 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 
+
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
-
+  const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [columnDefs, setColumnDefs] = useState<number[]>([])
 
   const CustomAdTool = (props: any) => {
@@ -133,9 +134,11 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+         
+          outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} 
             classCSS='border-r-[1px] border-gray-300 justify-center'
             Tippy={false}
-            id={2}
+            id={1}
             setColumnDefs={setColumnDefs}
           >
             <InputCheckBox
@@ -182,6 +185,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+         
+          outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} 
             classCSS='justify-center'
             Tippy={false}
             id={2}
@@ -203,7 +208,7 @@ const Aggird = () => {
     {
       id: 3,
       headerComponent: () => {
-        return <HeaderComponent id={3} setColumnDefs={setColumnDefs} title='Marketplace' />
+        return <HeaderComponent  outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={3} setColumnDefs={setColumnDefs} title='Marketplace' />
       },
       cellRenderer: (props: any) => {
         return (
@@ -219,7 +224,7 @@ const Aggird = () => {
     {
       id: 4,
       headerComponent: () => {
-        return <HeaderComponent id={4} setColumnDefs={setColumnDefs} title='Ad Tool' />
+        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} id={4} setColumnDefs={setColumnDefs} title='Ad Tool' />
       },
       cellRenderer: CustomAdTool,
       flex: 5,
@@ -228,7 +233,7 @@ const Aggird = () => {
       id: 5,
       headerComponent: () => {
         return (
-          <HeaderComponent id={5} setColumnDefs={setColumnDefs} title='Campaign'>
+          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={5} setColumnDefs={setColumnDefs} title='Campaign'>
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
@@ -239,7 +244,7 @@ const Aggird = () => {
     {
       id: 6,
       headerComponent: () => {
-        return <HeaderComponent id={6} setColumnDefs={setColumnDefs} title='Country' />
+        return <HeaderComponent  outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} id={6} setColumnDefs={setColumnDefs} title='Country' />
       },
       cellRenderer: CustomCountry,
       flex: 4,
@@ -248,7 +253,7 @@ const Aggird = () => {
     {
       id: 7,
       headerComponent: () => {
-        return <HeaderComponent id={7} setColumnDefs={setColumnDefs} title='Storefront' />
+        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={7} setColumnDefs={setColumnDefs} title='Storefront' />
       },
       cellRenderer: CustomStore,
       autoHeight: true,
@@ -258,7 +263,7 @@ const Aggird = () => {
       id: 8,
       headerComponent: () => {
         return (
-          <HeaderComponent id={8} setColumnDefs={setColumnDefs} title='First search...'>
+          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={8} setColumnDefs={setColumnDefs} title='First search...'>
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
@@ -268,16 +273,17 @@ const Aggird = () => {
     {
       id: 9,
       headerComponent: () => {
-        return <HeaderComponent id={9} setColumnDefs={setColumnDefs} title='Campaign note' />
+        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={9} setColumnDefs={setColumnDefs} title='Campaign note' />
       },
       flex: 4,
       cellRenderer: CustomNote,
     },
     {
       id: 10,
+      
       headerComponent: () => {
         return (
-          <HeaderComponent id={10} setColumnDefs={setColumnDefs} title='Campaign timeLine'>
+          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={10} setColumnDefs={setColumnDefs} title='Campaign timeLine'>
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
@@ -289,17 +295,18 @@ const Aggird = () => {
     {
       id: 11,
       headerComponent: () => {
-        return <HeaderComponent id={11} setColumnDefs={setColumnDefs} title='Campaign status' />
+        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={11} setColumnDefs={setColumnDefs} title='Campaign status' />
       },
       cellRenderer: CustomStatus,
       flex: 5,
     },
   ]
   return (
-    <div>
-      <div className='ag-theme-quartz' style={{height: '100vh'}}>
+
+      <div  className='ag-theme-quartz' style={{height: '200px'}}>
         <AgGridReact
-          ref={gridRef}
+
+          // ref={gridRef}
           defaultColDef={{
             resizable: false,
           }}
@@ -307,7 +314,6 @@ const Aggird = () => {
           columnDefs={colf.filter((el) => !columnDefs.includes(el?.id))}
         />
       </div>
-    </div>
   )
 }
 

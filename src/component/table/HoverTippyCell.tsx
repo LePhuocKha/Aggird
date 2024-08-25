@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import Tippy from '@tippyjs/react/headless'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {MdOutlineFilterList} from 'react-icons/md'
@@ -19,7 +19,7 @@ type Props = {
 const HoverTippyCell = ({children, classCSS}: Props) => {
   const [outerVisible, setOuterVisible] = useState(false)
   const [innerVisible, setInnerVisible] = useState(false)
-
+  const configColumnRef = useRef<any | null>(null); // Typed as HTMLDivElement
   const menuHeader: MenuItem[] = [
     {
       icons: <MdOutlineFilterList />,
@@ -36,7 +36,7 @@ const HoverTippyCell = ({children, classCSS}: Props) => {
         setOuterVisible(false)
       }}
     >
-      <Tippy
+      {/* <Tippy
         visible={outerVisible}
         trigger='mouseenter'
         offset={[-20, -30]}
@@ -45,6 +45,10 @@ const HoverTippyCell = ({children, classCSS}: Props) => {
         interactive={true}
         render={(props) => (
           <Tooltip
+            tippyRef={configColumnRef}
+          onClickOutsideTooltip={() => {
+            
+          }}
             visible={innerVisible}
             onclick={() => {
               setInnerVisible(false)
@@ -74,7 +78,7 @@ const HoverTippyCell = ({children, classCSS}: Props) => {
         >
           {children}
         </div>
-      </Tippy>
+      </Tippy> */}
     </div>
   )
 }
