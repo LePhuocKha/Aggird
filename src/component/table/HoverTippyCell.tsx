@@ -1,9 +1,9 @@
-import React, {useRef, useState} from 'react'
-import Tippy from '@tippyjs/react/headless'
+import React, {Dispatch, useRef, useState} from 'react'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {MdOutlineFilterList} from 'react-icons/md'
-import 'tippy.js/dist/tippy.css'
-import Tooltip from './Tooltip'
+import {Menu} from 'primereact/menu'
+import {data_type} from '../data-fake/Api'
+import useClickOutside from '../../hooks/useClickOutside'
 
 export type MenuItem = {
   label: string
@@ -12,73 +12,91 @@ export type MenuItem = {
 }
 
 type Props = {
-  children: React.ReactElement
-  classCSS: string
+  children?: React.ReactElement
+  classCSS?: string
+  id: number
+  setOuterVisibleCell: Dispatch<
+    React.SetStateAction<{
+      idTr: number
+      idHeader: number
+    }>
+  >
+  outerVisibleCell: {
+    idTr: number
+    idHeader: number
+  }
+  data: data_type
 }
 
-const HoverTippyCell = ({children, classCSS}: Props) => {
-  const [outerVisible, setOuterVisible] = useState(false)
+const HoverTippyCell = ({
+  children,
+  classCSS,
+  id,
+  setOuterVisibleCell,
+  outerVisibleCell,
+  data,
+}: Props) => {
   const [innerVisible, setInnerVisible] = useState(false)
-  const configColumnRef = useRef<any | null>(null); // Typed as HTMLDivElement
-  const menuHeader: MenuItem[] = [
+  const configColumnRef = useRef<any | null>(null)
+  const menuLeft = useRef<any>(null)
+  const items = [
     {
-      icons: <MdOutlineFilterList />,
-      label: 'Filter by',
-      onclick: () => {},
+      items: [
+        {
+          icons: <MdOutlineFilterList />,
+          label: 'Filter by',
+          onclick: () => {},
+        },
+      ],
     },
   ]
 
+  const handleClick = (event: React.MouseEvent) => {
+    setInnerVisible(!innerVisible)
+    menuLeft?.current.toggle(event)
+  }
+
+  // useClickOutside(configColumnRef, () => {
+  //   console.log('1')
+
+  //   // setTimeout(() => {
+  //   //   setOuterVisibleCell({
+  //   //     idHeader: 0,
+  //   //     idTr: 0,
+  //   //   })
+  //   //   setInnerVisible(false)
+  //   // }, 150)
+  // })
   return (
-    <div
-      className={`${classCSS}`}
-      onMouseLeave={() => {
-        setInnerVisible(false)
-        setOuterVisible(false)
-      }}
-    >
-      {/* <Tippy
-        visible={outerVisible}
-        trigger='mouseenter'
-        offset={[-20, -30]}
-        appendTo={document.body}
-        placement='right'
-        interactive={true}
-        render={(props) => (
-          <Tooltip
-            tippyRef={configColumnRef}
-          onClickOutsideTooltip={() => {
-            
-          }}
-            visible={innerVisible}
-            onclick={() => {
-              setInnerVisible(false)
-              setOuterVisible(false)
-            }}
-            menuHeader={menuHeader}
+    <div className={`${classCSS} flex relative`}>
+      <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
+
+      <div className='flex justify-content-center  bg-white'>
+        <Menu
+          model={items}
+          className='bg-white p-[10px] min-w-[250px] gap-[10px] shadow-md flex flex-col'
+          popup
+          ref={menuLeft}
+          id='popup_menu_left'
+          aria-hidden={true}
+        />
+
+        {data?.id === outerVisibleCell?.idTr && (
+          <button
+            ref={configColumnRef}
+            onClick={handleClick}
+            aria-controls='popup_menu_left'
+            aria-haspopup='true'
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
+              innerVisible ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
+            }`}
           >
-            <div
-              {...props}
-              onClick={() => {
-                setInnerVisible(true)
-              }}
-              className={`text-gray-900 p-[3px] hover:bg-sky-500 hover:cursor-help hover:text-white bg-white rounded shadow-lg ${
-                !!innerVisible && 'bg-sky-500 text-white'
-              }`}
-            >
+            <div>
               <BsThreeDotsVertical />
             </div>
-          </Tooltip>
+          </button>
         )}
-      >
-        <div
-          className='w-[100%] h-[100%] cursor-pointer'
-          onMouseEnter={() => {
-            setOuterVisible(true)
-          }}
-        >
-          {children}
-        </div>
-      </Tippy> */}
+      </div>
     </div>
   )
 }

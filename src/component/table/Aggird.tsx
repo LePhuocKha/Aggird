@@ -1,132 +1,33 @@
-import {useRef, useState} from 'react'
+import {useCallback, useRef, useState} from 'react'
 import {Api} from '../data-fake/Api'
-import {formatDate} from '../../utils/common'
 import InputCheckBox from '../checkbox/InputCheckBox'
-import HoverTippyCell from './HoverTippyCell'
 import HeaderComponent from './HeaderComponent'
-import Status from './Status'
+import CellComponent from './CellComponent'
 
 import {AgGridReact} from 'ag-grid-react'
-import {GoDotFill} from 'react-icons/go'
-import {FaRectangleAd} from 'react-icons/fa6'
-import {MdFolderCopy} from 'react-icons/md'
-import {SiHomeassistantcommunitystore} from 'react-icons/si'
-import {MdAdd} from 'react-icons/md'
 import {SlExclamation} from 'react-icons/sl'
-import Flag from 'react-world-flags'
 
 import './style.scss'
 
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
-
+import 'ag-grid-enterprise'
+import Loading from './Loading'
 
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
+
+  const [outerVisibleCell, setOuterVisibleCell] = useState<{
+    idTr: number
+    idHeader: number
+  }>({
+    idTr: 0,
+    idHeader: 0,
+  })
   const [columnDefs, setColumnDefs] = useState<number[]>([])
-
-  const CustomAdTool = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%]  h-[43px]'>
-        <div className='flex justify-start items-center gap-[3px]  h-[43px]'>
-          <FaRectangleAd />
-          <p className='font-medium'>{props?.data?.marketplace}</p>
-          <GoDotFill className='w-[10px]' />
-          <p className='font-medium'>{props?.data?.adTool}</p>
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomCampaign = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%] '>
-        <div className='flex justify-start items-center gap-[3px]  h-[43px]'>
-          <MdFolderCopy />
-          <div className='flex flex-col gap-[3px]'>
-            <a className='leading-[12px] text-[10px] text-sky-500'>{props?.data?.shop} Shop</a>
-            <p className='leading-[16px] font-semibold text-[14px] text-sky-800'>
-              {props?.data?.title}{' '}
-            </p>
-            <div className='flex justify-start items-center gap-[3px]'>
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.marketplace}</p>
-              <GoDotFill className='text-gray-400' />
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.adTool}</p>
-              <GoDotFill className='text-gray-400' />
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.code}</p>
-            </div>
-          </div>
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomCountry = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%]'>
-        <div className='flex gap-[3px] items-center   h-[43px]'>
-          <Flag code={'VN'} className='w-[20px]' />
-          <p className='font-medium'>{props?.data?.country}</p>
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomStore = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%] '>
-        <div className='flex items-center gap-[5px]  h-[43px]'>
-          <SiHomeassistantcommunitystore />
-          <div className='flex flex-col'>
-            <a href='/' className='leading-[12px] text-[10px] text-sky-500'>
-              {props?.data?.company}
-            </a>
-            <p className='leading-[16px] font-semibold text-[14px] text-sky-800'>
-              {props?.data?.shop} Shop
-            </p>
-            <div className='flex justify-start items-center gap-[3px] '>
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.marketplace}</p>
-              <GoDotFill className='text-gray-400' />
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.adTool}</p>
-              <GoDotFill className='text-gray-400' />
-              <p className='leading-[13px] text-[12px] text-gray-400'>{props?.data?.number}</p>
-            </div>
-          </div>
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomCampaignTimeLine = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%] '>
-        <div className='flex font-medium items-center h-[43px]'>
-          {formatDate(props?.data?.start_time)} - {formatDate(props?.data?.end_time)}
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomNote = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%]  '>
-        <div className='flex justify-end  w-[100%] h-[43px]'>
-          <MdAdd className='text-[20px] cursor-pointer flex' />
-        </div>
-      </HoverTippyCell>
-    )
-  }
-
-  const CustomStatus = (props: any) => {
-    return (
-      <HoverTippyCell classCSS='h-[100%] w-[100%] h-[43px]  '>
-        <Status status={props?.data?.status} update_time={props?.data?.update_time} />
-      </HoverTippyCell>
-    )
-  }
 
   const colf = [
     {
@@ -134,8 +35,10 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
-         
-          outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} 
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
             classCSS='border-r-[1px] border-gray-300 justify-center'
             Tippy={false}
             id={1}
@@ -154,30 +57,24 @@ const Aggird = () => {
           </HeaderComponent>
         )
       },
-
       cellRenderer: (props: any) => {
-        const handleCheckboxClick = () => {
-          setSelectRow((prev: number[]) => {
-            if (!Array.isArray(prev)) {
-              return [props?.data?.id]
-            }
-
-            if (prev.includes(props?.data?.id)) {
-              return prev.filter((id) => id !== props?.data?.id)
-            } else {
-              return [...prev, props?.data?.id]
-            }
-          })
-        }
         return (
-          <div className='flex justify-center w-[100%] items-center h-[100%]'>
-            <InputCheckBox
-              onChange={handleCheckboxClick}
-              checked={selectRow.includes(props?.data?.id)}
-            />
-          </div>
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            Tippy={false}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={1}
+            classCSS='justify-end items-start'
+            title='checkbox'
+            data={props?.data}
+          />
         )
       },
+
       flex: 1,
     },
     {
@@ -185,8 +82,10 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
-         
-          outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} 
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
             classCSS='justify-center'
             Tippy={false}
             id={2}
@@ -196,27 +95,57 @@ const Aggird = () => {
           </HeaderComponent>
         )
       },
+
       cellRenderer: (props: any) => {
         return (
-          <div className='flex justify-center h-[100%] w-[100%] items-center'>
-            <div className='bg-red-500 w-[10px] h-[10px] rounded-full shrink-0'></div>
-          </div>
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            Tippy={false}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={2}
+            classCSS='justify-end items-start'
+            title='Exclamation mark'
+            data={props?.data}
+          />
         )
       },
-      flex: 2,
+
+      flex: 1,
     },
     {
       id: 3,
       headerComponent: () => {
-        return <HeaderComponent  outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={3} setColumnDefs={setColumnDefs} title='Marketplace' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={3}
+            setColumnDefs={setColumnDefs}
+            title='Marketplace'
+          />
+        )
       },
+
       cellRenderer: (props: any) => {
         return (
-          <HoverTippyCell classCSS='h-[100%] w-[100%]'>
-            <div className='flex h-[100%] items-center'>
-              <p className='font-medium'>{props?.data?.marketplace}</p>
-            </div>
-          </HoverTippyCell>
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={3}
+            classCSS='justify-end items-start'
+            title='Marketplace'
+            data={props?.data}
+          />
         )
       },
       flex: 4,
@@ -224,38 +153,138 @@ const Aggird = () => {
     {
       id: 4,
       headerComponent: () => {
-        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} id={4} setColumnDefs={setColumnDefs} title='Ad Tool' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={4}
+            setColumnDefs={setColumnDefs}
+            title='Ad Tool'
+          />
+        )
       },
-      cellRenderer: CustomAdTool,
+
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={4}
+            classCSS='justify-end items-start'
+            title='Ad Tool'
+            data={props?.data}
+          />
+        )
+      },
       flex: 5,
     },
     {
       id: 5,
       headerComponent: () => {
         return (
-          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={5} setColumnDefs={setColumnDefs} title='Campaign'>
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={5}
+            setColumnDefs={setColumnDefs}
+            title='Campaign'
+          >
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
       },
-      cellRenderer: CustomCampaign,
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={5}
+            classCSS='justify-end items-start'
+            title='Campaign'
+            data={props?.data}
+          />
+        )
+      },
       flex: 7,
     },
     {
       id: 6,
       headerComponent: () => {
-        return <HeaderComponent  outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader} id={6} setColumnDefs={setColumnDefs} title='Country' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={6}
+            setColumnDefs={setColumnDefs}
+            title='Country'
+          />
+        )
       },
-      cellRenderer: CustomCountry,
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={6}
+            classCSS='justify-end items-start'
+            title='Country'
+            data={props?.data}
+          />
+        )
+      },
+
       flex: 4,
       sortable: false,
     },
     {
       id: 7,
       headerComponent: () => {
-        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={7} setColumnDefs={setColumnDefs} title='Storefront' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={7}
+            setColumnDefs={setColumnDefs}
+            title='Storefront'
+          />
+        )
       },
-      cellRenderer: CustomStore,
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={7}
+            classCSS='justify-end items-start'
+            title='Storefront'
+            data={props?.data}
+          />
+        )
+      },
       autoHeight: true,
       flex: 6,
     },
@@ -263,7 +292,15 @@ const Aggird = () => {
       id: 8,
       headerComponent: () => {
         return (
-          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={8} setColumnDefs={setColumnDefs} title='First search...'>
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={8}
+            setColumnDefs={setColumnDefs}
+            title='First search...'
+          >
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
@@ -273,47 +310,163 @@ const Aggird = () => {
     {
       id: 9,
       headerComponent: () => {
-        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={9} setColumnDefs={setColumnDefs} title='Campaign note' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={9}
+            setColumnDefs={setColumnDefs}
+            title='Campaign note'
+          />
+        )
       },
       flex: 4,
-      cellRenderer: CustomNote,
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            Tippy={false}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={9}
+            classCSS='justify-end items-start'
+            title='Campaign note'
+            data={props?.data}
+          />
+        )
+      },
     },
     {
       id: 10,
-      
+
       headerComponent: () => {
         return (
-          <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={10} setColumnDefs={setColumnDefs} title='Campaign timeLine'>
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={10}
+            setColumnDefs={setColumnDefs}
+            title='Campaign timeLine'
+          >
             <SlExclamation className='SlExclamation' />
           </HeaderComponent>
         )
       },
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={10}
+            classCSS='justify-end items-start'
+            title='Campaign timeLine'
+            data={props?.data}
+          />
+        )
+      },
 
-      cellRenderer: CustomCampaignTimeLine,
       flex: 7,
     },
     {
       id: 11,
       headerComponent: () => {
-        return <HeaderComponent   outerVisibleHeader={outerVisibleHeader} setOuterVisibleHeader={setOuterVisibleHeader}  id={11} setColumnDefs={setColumnDefs} title='Campaign status' />
+        return (
+          <HeaderComponent
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            id={11}
+            setColumnDefs={setColumnDefs}
+            title='Campaign status'
+          />
+        )
       },
-      cellRenderer: CustomStatus,
+      cellRenderer: (props: any) => {
+        return (
+          <CellComponent
+            outerVisibleHeader={outerVisibleHeader}
+            setOuterVisibleHeader={setOuterVisibleHeader}
+            outerVisibleCell={outerVisibleCell}
+            setOuterVisibleCell={setOuterVisibleCell}
+            selectRow={selectRow}
+            setSelectRow={setSelectRow}
+            id={11}
+            classCSS='justify-end items-start'
+            title='Campaign status'
+            data={props?.data}
+          />
+        )
+      },
       flex: 5,
     },
   ]
+
+  const createServerSideDatasource = (server: any) => {
+    return {
+      getRows: (params: any) => {
+        // get data for request from our fake server
+        const response = server.getData(params.request)
+        // simulating real server call with a 500ms delay
+        setTimeout(() => {
+          if (response.success) {
+            // supply rows for requested block to grid
+            params.success({rowData: response.rows})
+          } else {
+            params.fail()
+          }
+        }, 500)
+      },
+    }
+  }
+
+  const createFakeServer = (allData: any) => {
+    return {
+      getData: (request: any) => {
+        // in this simplified fake server all rows are contained in an array
+        const requestedRows = allData.slice(request.startRow, request.endRow)
+        return {
+          success: true,
+          rows: requestedRows,
+        }
+      },
+    }
+  }
+  const onGridReady = useCallback((params: any) => {
+    // setup the fake server with entire dataset
+    const fakeServer = createFakeServer(Api)
+    // create datasource with a reference to the fake server
+    const datasource = createServerSideDatasource(fakeServer)
+    // register the datasource with the grid
+    params.api.setGridOption('serverSideDatasource', datasource)
+  }, [])
+
   return (
-
-      <div  className='ag-theme-quartz' style={{height: '200px'}}>
-        <AgGridReact
-
-          // ref={gridRef}
-          defaultColDef={{
-            resizable: false,
-          }}
-          rowData={Api}
-          columnDefs={colf.filter((el) => !columnDefs.includes(el?.id))}
-        />
-      </div>
+    <div className='ag-theme-quartz' style={{height: '100vh'}}>
+      <AgGridReact
+        ref={gridRef}
+        defaultColDef={{
+          resizable: false,
+          autoHeight: true,
+        }}
+        rowModelType='serverSide'
+        onGridReady={onGridReady}
+        columnDefs={colf.filter((el) => !columnDefs.includes(el?.id))}
+        loadingCellRenderer={Loading}
+        loadingCellRendererParams={Loading}
+      />
+    </div>
   )
 }
 

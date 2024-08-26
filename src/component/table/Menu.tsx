@@ -1,10 +1,10 @@
 import React from 'react'
-import {MenuItem} from './HoverTippyHeader'
+import {MenuItemType} from './HoverTippyHeader'
 
 type Props = {
   children?: React.ReactElement
   visible?: boolean
-  menuHeader: MenuItem[]
+  menuHeader: MenuItemType[]
   onclick: () => void
 }
 

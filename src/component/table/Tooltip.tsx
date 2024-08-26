@@ -1,6 +1,6 @@
 import Tippy from '@tippyjs/react/headless'
-import { MenuItem } from './HoverTippyHeader'
-import { useRef } from 'react'
+import {useRef} from 'react'
+import {MenuItem} from './HoverTippyCell'
 
 type Props = {
   children: React.ReactElement
@@ -8,10 +8,17 @@ type Props = {
   menuHeader: MenuItem[]
   onclick: () => void
   onClickOutsideTooltip: () => void
-  tippyRef: React.MutableRefObject<any>  // Changed to MutableRefObject
+  tippyRef: React.MutableRefObject<any>
 }
 
-const Tooltip = ({ visible, menuHeader, onclick, children, onClickOutsideTooltip, tippyRef }: Props) => {
+const Tooltip = ({
+  visible,
+  menuHeader,
+  onclick,
+  children,
+  onClickOutsideTooltip,
+  tippyRef,
+}: Props) => {
   return (
     <div>
       <Tippy
@@ -24,7 +31,7 @@ const Tooltip = ({ visible, menuHeader, onclick, children, onClickOutsideTooltip
         interactive={true}
         onClickOutside={onClickOutsideTooltip}
         onCreate={(instance) => {
-          tippyRef.current = instance.popper  // No need for additional checks
+          tippyRef.current = instance.popper // No need for additional checks
         }}
         render={(innerProps) => (
           <div
@@ -35,9 +42,9 @@ const Tooltip = ({ visible, menuHeader, onclick, children, onClickOutsideTooltip
               <div
                 className='flex items-center cursor-pointer hover:bg-slate-200 p-[5px] rounded-md gap-[10px]'
                 onClick={() => {
-                  console.log('1');
-                  el?.onclick();
-                  onclick();
+                  console.log('1')
+                  el?.onclick()
+                  onclick()
                 }}
                 key={index}
               >
