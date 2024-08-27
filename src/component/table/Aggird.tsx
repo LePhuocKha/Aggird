@@ -1,5 +1,6 @@
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {Api} from '../data-fake/Api'
+import Loading from './Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import HeaderComponent from './HeaderComponent'
 import CellComponent from './CellComponent'
@@ -13,13 +14,12 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
-import Loading from './Loading'
 
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
-
+  const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
   const [outerVisibleCell, setOuterVisibleCell] = useState<{
     idTr: number
     idHeader: number
@@ -35,6 +35,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -60,6 +62,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             Tippy={false}
             setOuterVisibleHeader={setOuterVisibleHeader}
@@ -82,6 +86,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -99,6 +105,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             Tippy={false}
             setOuterVisibleHeader={setOuterVisibleHeader}
@@ -121,6 +129,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -135,6 +145,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -155,6 +167,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -169,6 +183,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -189,6 +205,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -204,6 +222,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -224,6 +244,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -237,6 +259,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -259,6 +283,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -272,6 +298,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -293,6 +321,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -312,6 +342,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -326,6 +358,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             Tippy={false}
             setOuterVisibleHeader={setOuterVisibleHeader}
@@ -347,6 +381,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -362,6 +398,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -383,6 +421,8 @@ const Aggird = () => {
       headerComponent: () => {
         return (
           <HeaderComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleCell={outerVisibleCell}
             setOuterVisibleCell={setOuterVisibleCell}
             outerVisibleHeader={outerVisibleHeader}
@@ -396,6 +436,8 @@ const Aggird = () => {
       cellRenderer: (props: any) => {
         return (
           <CellComponent
+            checkMenuOnOff={checkMenuOnOff}
+            setCheckMenuOnOff={setCheckMenuOnOff}
             outerVisibleHeader={outerVisibleHeader}
             setOuterVisibleHeader={setOuterVisibleHeader}
             outerVisibleCell={outerVisibleCell}
@@ -460,6 +502,7 @@ const Aggird = () => {
           resizable: false,
           autoHeight: true,
         }}
+        rowHeight={53}
         rowModelType='serverSide'
         onGridReady={onGridReady}
         columnDefs={colf.filter((el) => !columnDefs.includes(el?.id))}

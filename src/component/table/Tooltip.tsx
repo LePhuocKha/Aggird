@@ -5,20 +5,13 @@ import {MenuItem} from './HoverTippyCell'
 type Props = {
   children: React.ReactElement
   visible: boolean
-  menuHeader: MenuItem[]
+  menuHeader: any[]
   onclick: () => void
   onClickOutsideTooltip: () => void
-  tippyRef: React.MutableRefObject<any>
 }
 
-const Tooltip = ({
-  visible,
-  menuHeader,
-  onclick,
-  children,
-  onClickOutsideTooltip,
-  tippyRef,
-}: Props) => {
+const Tooltip = ({visible, menuHeader, onclick, children, onClickOutsideTooltip}: Props) => {
+  const tippyRef = useRef<any>()
   return (
     <div>
       <Tippy
@@ -29,10 +22,10 @@ const Tooltip = ({
         appendTo={document.body}
         placement='bottom'
         interactive={true}
-        onClickOutside={onClickOutsideTooltip}
-        onCreate={(instance) => {
-          tippyRef.current = instance.popper // No need for additional checks
-        }}
+        // onClickOutside={onClickOutsideTooltip}
+        // onCreate={(instance) => {
+        //   tippyRef.current = instance.popper
+        // }}
         render={(innerProps) => (
           <div
             {...innerProps}

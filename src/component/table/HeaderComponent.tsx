@@ -1,7 +1,8 @@
-import React, {Dispatch, useEffect, useRef, useState} from 'react'
+import React, {Dispatch} from 'react'
 import HoverTippyHeader from './HoverTippyHeader'
+import Cookies from 'js-cookie'
 
-type Props = {
+export type PropsHeader = {
   setColumnDefs: Dispatch<React.SetStateAction<number[]>>
   id: number
   title?: string
@@ -20,6 +21,8 @@ type Props = {
     idTr: number
     idHeader: number
   }
+  checkMenuOnOff: boolean
+  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
 }
 
 const HeaderComponent = ({
@@ -32,11 +35,12 @@ const HeaderComponent = ({
   setOuterVisibleHeader,
   outerVisibleHeader,
   setOuterVisibleCell,
-  outerVisibleCell,
-}: Props) => {
+  checkMenuOnOff,
+  setCheckMenuOnOff,
+}: PropsHeader) => {
   const handleMouseEnter = () => {
-    if (!outerVisibleHeader) {
-      setOuterVisibleHeader(id)
+    if ((Cookies.get('menu') || '') !== 'true') {
+      setOuterVisibleHeader(id || 0)
       setOuterVisibleCell({
         idHeader: 0,
         idTr: 0,
@@ -48,12 +52,13 @@ const HeaderComponent = ({
     <div className='w-[100%] h-[100%] '>
       {Tippy ? (
         <HoverTippyHeader
+          setCheckMenuOnOff={setCheckMenuOnOff}
           outerVisibleHeader={outerVisibleHeader}
           setOuterVisibleHeader={setOuterVisibleHeader}
-          id={id}
+          id={id || 0}
           classCSS='h-[100%] w-[100%]'
           onClickHide={() => {
-            setColumnDefs((prevDefs) => [...prevDefs, id])
+            setColumnDefs((prevDefs) => [...prevDefs, id || 0])
           }}
         >
           <div

@@ -1,4 +1,4 @@
-import React, {Dispatch, useMemo, useState} from 'react'
+import React, {Dispatch, useMemo} from 'react'
 import {data_type} from '../data-fake/Api'
 import HoverTippyCell from './HoverTippyCell'
 import InputCheckBox from '../checkbox/InputCheckBox'
@@ -8,12 +8,13 @@ import {MdAdd, MdFolderCopy} from 'react-icons/md'
 import Flag from 'react-world-flags'
 import {formatDate} from '../../utils/common'
 import Status from './Status'
+import Cookies from 'js-cookie'
 
-type Props = {
-  data: data_type
+export type PropsCell = {
+  data?: data_type | any
   children?: React.ReactElement
   classCSS?: string
-  id: number
+  id?: number
   title?: string
   Tippy?: boolean
   setOuterVisibleHeader: Dispatch<React.SetStateAction<number>>
@@ -30,6 +31,8 @@ type Props = {
     idHeader: number
   }
   outerVisibleHeader: number
+  checkMenuOnOff: boolean
+  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
 }
 
 const CellComponent = ({
@@ -42,17 +45,19 @@ const CellComponent = ({
   outerVisibleCell,
   setOuterVisibleHeader,
   setOuterVisibleCell,
+  checkMenuOnOff,
   outerVisibleHeader,
-}: Props) => {
+  setCheckMenuOnOff,
+}: PropsCell) => {
   const render = useMemo(() => {
     if (title === 'checkbox') {
       const handleCheckboxClick = () => {
-        setSelectRow((prev: number[]) => {
+        setSelectRow((prev: number[] | any) => {
           if (!Array.isArray(prev)) {
             return [data?.id]
           }
 
-          if (prev.includes(data?.id)) {
+          if (prev.includes(data?.id || 0)) {
             return prev.filter((id) => id !== data?.id)
           } else {
             return [...prev, data?.id]
@@ -135,7 +140,7 @@ const CellComponent = ({
     if (['Campaign status'].includes(title || '')) {
       return (
         <div className='flex font-medium'>
-          <Status status={data?.status} update_time={data?.update_time as string} />
+          <Status status={data?.status || 0} update_time={data?.update_time as string} />
         </div>
       )
     }
@@ -143,21 +148,25 @@ const CellComponent = ({
   }, [data])
 
   const handleMouseEnter = () => {
-    setOuterVisibleCell({
-      idHeader: +id,
-      idTr: +data?.id,
-    })
-    setOuterVisibleHeader(0)
+    if (Cookies.get('menu') !== 'true') {
+      setOuterVisibleCell({
+        idHeader: Number(id) || 0,
+        idTr: +data?.id || 0,
+      })
+      setOuterVisibleHeader(0)
+    }
   }
 
   return (
     <div className='max-h-[45px] min-h-[45px] h-[45px] w-[100%] '>
       {Tippy ? (
         <HoverTippyCell
-          data={data}
+          outerVisibleHeader={outerVisibleHeader}
+          setCheckMenuOnOff={setCheckMenuOnOff}
+          data={data || {}}
           outerVisibleCell={outerVisibleCell}
           setOuterVisibleCell={setOuterVisibleCell}
-          id={id}
+          id={id || 0}
           classCSS='h-[100%] w-[100%]'
         >
           <div className='h-[100%] w-[100%]' onMouseEnter={handleMouseEnter}>

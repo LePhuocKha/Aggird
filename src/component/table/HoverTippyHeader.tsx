@@ -1,4 +1,4 @@
-import React, {Dispatch, useRef, useState} from 'react'
+import React, {Dispatch, useEffect, useRef, useState} from 'react'
 
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {FaLongArrowAltUp, FaArrowDown} from 'react-icons/fa'
@@ -7,6 +7,7 @@ import {TiPin} from 'react-icons/ti'
 import {Menu} from 'primereact/menu'
 
 import useClickOutside from '../../hooks/useClickOutside'
+import Cookies from 'js-cookie'
 
 export type MenuItemType = {
   label: string
@@ -21,6 +22,7 @@ type Props = {
   id: number
   outerVisibleHeader: number
   setOuterVisibleHeader: Dispatch<React.SetStateAction<number>>
+  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
 }
 
 const HoverTippyHeader = ({
@@ -30,9 +32,10 @@ const HoverTippyHeader = ({
   setOuterVisibleHeader,
   outerVisibleHeader,
   id,
+  setCheckMenuOnOff,
 }: Props) => {
   const menuLeft = useRef<any>(null)
-  const configColumnRef = useRef<any>(null)
+  const configButton = useRef<any>(null)
 
   const [innerVisible, setInnerVisible] = useState(false)
 
@@ -81,14 +84,25 @@ const HoverTippyHeader = ({
   ]
 
   const handleClick = (event: React.MouseEvent) => {
-    setInnerVisible(!innerVisible)
     menuLeft?.current.toggle(event)
   }
 
-  useClickOutside(configColumnRef, () => {
+  const handleMenuShow = () => {
+    setInnerVisible(true)
+    Cookies.set('menu', 'true')
+    // setCheckMenuOnOff(true)
+  }
+
+  const handleMenuHide = () => {
+    Cookies.set('menu', 'false')
+    setCheckMenuOnOff(false)
+  }
+
+  useClickOutside(configButton, () => {
     setTimeout(() => {
+      setCheckMenuOnOff(false)
       setOuterVisibleHeader(0)
-      setInnerVisible(false)
+      Cookies.set('menu', 'false')
     }, 150)
   })
 
@@ -103,12 +117,14 @@ const HoverTippyHeader = ({
           popup
           ref={menuLeft}
           id='popup_menu_left'
+          onShow={handleMenuShow}
+          onHide={handleMenuHide}
           aria-hidden='false'
         />
 
         {outerVisibleHeader === id && (
           <button
-            ref={configColumnRef}
+            ref={configButton}
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
