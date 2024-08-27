@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import {useCallback, useRef, useState} from 'react'
 import {Api} from '../data-fake/Api'
 import Loading from './Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'

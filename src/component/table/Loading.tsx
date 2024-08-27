@@ -1,8 +1,6 @@
 import './style.scss'
 
-type Props = {}
-
-const Loading = (props: Props) => {
+const Loading = () => {
   return (
     <div className='flex ms-5 gap-2'>
       <div className='container'>

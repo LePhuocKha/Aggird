@@ -1,4 +1,4 @@
-import React, {Dispatch, useEffect, useRef, useState} from 'react'
+import React, {Dispatch, useRef, useState} from 'react'
 
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {FaLongArrowAltUp, FaArrowDown} from 'react-icons/fa'

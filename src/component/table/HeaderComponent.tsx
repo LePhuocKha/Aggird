@@ -1,6 +1,6 @@
 import React, {Dispatch} from 'react'
-import HoverTippyHeader from './HoverTippyHeader'
 import Cookies from 'js-cookie'
+import HoverTippyHeader from './HoverTippyHeader'
 
 export type PropsHeader = {
   setColumnDefs: Dispatch<React.SetStateAction<number[]>>
@@ -35,7 +35,6 @@ const HeaderComponent = ({
   setOuterVisibleHeader,
   outerVisibleHeader,
   setOuterVisibleCell,
-  checkMenuOnOff,
   setCheckMenuOnOff,
 }: PropsHeader) => {
   const handleMouseEnter = () => {

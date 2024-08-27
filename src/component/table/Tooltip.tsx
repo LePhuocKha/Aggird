@@ -1,6 +1,5 @@
 import Tippy from '@tippyjs/react/headless'
 import {useRef} from 'react'
-import {MenuItem} from './HoverTippyCell'
 
 type Props = {
   children: React.ReactElement
@@ -10,7 +9,7 @@ type Props = {
   onClickOutsideTooltip: () => void
 }
 
-const Tooltip = ({visible, menuHeader, onclick, children, onClickOutsideTooltip}: Props) => {
+const Tooltip = ({visible, menuHeader, onclick, children}: Props) => {
   const tippyRef = useRef<any>()
   return (
     <div>

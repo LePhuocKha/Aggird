@@ -8,7 +8,7 @@ type Props = {
   onclick: () => void
 }
 
-const Menu = ({menuHeader, onclick, children}: Props) => {
+const Menu = ({menuHeader, onclick}: Props) => {
   return (
     <div className='bg-white absolute right-0 p-[10px] shadow-lg rounded-md'>
       {menuHeader.map((el, index) => {

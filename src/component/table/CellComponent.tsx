@@ -1,13 +1,15 @@
 import React, {Dispatch, useMemo} from 'react'
+
 import {data_type} from '../data-fake/Api'
 import HoverTippyCell from './HoverTippyCell'
 import InputCheckBox from '../checkbox/InputCheckBox'
+import Status from './Status'
+
 import {FaRectangleAd} from 'react-icons/fa6'
 import {GoDotFill} from 'react-icons/go'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
-import Flag from 'react-world-flags'
 import {formatDate} from '../../utils/common'
-import Status from './Status'
+import Flag from 'react-world-flags'
 import Cookies from 'js-cookie'
 
 export type PropsCell = {
@@ -45,7 +47,6 @@ const CellComponent = ({
   outerVisibleCell,
   setOuterVisibleHeader,
   setOuterVisibleCell,
-  checkMenuOnOff,
   outerVisibleHeader,
   setCheckMenuOnOff,
 }: PropsCell) => {

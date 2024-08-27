@@ -1,4 +1,4 @@
-import React, {Dispatch, useEffect, useRef, useState} from 'react'
+import React, {Dispatch, useRef, useState} from 'react'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {MdOutlineFilterList} from 'react-icons/md'
 import {Menu} from 'primereact/menu'
@@ -38,7 +38,6 @@ const HoverTippyCell = ({
   data,
   setOuterVisibleCell,
   setCheckMenuOnOff,
-  outerVisibleHeader,
   id,
 }: Props) => {
   const [innerVisible, setInnerVisible] = useState(false)
@@ -97,7 +96,7 @@ const HoverTippyCell = ({
           onHide={handleMenuHide}
           onShow={handleMenuShow}
           id='popup_menu_left'
-          aria-hidden={true}
+          aria-hidden='false'
         />
 
         {data?.id === outerVisibleCell?.idTr && id === outerVisibleCell?.idHeader && (
