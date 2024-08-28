@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {Api} from '../data-fake/Api'
 import Loading from './Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
@@ -14,6 +14,15 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
+import Cookies from 'js-cookie'
+import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model'
+import {ModuleRegistry} from '@ag-grid-community/core'
+import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
+import {MenuModule} from '@ag-grid-enterprise/menu'
+import {ColDef, GetContextMenuItemsParams, GetMainMenuItemsParams} from 'ag-grid-community'
+import MenuItem from './MenuItem'
+
+ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
@@ -29,427 +38,124 @@ const Aggird = () => {
   })
   const [columnDefs, setColumnDefs] = useState<number[]>([])
 
-  const colf = [
-    {
-      id: 1,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            classCSS='border-r-[1px] border-gray-300 justify-center'
-            Tippy={false}
-            id={1}
-            setColumnDefs={setColumnDefs}
-          >
-            <InputCheckBox
-              checked={selectRow.length === Api.length}
-              onChange={() => {
-                if (selectRow.length === Api.length) {
-                  setSelectRow([])
-                } else {
-                  setSelectRow(Api?.map((el: any) => el?.id))
-                }
-              }}
-            />
-          </HeaderComponent>
-        )
-      },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            Tippy={false}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={1}
-            classCSS='justify-end items-start'
-            title='checkbox'
-            data={props?.data}
-          />
-        )
-      },
+  useEffect(() => {
+    Cookies.set('menu', 'false')
+  }, [])
 
+  const colf: ColDef[] = [
+    {
+      headerComponentParams: {
+        classCSS: 'border-r-[1px] border-gray-300 justify-center gap-2',
+        children: (
+          <InputCheckBox
+            checked={selectRow.length === Api.length}
+            onChange={() => {
+              if (selectRow.length === Api.length) {
+                setSelectRow([])
+              } else {
+                setSelectRow(Api?.map((el: any) => el?.id))
+              }
+            }}
+          />
+        ),
+      },
+      cellRendererParams: {
+        title: 'checkbox',
+      },
       flex: 1,
     },
     {
-      id: 2,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            classCSS='justify-center'
-            Tippy={false}
-            id={2}
-            setColumnDefs={setColumnDefs}
-          >
-            <SlExclamation className='SlExclamation' />
-          </HeaderComponent>
-        )
+      headerComponentParams: {
+        classCSS: 'justify-center',
+        children: <SlExclamation className='SlExclamation' />,
       },
-
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            Tippy={false}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={2}
-            classCSS='justify-end items-start'
-            title='Exclamation mark'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Exclamation mark',
       },
-
       flex: 1,
     },
     {
-      id: 3,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={3}
-            setColumnDefs={setColumnDefs}
-            title='Marketplace'
-          />
-        )
+      headerComponentParams: {
+        title: 'Marketplace',
       },
-
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={3}
-            classCSS='justify-end items-start'
-            title='Marketplace'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Marketplace',
       },
       flex: 4,
     },
     {
-      id: 4,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={4}
-            setColumnDefs={setColumnDefs}
-            title='Ad Tool'
-          />
-        )
+      headerComponentParams: {
+        title: 'Ad Tool',
       },
-
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={4}
-            classCSS='justify-end items-start'
-            title='Ad Tool'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Ad Tool',
       },
       flex: 5,
     },
     {
-      id: 5,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={5}
-            setColumnDefs={setColumnDefs}
-            title='Campaign'
-          >
-            <SlExclamation className='SlExclamation' />
-          </HeaderComponent>
-        )
+      headerComponentParams: {
+        title: 'Campaign',
       },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={5}
-            classCSS='justify-end items-start'
-            title='Campaign'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Campaign',
       },
       flex: 7,
     },
     {
-      id: 6,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={6}
-            setColumnDefs={setColumnDefs}
-            title='Country'
-          />
-        )
+      headerComponentParams: {
+        title: 'Country',
       },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={6}
-            classCSS='justify-end items-start'
-            title='Country'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Country',
       },
-
       flex: 4,
-      sortable: false,
     },
     {
-      id: 7,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={7}
-            setColumnDefs={setColumnDefs}
-            title='Storefront'
-          />
-        )
+      headerComponentParams: {
+        title: 'Storefront',
       },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={7}
-            classCSS='justify-end items-start'
-            title='Storefront'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Storefront',
       },
-      autoHeight: true,
       flex: 6,
     },
     {
-      id: 8,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={8}
-            setColumnDefs={setColumnDefs}
-            title='First search...'
-          >
-            <SlExclamation className='SlExclamation' />
-          </HeaderComponent>
-        )
+      headerComponentParams: {
+        id: 8,
+        title: 'First search...',
+        children: <SlExclamation className='SlExclamation' />,
       },
       flex: 3,
     },
     {
-      id: 9,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={9}
-            setColumnDefs={setColumnDefs}
-            title='Campaign note'
-          />
-        )
-      },
       flex: 4,
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            Tippy={false}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={9}
-            classCSS='justify-end items-start'
-            title='Campaign note'
-            data={props?.data}
-          />
-        )
+      headerComponentParams: {
+        id: 9,
+        title: 'Campaign note',
+      },
+      cellRendererParams: {
+        id: 9,
+        Tippy: false,
+        title: 'Campaign note',
       },
     },
     {
-      id: 10,
-
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={10}
-            setColumnDefs={setColumnDefs}
-            title='Campaign timeLine'
-          >
-            <SlExclamation className='SlExclamation' />
-          </HeaderComponent>
-        )
+      headerComponentParams: {
+        title: 'Campaign timeLine',
+        children: <SlExclamation className='SlExclamation' />,
       },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={10}
-            classCSS='justify-end items-start'
-            title='Campaign timeLine'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Campaign timeLine',
       },
-
       flex: 7,
     },
     {
-      id: 11,
-      headerComponent: () => {
-        return (
-          <HeaderComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            id={11}
-            setColumnDefs={setColumnDefs}
-            title='Campaign status'
-          />
-        )
+      headerComponentParams: {
+        classCSS: 'justify-start',
+        title: 'Campaign status',
       },
-      cellRenderer: (props: any) => {
-        return (
-          <CellComponent
-            checkMenuOnOff={checkMenuOnOff}
-            setCheckMenuOnOff={setCheckMenuOnOff}
-            outerVisibleHeader={outerVisibleHeader}
-            setOuterVisibleHeader={setOuterVisibleHeader}
-            outerVisibleCell={outerVisibleCell}
-            setOuterVisibleCell={setOuterVisibleCell}
-            selectRow={selectRow}
-            setSelectRow={setSelectRow}
-            id={11}
-            classCSS='justify-end items-start'
-            title='Campaign status'
-            data={props?.data}
-          />
-        )
+      cellRendererParams: {
+        title: 'Campaign status',
       },
       flex: 5,
     },
@@ -493,6 +199,53 @@ const Aggird = () => {
     // register the datasource with the grid
     params.api.setGridOption('serverSideDatasource', datasource)
   }, [])
+  // const getMainMenuItems = (params: any) => {
+  //   return ['pinSubMenu', 'valueAggSubMenu', 'autoSizeThis', 'autoSizeAll', 'separator', 'export']
+  // }
+
+  const getMainMenuItems = useCallback((params: GetMainMenuItemsParams) => {
+    return [
+      ...params.defaultItems,
+      'separator',
+      {
+        name: 'Click Alert Button and Close Menu',
+        menuItem: MenuItem,
+        menuItemParams: {
+          buttonValue: 'Alert',
+        },
+      },
+      {
+        name: 'Click Alert Button and Keep Menu Open',
+        suppressCloseOnSelect: true,
+        menuItem: MenuItem,
+        menuItemParams: {
+          buttonValue: 'Alert',
+        },
+      },
+    ]
+  }, [])
+
+  const getContextMenuItems = useCallback((params: GetContextMenuItemsParams) => {
+    return [
+      ...(params.defaultItems || []),
+      'separator',
+      {
+        name: 'Click Alert Button and Close Menu',
+        menuItem: MenuItem,
+        menuItemParams: {
+          buttonValue: 'Alert',
+        },
+      },
+      {
+        name: 'Click Alert Button and Keep Menu Open',
+        suppressCloseOnSelect: true,
+        menuItem: MenuItem,
+        menuItemParams: {
+          buttonValue: 'Alert',
+        },
+      },
+    ]
+  }, [])
 
   return (
     <div className='ag-theme-quartz' style={{height: '100vh'}}>
@@ -501,12 +254,37 @@ const Aggird = () => {
         defaultColDef={{
           resizable: false,
           autoHeight: true,
+          headerComponent: HeaderComponent,
+          headerComponentParams: {
+            checkMenuOnOff,
+            setCheckMenuOnOff,
+            outerVisibleCell,
+            setOuterVisibleCell,
+            outerVisibleHeader,
+            setOuterVisibleHeader,
+            setColumnDefs,
+          },
+          cellRenderer: CellComponent,
+          cellRendererParams: {
+            checkMenuOnOff,
+            setCheckMenuOnOff,
+            outerVisibleHeader,
+            setOuterVisibleHeader,
+            outerVisibleCell,
+            setOuterVisibleCell,
+            selectRow,
+            setSelectRow,
+          },
         }}
+        columnMenu={'legacy'}
         rowHeight={53}
+        // getMainMenuItems={getMainMenuItems}
         rowModelType='serverSide'
         onGridReady={onGridReady}
-        columnDefs={colf.filter((el) => !columnDefs.includes(el?.id))}
+        columnDefs={colf}
         loadingCellRenderer={Loading}
+        getMainMenuItems={getMainMenuItems}
+        getContextMenuItems={getContextMenuItems}
         loadingCellRendererParams={Loading}
       />
     </div>

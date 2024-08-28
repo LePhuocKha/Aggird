@@ -49,7 +49,7 @@ const HeaderComponent = ({
 
   return (
     <div className='w-[100%] h-[100%] '>
-      {Tippy ? (
+      {/* {Tippy ? (
         <HoverTippyHeader
           setCheckMenuOnOff={setCheckMenuOnOff}
           outerVisibleHeader={outerVisibleHeader}
@@ -68,12 +68,14 @@ const HeaderComponent = ({
             {children}
           </div>
         </HoverTippyHeader>
-      ) : (
-        <div className={`flex items-center px-[5px] h-[100%] w-[100%] ${classCSS}`}>
-          {title && <p className='p-0 m-0'>{title}</p>}
-          {children}
-        </div>
-      )}
+      ) : ( */}
+      <div
+        className={`flex items-center px-[5px] h-[100%] w-[100%] justify-start gap-2 ${classCSS}`}
+      >
+        {title && <p className='p-0 m-0'>{title}</p>}
+        {children}
+      </div>
+      {/* )} */}
     </div>
   )
 }

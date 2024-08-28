@@ -50,6 +50,8 @@ const CellComponent = ({
   outerVisibleHeader,
   setCheckMenuOnOff,
 }: PropsCell) => {
+  console.log(data, title)
+
   const render = useMemo(() => {
     if (title === 'checkbox') {
       const handleCheckboxClick = () => {
@@ -134,7 +136,7 @@ const CellComponent = ({
     if (['Campaign timeLine'].includes(title || '')) {
       return (
         <div className='flex font-medium'>
-          {formatDate((data?.start_time as string) || '')} - ${formatDate(data?.end_time as string)}
+          {formatDate((data?.start_time as string) || '')} - {formatDate(data?.end_time as string)}
         </div>
       )
     }
@@ -160,7 +162,7 @@ const CellComponent = ({
 
   return (
     <div className='max-h-[45px] min-h-[45px] h-[45px] w-[100%] '>
-      {Tippy ? (
+      {/* {Tippy ? (
         <HoverTippyCell
           outerVisibleHeader={outerVisibleHeader}
           setCheckMenuOnOff={setCheckMenuOnOff}
@@ -174,9 +176,9 @@ const CellComponent = ({
             {render}
           </div>
         </HoverTippyCell>
-      ) : (
-        <div className='h-[100%] w-[100%]'>{render}</div>
-      )}
+      ) : ( */}
+      <div className='h-[100%] w-[100%]'>{render}</div>
+      {/* )} */}
     </div>
   )
 }
