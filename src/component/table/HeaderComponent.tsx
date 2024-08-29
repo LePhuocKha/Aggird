@@ -1,9 +1,11 @@
 import React, {Dispatch} from 'react'
 import Cookies from 'js-cookie'
 import HoverTippyHeader from './HoverTippyHeader'
+import {TiPin} from 'react-icons/ti'
+import {RiMenuAddLine, RiMenuFoldFill} from 'react-icons/ri'
+import {FaArrowDown, FaLongArrowAltUp} from 'react-icons/fa'
 
 export type PropsHeader = {
-  setColumnDefs: Dispatch<React.SetStateAction<number[]>>
   id: number
   title?: string
   children?: React.ReactElement
@@ -21,12 +23,11 @@ export type PropsHeader = {
     idTr: number
     idHeader: number
   }
-  checkMenuOnOff: boolean
-  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
+  colDef: any
+  api: any
 }
 
 const HeaderComponent = ({
-  setColumnDefs,
   id,
   title,
   children,
@@ -35,7 +36,9 @@ const HeaderComponent = ({
   setOuterVisibleHeader,
   outerVisibleHeader,
   setOuterVisibleCell,
-  setCheckMenuOnOff,
+  colDef,
+  api,
+  ...res
 }: PropsHeader) => {
   const handleMouseEnter = () => {
     if ((Cookies.get('menu') || '') !== 'true') {
@@ -47,18 +50,57 @@ const HeaderComponent = ({
     }
   }
 
+  const items = [
+    {
+      label: 'Sort Ascending',
+      icon: <FaLongArrowAltUp />,
+      command: () => {
+        console.log('Sort Ascending')
+      },
+    },
+    {
+      label: 'Sort Descending',
+      icon: <FaArrowDown />,
+      command: () => {},
+    },
+    {
+      label: 'Add Filter',
+      icon: <RiMenuAddLine />,
+      command: () => {},
+    },
+    {
+      label: 'Pin this',
+      icon: <TiPin />,
+      command: () => {},
+    },
+    {
+      label: 'Pin left',
+      icon: <TiPin />,
+      command: () => {},
+    },
+    {
+      label: 'Pin right',
+      icon: <TiPin />,
+      command: () => {},
+    },
+    {
+      label: 'Hide this',
+      icon: <RiMenuFoldFill />,
+      command: () => {
+        api.setColumnVisible(JSON.stringify(id), false)
+      },
+    },
+  ]
+
   return (
     <div className='w-[100%] h-[100%] '>
-      {/* {Tippy ? (
+      {Tippy ? (
         <HoverTippyHeader
-          setCheckMenuOnOff={setCheckMenuOnOff}
+          items={items}
           outerVisibleHeader={outerVisibleHeader}
           setOuterVisibleHeader={setOuterVisibleHeader}
           id={id || 0}
           classCSS='h-[100%] w-[100%]'
-          onClickHide={() => {
-            setColumnDefs((prevDefs) => [...prevDefs, id || 0])
-          }}
         >
           <div
             onMouseEnter={handleMouseEnter}
@@ -68,14 +110,14 @@ const HeaderComponent = ({
             {children}
           </div>
         </HoverTippyHeader>
-      ) : ( */}
-      <div
-        className={`flex items-center px-[5px] h-[100%] w-[100%] justify-start gap-2 ${classCSS}`}
-      >
-        {title && <p className='p-0 m-0'>{title}</p>}
-        {children}
-      </div>
-      {/* )} */}
+      ) : (
+        <div
+          className={`flex items-center px-[5px] h-[100%] w-[100%] justify-start gap-2 ${classCSS}`}
+        >
+          {title && <p className='p-0 m-0'>{title}</p>}
+          {children}
+        </div>
+      )}
     </div>
   )
 }

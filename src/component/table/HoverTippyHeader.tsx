@@ -8,80 +8,35 @@ import {Menu} from 'primereact/menu'
 
 import useClickOutside from '../../hooks/useClickOutside'
 import Cookies from 'js-cookie'
+import {ColDef} from 'ag-grid-community'
 
 export type MenuItemType = {
   label: string
-  onclick: () => void
-  icons: React.ReactNode
+  command: () => void
+  icon?: JSX.Element
 }
 
 type Props = {
   children: React.ReactElement
-  onClickHide: () => void
   classCSS: string
   id: number
+  items: MenuItemType[]
   outerVisibleHeader: number
   setOuterVisibleHeader: Dispatch<React.SetStateAction<number>>
-  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
 }
 
 const HoverTippyHeader = ({
   children,
-  onClickHide,
   classCSS,
   setOuterVisibleHeader,
   outerVisibleHeader,
+  items = [],
   id,
-  setCheckMenuOnOff,
 }: Props) => {
   const menuLeft = useRef<any>(null)
   const configButton = useRef<any>(null)
 
   const [innerVisible, setInnerVisible] = useState(false)
-
-  const items = [
-    {
-      items: [
-        {
-          label: 'Sort Ascending',
-          icon: <FaLongArrowAltUp />,
-          command: () => {
-            console.log('Sort Ascending')
-          },
-        },
-        {
-          label: 'Sort Descending',
-          icon: <FaArrowDown />,
-          command: () => {},
-        },
-        {
-          label: 'Add Filter',
-          icon: <RiMenuAddLine />,
-          command: () => {},
-        },
-        {
-          label: 'Pin this',
-          icon: <TiPin />,
-          command: () => {},
-        },
-        {
-          label: 'Pin left',
-          icon: <TiPin />,
-          command: () => {},
-        },
-        {
-          label: 'Pin right',
-          icon: <TiPin />,
-          command: () => {},
-        },
-        {
-          label: 'Hide this',
-          icon: <RiMenuFoldFill />,
-          command: () => onClickHide(),
-        },
-      ],
-    },
-  ]
 
   const handleClick = (event: React.MouseEvent) => {
     menuLeft?.current.toggle(event)
@@ -90,17 +45,14 @@ const HoverTippyHeader = ({
   const handleMenuShow = () => {
     setInnerVisible(true)
     Cookies.set('menu', 'true')
-    // setCheckMenuOnOff(true)
   }
 
   const handleMenuHide = () => {
     Cookies.set('menu', 'false')
-    setCheckMenuOnOff(false)
   }
 
   useClickOutside(configButton, () => {
     setTimeout(() => {
-      setCheckMenuOnOff(false)
       setOuterVisibleHeader(0)
       Cookies.set('menu', 'false')
     }, 150)
@@ -112,7 +64,11 @@ const HoverTippyHeader = ({
 
       <div className='flex justify-content-center  bg-white'>
         <Menu
-          model={items}
+          model={[
+            {
+              items: items,
+            },
+          ]}
           className='bg-white p-[10px] min-w-[250px] gap-[10px] shadow-md flex flex-col'
           popup
           ref={menuLeft}

@@ -16,12 +16,12 @@ const Menu = ({menuHeader, onclick}: Props) => {
           <div
             className='flex items-center cursor-pointer min-w-[250px] hover:bg-slate-200 p-[10px] rounded-md gap-[10px] '
             onClick={() => {
-              el?.onclick()
+              // el?.onclick()
               onclick()
             }}
             key={index}
           >
-            {el?.icons}
+            {/* {el?.icons} */}
             <p>{el?.label}</p>
           </div>
         )

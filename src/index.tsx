@@ -10,13 +10,7 @@ import 'primereact/resources/themes/lara-light-cyan/theme.css'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <PrimeReactProvider
-      value={{
-        cssTransition: true,
-        hideOverlaysOnDocumentScrolling: true,
-        inputStyle: 'filled',
-      }}
-    >
+    <PrimeReactProvider value={{}}>
       <App />
     </PrimeReactProvider>
   </React.StrictMode>

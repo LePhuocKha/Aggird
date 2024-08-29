@@ -4,11 +4,12 @@ import {data_type} from '../data-fake/Api'
 import HoverTippyCell from './HoverTippyCell'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import Status from './Status'
+import {formatDate} from '../../utils/common'
 
 import {FaRectangleAd} from 'react-icons/fa6'
 import {GoDotFill} from 'react-icons/go'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
-import {formatDate} from '../../utils/common'
+import countries from 'i18n-iso-countries'
 import Flag from 'react-world-flags'
 import Cookies from 'js-cookie'
 
@@ -33,10 +34,9 @@ export type PropsCell = {
     idHeader: number
   }
   outerVisibleHeader: number
-  checkMenuOnOff: boolean
-  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
+  value: string
 }
-
+countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 const CellComponent = ({
   data,
   id,
@@ -48,10 +48,9 @@ const CellComponent = ({
   setOuterVisibleHeader,
   setOuterVisibleCell,
   outerVisibleHeader,
-  setCheckMenuOnOff,
+  value,
+  ...res
 }: PropsCell) => {
-  console.log(data, title)
-
   const render = useMemo(() => {
     if (title === 'checkbox') {
       const handleCheckboxClick = () => {
@@ -83,17 +82,23 @@ const CellComponent = ({
     if (title === 'Marketplace') {
       return (
         <div className='flex h-[100%] items-center'>
-          <p className='font-medium'>{data?.marketplace}</p>
+          <p className='font-medium flex-grow whitespace-break-spaces leading-[17px] break-words'>
+            {data?.marketplace}
+          </p>
         </div>
       )
     }
     if (title === 'Ad Tool') {
       return (
-        <div className='flex justify-start items-center gap-[3px]'>
+        <div className='flex justify-start items-center gap-[3px] h-[100%]'>
           <FaRectangleAd />
-          <p className='font-medium'>{data?.marketplace}</p>
+          <p className='font-medium whitespace-break-spaces leading-[15px] break-words'>
+            {data?.marketplace}
+          </p>
           <GoDotFill className='w-[10px]' />
-          <p className='font-medium'>{data?.adTool}</p>
+          <p className='font-medium whitespace-break-spaces leading-[15px] break-words'>
+            {data?.adTool}
+          </p>
         </div>
       )
     }
@@ -120,9 +125,11 @@ const CellComponent = ({
 
     if (['Country'].includes(title || '')) {
       return (
-        <div className='flex gap-[3px] items-center'>
-          <Flag code={'VN'} className='w-[20px]' />
-          <p className='font-medium'>{data?.country}</p>
+        <div className='flex gap-[3px] items-center w-full h-[100%]'>
+          <Flag code={data?.country} className='w-[20px] flex-shrink-0' />
+          <p className='font-medium flex-grow whitespace-break-spaces leading-[15px] break-words'>
+            {countries.getName(data?.country, 'en') || 'Unknown Country'}
+          </p>
         </div>
       )
     }
@@ -147,8 +154,8 @@ const CellComponent = ({
         </div>
       )
     }
-    return <div></div>
-  }, [data])
+    return <div className='flex font-medium'>{value}</div>
+  }, [data, selectRow])
 
   const handleMouseEnter = () => {
     if (Cookies.get('menu') !== 'true') {
@@ -162,10 +169,9 @@ const CellComponent = ({
 
   return (
     <div className='max-h-[45px] min-h-[45px] h-[45px] w-[100%] '>
-      {/* {Tippy ? (
+      {Tippy ? (
         <HoverTippyCell
           outerVisibleHeader={outerVisibleHeader}
-          setCheckMenuOnOff={setCheckMenuOnOff}
           data={data || {}}
           outerVisibleCell={outerVisibleCell}
           setOuterVisibleCell={setOuterVisibleCell}
@@ -176,9 +182,9 @@ const CellComponent = ({
             {render}
           </div>
         </HoverTippyCell>
-      ) : ( */}
-      <div className='h-[100%] w-[100%]'>{render}</div>
-      {/* )} */}
+      ) : (
+        <div className='h-[100%] w-[100%]'>{render}</div>
+      )}
     </div>
   )
 }

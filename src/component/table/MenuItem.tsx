@@ -8,7 +8,7 @@ export interface ButtonCustomMenuItemProps extends CustomMenuItemProps {
 
 export default ({name, subMenu, icon, buttonValue}: ButtonCustomMenuItemProps) => {
   useGridMenuItem({
-    configureDefaults: () => true,
+    // configureDefaults: () => true,
   })
 
   const onClick = () => alert(`${name} clicked`)

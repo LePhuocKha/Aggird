@@ -1,3 +1,6 @@
+.ag-theme-quartz .ag-root-wrapper {
+  border-radius: 0px;
+}
 .ag-theme-quartz .ag-header {
   background-color: white !important;
   height: 33px !important;
@@ -30,9 +33,15 @@
   padding: 3px !important;
   transition: width 0.3s ease, height 0.3s ease;
 }
+
 .ag-theme-quartz .ag-cell :focus {
   border-right: 1px solid rgb(209 213 219) !important;
 }
+
+.ag-theme-quartz .ag-cell-value {
+  font-weight: 500;
+}
+
 .ag-cell-focus {
   border: 1px solid transparent !important;
 }
@@ -54,56 +63,6 @@
   justify-content: start;
   align-items: start;
 }
-
-.tiktok {
-  position: relative;
-  display: flex;
-  width: 15px;
-  height: 15px;
-  background: rgb(77, 232, 244);
-  border-radius: 50%;
-  animation: leftToRight 0.8s ease-in-out infinite;
-  mix-blend-mode: darken;
-  transform: scale(1);
-}
-
-.tiktok.red {
-  background: rgb(253, 62, 62);
-  animation: rightToLeft 0.8s ease-in-out infinite;
-}
-
-@keyframes leftToRight {
-  0% {
-    left: 0;
-  }
-  25% {
-    transform: scale(1.2);
-  }
-  50% {
-    left: 15px;
-  }
-  75% {
-    transform: scale(0.8);
-  }
-  100% {
-    left: 0;
-  }
-}
-
-@keyframes rightToLeft {
-  0% {
-    right: 0;
-  }
-  25% {
-    transform: scale(0.8);
-  }
-  50% {
-    right: 15px;
-  }
-  75% {
-    transform: scale(1.2);
-  }
-  100% {
-    right: 0;
-  }
+.ag-theme-quartz .ag-header-cell-resize::after {
+  height: 0px;
 }

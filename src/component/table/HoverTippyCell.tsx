@@ -27,7 +27,6 @@ type Props = {
     idHeader: number
   }
   data: data_type
-  setCheckMenuOnOff: Dispatch<React.SetStateAction<boolean>>
   outerVisibleHeader: number
 }
 
@@ -37,7 +36,6 @@ const HoverTippyCell = ({
   outerVisibleCell,
   data,
   setOuterVisibleCell,
-  setCheckMenuOnOff,
   id,
 }: Props) => {
   const [innerVisible, setInnerVisible] = useState(false)
@@ -67,11 +65,9 @@ const HoverTippyCell = ({
   const handleMenuShow = () => {
     setInnerVisible(true)
     Cookies.set('menu', 'true')
-    // setCheckMenuOnOff(true)
   }
   useClickOutside(configColumnRef, () => {
     setTimeout(() => {
-      setCheckMenuOnOff(false)
       setOuterVisibleCell({
         idHeader: 0,
         idTr: 0,
@@ -81,7 +77,6 @@ const HoverTippyCell = ({
   })
   const handleMenuHide = () => {
     Cookies.set('menu', 'false')
-    setCheckMenuOnOff(false)
   }
   return (
     <div className={`${classCSS} flex relative`}>

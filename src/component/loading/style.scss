@@ -1,0 +1,52 @@
+.tiktok {
+  position: relative;
+  display: flex;
+  width: 15px;
+  height: 15px;
+  background: rgb(77, 232, 244);
+  border-radius: 50%;
+  animation: leftToRight 0.8s ease-in-out infinite;
+  mix-blend-mode: darken;
+  transform: scale(1);
+}
+
+.tiktok.red {
+  background: rgb(253, 62, 62);
+  animation: rightToLeft 0.8s ease-in-out infinite;
+}
+
+@keyframes leftToRight {
+  0% {
+    left: 0;
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    left: 15px;
+  }
+  75% {
+    transform: scale(0.8);
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes rightToLeft {
+  0% {
+    right: 0;
+  }
+  25% {
+    transform: scale(0.8);
+  }
+  50% {
+    right: 15px;
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    right: 0;
+  }
+}

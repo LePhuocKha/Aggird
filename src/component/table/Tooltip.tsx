@@ -34,7 +34,6 @@ const Tooltip = ({visible, menuHeader, onclick, children}: Props) => {
               <div
                 className='flex items-center cursor-pointer hover:bg-slate-200 p-[5px] rounded-md gap-[10px]'
                 onClick={() => {
-                  console.log('1')
                   el?.onclick()
                   onclick()
                 }}
