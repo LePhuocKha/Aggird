@@ -1,5 +1,4 @@
 import {CustomMenuItemProps, useGridMenuItem} from '@ag-grid-community/react'
-import React from 'react'
 
 export interface ButtonCustomMenuItemProps extends CustomMenuItemProps {
   buttonValue: string

@@ -164,7 +164,7 @@ const Aggird = () => {
         id: 9,
         title: 'Campaign note',
       },
-
+      // hide: !false,
       cellRendererParams: {
         id: 9,
         Tippy: false,
@@ -220,12 +220,12 @@ const Aggird = () => {
     return {
       getRows: (params: any) => {
         // get data for request from our fake server
-        const response = server.getData(params.request)
+        const response = server.getData(params?.request)
         // simulating real server call with a 500ms delay
         setTimeout(() => {
           if (response.success) {
             // supply rows for requested block to grid
-            params.success({rowData: response.rows})
+            params.success({rowData: response?.rows})
           } else {
             params.fail()
           }
@@ -238,7 +238,7 @@ const Aggird = () => {
     return {
       getData: (request: any) => {
         // in this simplified fake server all rows are contained in an array
-        const requestedRows = allData.slice(request.startRow, request.endRow)
+        const requestedRows = allData.slice(request?.startRow, request?.endRow)
         return {
           success: true,
           rows: requestedRows,
@@ -246,7 +246,8 @@ const Aggird = () => {
       },
     }
   }
-  const onGridReady = useCallback(async (params: any) => {
+
+  const loadData = async (params: any) => {
     const fakeData = (await generateData(10, params)) || []
     setData(fakeData || [])
     // setup the fake server with entire dataset
@@ -254,7 +255,42 @@ const Aggird = () => {
     // create datasource with a reference to the fake server
     const datasource = createServerSideDatasource(fakeServer)
     // register the datasource with the grid
-    params.api.setGridOption('serverSideDatasource', datasource)
+    params?.api?.setGridOption('serverSideDatasource', datasource)
+  }
+
+  const saveColumnStateToCookies = (params: any) => {
+    const colDefs = params.api.getColumnDefs()
+
+    const simpleColDefs = colDefs.map((colDef: any) => ({
+      colId: colDef.colId,
+      field: colDef.field,
+      width: colDef.width,
+      sort: colDef.sort,
+      sortIndex: colDef.sortIndex,
+      hide: colDef.hide,
+    }))
+
+    Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
+  }
+
+  const restoreState = useCallback(() => {
+    const savedColumnState = JSON.parse(Cookies.get('columnDefs') || '[]')
+    if (savedColumnState) {
+      gridRef.current!.api.applyColumnState({
+        state: savedColumnState,
+        applyOrder: true,
+      })
+    }
+  }, [])
+
+  const onGridReady = useCallback(async (params: any) => {
+    loadData(params)
+    restoreState()
+  }, [])
+
+  const handleColumnChange = useCallback((params: any) => {
+    saveColumnStateToCookies(params)
+    loadData(params)
   }, [])
 
   return (
@@ -289,6 +325,8 @@ const Aggird = () => {
         rowHeight={53}
         rowModelType='serverSide'
         onGridReady={onGridReady}
+        onColumnMoved={handleColumnChange}
+        onColumnVisible={handleColumnChange}
         columnDefs={colf}
         loadingCellRenderer={Loading}
         loadingCellRendererParams={Loading}

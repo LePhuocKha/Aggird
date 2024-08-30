@@ -51,7 +51,7 @@ const HoverTippyCell = ({
         },
         {
           icons: <MdOutlineFilterList />,
-          label: 'HIHI',
+          label: 'Click',
           onclick: () => {},
         },
       ],
@@ -66,6 +66,7 @@ const HoverTippyCell = ({
     setInnerVisible(true)
     Cookies.set('menu', 'true')
   }
+
   useClickOutside(configColumnRef, () => {
     setTimeout(() => {
       setOuterVisibleCell({
@@ -75,9 +76,11 @@ const HoverTippyCell = ({
       Cookies.set('menu', 'false')
     }, 150)
   })
+
   const handleMenuHide = () => {
     Cookies.set('menu', 'false')
   }
+
   return (
     <div className={`${classCSS} flex relative`}>
       <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
