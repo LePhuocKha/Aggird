@@ -20,6 +20,9 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
+import {GoDotFill} from 'react-icons/go'
+import {FaRectangleAd} from 'react-icons/fa6'
+import {MdAdd, MdFolderCopy} from 'react-icons/md'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 
@@ -61,13 +64,14 @@ const Aggird = () => {
           />
         ),
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 1,
         Tippy: false,
-        title: 'checkbox',
+        type: 'checkbox',
       },
       flex: 1,
+      minWidth: 30,
     },
     {
       colId: '2',
@@ -77,12 +81,14 @@ const Aggird = () => {
         classCSS: 'justify-center',
         children: <SlExclamation className='SlExclamation' />,
       },
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 2,
         Tippy: false,
-        title: 'Exclamation mark',
+        type: 'red_dot',
       },
       flex: 1,
+      minWidth: 30,
     },
     {
       colId: '3',
@@ -90,11 +96,14 @@ const Aggird = () => {
         id: 3,
         title: 'Marketplace',
       },
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 3,
         title: 'Marketplace',
+        configData: [['marketplace']],
       },
       flex: 4,
+      minWidth: 120,
     },
     {
       colId: '4',
@@ -102,25 +111,31 @@ const Aggird = () => {
         id: 4,
         title: 'Ad Tool',
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 4,
         title: 'Ad Tool',
+        icons: <FaRectangleAd />,
+        configData: [['marketplace', 'black_dot', 'adTool']],
       },
       flex: 5,
+      minWidth: 180,
     },
+
     {
       colId: '5',
       headerComponentParams: {
         id: 5,
         title: 'Campaign',
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 5,
-        title: 'Campaign',
+        icons: <MdFolderCopy />,
+        configData: [['shop'], ['title'], ['marketplace', 'adTool', 'code']],
       },
       flex: 7,
+      minWidth: 210,
     },
     {
       colId: '6',
@@ -128,12 +143,13 @@ const Aggird = () => {
         id: 6,
         title: 'Country',
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 6,
-        title: 'Country',
+        configData: [['flag_country', 'country']],
       },
       flex: 4,
+      minWidth: 120,
     },
     {
       colId: '7',
@@ -141,12 +157,14 @@ const Aggird = () => {
         id: 7,
         title: 'Storefront',
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 7,
-        title: 'Storefront',
+        icons: <MdFolderCopy />,
+        configData: [['shop'], ['title'], ['marketplace', 'adTool', 'number']],
       },
       flex: 6,
+      minWidth: 310,
     },
     {
       colId: '8',
@@ -155,6 +173,7 @@ const Aggird = () => {
         title: 'First search...',
         children: <SlExclamation className='SlExclamation' />,
       },
+      minWidth: 120,
       flex: 4,
     },
     {
@@ -164,12 +183,14 @@ const Aggird = () => {
         id: 9,
         title: 'Campaign note',
       },
-      // hide: !false,
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 9,
         Tippy: false,
-        title: 'Campaign note',
+        classCSS: 'justify-end items-start p-2',
+        icons: <MdAdd className='text-[20px] cursor-pointer flex' />,
       },
+      minWidth: 120,
     },
     {
       colId: '10',
@@ -178,26 +199,30 @@ const Aggird = () => {
         title: 'Campaign timeLine',
         children: <SlExclamation className='SlExclamation' />,
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 10,
-        title: 'Campaign timeLine',
+        type: 'date',
+        configData: [['start_time', 'dash', 'end_time']],
       },
       flex: 7,
+      minWidth: 200,
     },
     {
       colId: '11',
       headerComponentParams: {
         id: 11,
         classCSS: 'justify-start',
-        title: 'Campaign status',
       },
-
+      cellRenderer: CellComponent,
       cellRendererParams: {
         id: 11,
         title: 'Campaign status',
+        type: 'status',
+        configData: [['status']],
       },
       flex: 5,
+      minWidth: 190,
     },
     {
       colId: '12',
@@ -210,7 +235,6 @@ const Aggird = () => {
       },
       cellRendererParams: {
         id: 12,
-        title: 'test',
       },
       flex: 3,
     },
@@ -300,6 +324,7 @@ const Aggird = () => {
         defaultColDef={{
           // resizable: false,
           autoHeight: true,
+          minWidth: 150,
           headerComponent: HeaderComponent,
           headerComponentParams: {
             checkMenuOnOff,
@@ -309,7 +334,6 @@ const Aggird = () => {
             outerVisibleHeader,
             setOuterVisibleHeader,
           },
-          cellRenderer: CellComponent,
           cellRendererParams: {
             checkMenuOnOff,
             setCheckMenuOnOff,
