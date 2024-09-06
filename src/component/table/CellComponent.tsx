@@ -11,6 +11,12 @@ import countries from 'i18n-iso-countries'
 import Flag from 'react-world-flags'
 import Cookies from 'js-cookie'
 
+type children_config_data = {
+  css?: string
+  render_key: string[]
+  after_text: string
+}
+
 export type PropsCell = {
   data?: data_type | any
   children?: React.ReactElement
@@ -26,15 +32,39 @@ export type PropsCell = {
     }>
   >
   icons: React.ReactNode
-  configData?: any[]
+  configData?: children_config_data[]
   outerVisibleCell: {
     idTr: number
     idHeader: number
   }
-  classCSS?: string
+  classCSSWrapper?: string
   type?: string
   outerVisibleHeader: number
 }
+
+function handleFormatValue(value: any, key: string, type: string, data: data_type) {
+  switch (true) {
+    case key === 'black_dot':
+      return <GoDotFill className='w-[10px]' />
+
+    case key === 'dash':
+      return '-'
+    case key === 'flag_country':
+      return <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
+
+    case key === 'country':
+      return `${countries.getName(value, 'en') || 'Unknown Country'}`
+
+    case type === 'date' && !['black_dot', 'dash'].includes(key):
+      return formatDate((value as string) || '')
+
+    case type === 'status':
+      return <Status status={value || 0} update_time={data?.update_time as string} />
+    default:
+      return value
+  }
+}
+
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 const CellComponent = ({
   data,
@@ -49,33 +79,8 @@ const CellComponent = ({
   outerVisibleHeader,
   icons,
   type,
-  classCSS,
+  classCSSWrapper,
 }: PropsCell) => {
-  // const render = useMemo(() => {
-  //   if (['Campaign', 'Storefront'].includes(title || '')) {
-  //     return (
-  //       <div className='flex justify-start items-center gap-[3px] '>
-  //
-  //         <div >
-  //           <a className='leading-[11px] text-[10px] text-sky-500'>{data?.shop} Shop</a>
-  //           <p className='leading-[15px] font-semibold text-[14px] text-sky-800'>{data?.title} </p>
-  //           <div>
-  //             <p className='leading-[12px] text-[12px] text-gray-400'>{data?.marketplace}</p>
-  //             <GoDotFill className='text-gray-400' />
-  //             <p className='leading-[12px] text-[12px] text-gray-400'>{data?.adTool}</p>
-  //             <GoDotFill className='text-gray-400' />
-  //             <p className='leading-[12px] text-[12px] text-gray-400'>
-  //               {['Campaign'].includes(title || '') ? data?.code : data?.number}
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     )
-  //   }
-
-  // }, [data, selectRow])
-  console.log(configData.length)
-
   const handleCheckboxClick = () => {
     setSelectRow((prev: number[] | any) => {
       if (!Array.isArray(prev)) {
@@ -107,95 +112,32 @@ const CellComponent = ({
       )
     }
     switch (!!configData) {
-      case configData?.length === 1 || !!icons:
+      case configData.length > 0 || !!icons:
         return (
           <div
-            className={`flex gap-[3px] h-[100%] ${
-              classCSS ? classCSS : ' justify-start items-center'
-            }`}
+            className={`flex gap-[3px] h-[100%] 
+              ${classCSSWrapper ? classCSSWrapper : ' justify-start items-center'}
+            `}
           >
             {icons && icons}
-            {configData.map((config: []) =>
-              config.map((key, index) => {
-                let value = data?.[key]
-                if (key === 'black_dot') {
-                  value = <GoDotFill className='w-[10px]' />
-                }
-                if (key === 'dash') {
-                  value = '-'
-                }
-                if (key === 'flag_country') {
-                  value = (
-                    <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
-                  )
-                }
-                if (key === 'country') {
-                  value = `${countries.getName(data?.country, 'en') || 'Unknown Country'}`
-                }
-                if (type === 'date' && !['black_dot', 'dash'].includes(key)) {
-                  value = formatDate((data?.[key] as string) || '')
-                }
-                if (type === 'status') {
-                  value = (
-                    <Status status={data?.status || 0} update_time={data?.update_time as string} />
-                  )
-                }
-                return (
-                  <p
-                    key={index}
-                    className='font-medium whitespace-break-spaces leading-[15px] break-words'
-                  >
-                    {value}
-                  </p>
-                )
-              })
-            )}
-          </div>
-        )
-      case configData?.length === 3:
-        return (
-          <div
-            className={`flex gap-[3px] h-[100%] ${
-              classCSS ? classCSS : ' justify-start items-center'
-            }`}
-          >
-            <div>{icons && icons}</div>
-            <div className='flex flex-col gap-[3px]'>
-              {configData.map((config: []) => (
-                <div className=''>
-                  {config.map((key, index) => {
+            <div
+              className={`${
+                configData.length > 1
+                  ? 'flex flex-col'
+                  : 'flex justify-start items-center gap-[3px]'
+              }`}
+            >
+              {configData.map((config: children_config_data) => (
+                <div className='flex justify-start items-center gap-[3px]'>
+                  {config?.render_key?.map((key: string, index: number) => {
                     let value = data?.[key]
-                    if (key === 'black_dot') {
-                      value = <GoDotFill className='w-[10px]' />
-                    }
-                    if (key === 'dash') {
-                      value = '-'
-                    }
-                    if (key === 'flag_country') {
-                      value = (
-                        <Flag
-                          code={data?.country}
-                          className='w-[20px] min-w-[20px] flex-shrink-0'
-                        />
-                      )
-                    }
-                    if (key === 'country') {
-                      value = `${countries.getName(data?.country, 'en') || 'Unknown Country'}`
-                    }
-                    if (type === 'date' && !['black_dot', 'dash'].includes(key)) {
-                      value = formatDate((data?.[key] as string) || '')
-                    }
-                    if (type === 'status') {
-                      value = (
-                        <Status
-                          status={data?.status || 0}
-                          update_time={data?.update_time as string}
-                        />
-                      )
-                    }
+                    value = handleFormatValue(data?.[key], key, type || '', data)
                     return (
-                      <p key={index} className=''>
-                        {value}3 123
+                      <p
+                        key={index}
+                        className={`font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words ${config?.css}`}
+                      >
+                        {value} {config?.after_text}
                       </p>
                     )
                   })}

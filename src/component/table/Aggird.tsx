@@ -13,6 +13,8 @@ import {ModuleRegistry} from '@ag-grid-community/core'
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
 import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef} from 'ag-grid-community'
+import {FaRectangleAd} from 'react-icons/fa6'
+import {MdAdd, MdFolderCopy} from 'react-icons/md'
 
 import './style.scss'
 
@@ -20,9 +22,6 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
-import {GoDotFill} from 'react-icons/go'
-import {FaRectangleAd} from 'react-icons/fa6'
-import {MdAdd, MdFolderCopy} from 'react-icons/md'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 
@@ -100,7 +99,11 @@ const Aggird = () => {
       cellRendererParams: {
         id: 3,
         title: 'Marketplace',
-        configData: [['marketplace']],
+        configData: [
+          {
+            render_key: ['marketplace'],
+          },
+        ],
       },
       flex: 4,
       minWidth: 120,
@@ -116,7 +119,11 @@ const Aggird = () => {
         id: 4,
         title: 'Ad Tool',
         icons: <FaRectangleAd />,
-        configData: [['marketplace', 'black_dot', 'adTool']],
+        configData: [
+          {
+            render_key: ['marketplace', 'black_dot', 'adTool'],
+          },
+        ],
       },
       flex: 5,
       minWidth: 180,
@@ -132,7 +139,22 @@ const Aggird = () => {
       cellRendererParams: {
         id: 5,
         icons: <MdFolderCopy />,
-        configData: [['shop'], ['title'], ['marketplace', 'adTool', 'code']],
+
+        configData: [
+          {
+            css: 'leading-[11px] text-[10px] text-sky-500',
+            render_key: ['shop'],
+            after_text: 'shop',
+          },
+          {
+            css: 'leading-[15px] font-semibold text-[14px] text-sky-800',
+            render_key: ['title'],
+          },
+          {
+            css: 'leading-[12px] text-[12px] text-gray-400',
+            render_key: ['marketplace', 'adTool', 'code'],
+          },
+        ],
       },
       flex: 7,
       minWidth: 210,
@@ -146,7 +168,11 @@ const Aggird = () => {
       cellRenderer: CellComponent,
       cellRendererParams: {
         id: 6,
-        configData: [['flag_country', 'country']],
+        configData: [
+          {
+            render_key: ['flag_country', 'country'],
+          },
+        ],
       },
       flex: 4,
       minWidth: 120,
@@ -161,7 +187,21 @@ const Aggird = () => {
       cellRendererParams: {
         id: 7,
         icons: <MdFolderCopy />,
-        configData: [['shop'], ['title'], ['marketplace', 'adTool', 'number']],
+        configData: [
+          {
+            css: 'leading-[11px] text-[10px] text-sky-500',
+            render_key: ['shop'],
+            after_text: 'shop',
+          },
+          {
+            css: 'leading-[15px] font-semibold text-[14px] text-sky-800',
+            render_key: ['title'],
+          },
+          {
+            css: 'leading-[12px] text-[12px] text-gray-400',
+            render_key: ['marketplace', 'adTool', 'number'],
+          },
+        ],
       },
       flex: 6,
       minWidth: 310,
@@ -187,7 +227,7 @@ const Aggird = () => {
       cellRendererParams: {
         id: 9,
         Tippy: false,
-        classCSS: 'justify-end items-start p-2',
+        classCSSWrapper: 'justify-end items-start p-2',
         icons: <MdAdd className='text-[20px] cursor-pointer flex' />,
       },
       minWidth: 120,
@@ -203,7 +243,11 @@ const Aggird = () => {
       cellRendererParams: {
         id: 10,
         type: 'date',
-        configData: [['start_time', 'dash', 'end_time']],
+        configData: [
+          {
+            render_key: ['start_time', 'dash', 'end_time'],
+          },
+        ],
       },
       flex: 7,
       minWidth: 200,
@@ -219,7 +263,11 @@ const Aggird = () => {
         id: 11,
         title: 'Campaign status',
         type: 'status',
-        configData: [['status']],
+        configData: [
+          {
+            render_key: ['status'],
+          },
+        ],
       },
       flex: 5,
       minWidth: 190,
