@@ -204,7 +204,7 @@ const Aggird = () => {
         ],
       },
       flex: 6,
-      minWidth: 310,
+      minWidth: 210,
     },
     {
       colId: '8',

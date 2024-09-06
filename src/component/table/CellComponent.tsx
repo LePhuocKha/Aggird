@@ -127,18 +127,18 @@ const CellComponent = ({
                   : 'flex justify-start items-center gap-[3px]'
               }`}
             >
-              {configData.map((config: children_config_data) => (
-                <div className='flex justify-start items-center gap-[3px]'>
+              {configData.map((config: children_config_data, i: number) => (
+                <div key={i} className='flex justify-start items-center gap-[3px]'>
                   {config?.render_key?.map((key: string, index: number) => {
                     let value = data?.[key]
                     value = handleFormatValue(data?.[key], key, type || '', data)
                     return (
-                      <p
+                      <div
                         key={index}
                         className={`font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words ${config?.css}`}
                       >
                         {value} {config?.after_text}
-                      </p>
+                      </div>
                     )
                   })}
                 </div>
