@@ -1,4 +1,4 @@
-import React, {Dispatch, useRef, useState} from 'react'
+import React, {Dispatch, useRef} from 'react'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {MdOutlineFilterList} from 'react-icons/md'
 import {Menu} from 'primereact/menu'
@@ -30,15 +30,7 @@ type Props = {
   outerVisibleHeader: number
 }
 
-const HoverTippyCell = ({
-  children,
-  classCSS,
-  outerVisibleCell,
-  data,
-  setOuterVisibleCell,
-  id,
-}: Props) => {
-  const [innerVisible, setInnerVisible] = useState(false)
+const HoverTippyCell = ({children, classCSS, outerVisibleCell, data, id}: Props) => {
   const configColumnRef = useRef<any>(null)
   const menuLeft = useRef<any>(null)
   const items = [
@@ -63,17 +55,12 @@ const HoverTippyCell = ({
   }
 
   const handleMenuShow = () => {
-    setInnerVisible(true)
     Cookies.set('menu', 'true')
   }
 
   useClickOutside(configColumnRef, () => {
     setTimeout(() => {
-      setOuterVisibleCell({
-        idHeader: 0,
-        idTr: 0,
-      })
-      Cookies.set('menu', 'false')
+      // Cookies.set('menu', 'false')
     }, 150)
   })
 
@@ -97,15 +84,13 @@ const HoverTippyCell = ({
           aria-hidden='false'
         />
 
-        {data?.id === outerVisibleCell?.idTr && id === outerVisibleCell?.idHeader && (
+        {data?.id === outerVisibleCell?.idTr && (
           <button
             ref={configColumnRef}
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
-              innerVisible ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
-            }`}
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
           >
             <div>
               <BsThreeDotsVertical />

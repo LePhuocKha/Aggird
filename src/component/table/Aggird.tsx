@@ -15,6 +15,12 @@ import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
+import {Menu} from 'primereact/menu'
+import {HiDotsVertical} from 'react-icons/hi'
+import {BsThreeDotsVertical} from 'react-icons/bs'
+import {FaLongArrowAltDown} from 'react-icons/fa'
+import {TfiMenuAlt} from 'react-icons/tfi'
+import {GrPowerReset} from 'react-icons/gr'
 
 import './style.scss'
 
@@ -28,9 +34,11 @@ ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
+  const menuLeft = useRef<any>(null)
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
   const [Data, setData] = useState<any[]>([])
+  const [rowsToLoad, setRowsToLoad] = useState(10)
   const [outerVisibleCell, setOuterVisibleCell] = useState<{
     idTr: number
     idHeader: number
@@ -139,7 +147,6 @@ const Aggird = () => {
       cellRendererParams: {
         id: 5,
         icons: <MdFolderCopy />,
-
         configData: [
           {
             css: 'leading-[11px] text-[10px] text-sky-500',
@@ -166,6 +173,9 @@ const Aggird = () => {
         title: 'Country',
       },
       cellRenderer: CellComponent,
+      // valueGetter: (params) => {
+      //   kha: params.data?.country
+      // },
       cellRendererParams: {
         id: 6,
         configData: [
@@ -256,12 +266,13 @@ const Aggird = () => {
       colId: '11',
       headerComponentParams: {
         id: 11,
+        title: 'Campaign status',
         classCSS: 'justify-start',
       },
       cellRenderer: CellComponent,
       cellRendererParams: {
         id: 11,
-        title: 'Campaign status',
+
         type: 'status',
         configData: [
           {
@@ -320,7 +331,7 @@ const Aggird = () => {
   }
 
   const loadData = async (params: any) => {
-    const fakeData = (await generateData(10, params)) || []
+    const fakeData = (await generateData(rowsToLoad, params)) || []
     setData(fakeData || [])
     // setup the fake server with entire dataset
     const fakeServer = createFakeServer(fakeData)
@@ -328,21 +339,6 @@ const Aggird = () => {
     const datasource = createServerSideDatasource(fakeServer)
     // register the datasource with the grid
     params?.api?.setGridOption('serverSideDatasource', datasource)
-  }
-
-  const saveColumnStateToCookies = (params: any) => {
-    const colDefs = params.api.getColumnDefs()
-
-    const simpleColDefs = colDefs.map((colDef: any) => ({
-      colId: colDef.colId,
-      field: colDef.field,
-      width: colDef.width,
-      sort: colDef.sort,
-      sortIndex: colDef.sortIndex,
-      hide: colDef.hide,
-    }))
-
-    Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
   }
 
   const restoreState = useCallback(() => {
@@ -353,56 +349,111 @@ const Aggird = () => {
         applyOrder: true,
       })
     }
-  }, [])
+  }, [rowsToLoad])
 
-  const onGridReady = useCallback(async (params: any) => {
-    loadData(params)
-    restoreState()
-  }, [])
+  const onGridReady = useCallback(
+    async (params: any) => {
+      loadData(params)
+      restoreState()
+    },
+    [rowsToLoad]
+  )
 
-  const handleColumnChange = useCallback((params: any) => {
-    saveColumnStateToCookies(params)
-    loadData(params)
-  }, [])
+  const handleLoadMore = () => {
+    setRowsToLoad(rowsToLoad + 10) // Increase rowsToLoad by 10 on each click
+    // gridRef.current!.api.refreshServerSide({purge: true})
+  }
+
+  const handleClick = (event: React.MouseEvent) => {
+    menuLeft?.current.toggle(event)
+  }
+  const items = [
+    {
+      items: [
+        {
+          icon: <TfiMenuAlt />,
+          label: 'Properties',
+          command: () => {
+            gridRef.current!.api.showColumnChooser()
+          },
+        },
+        {
+          icon: <GrPowerReset />,
+          label: 'Reset all columns',
+          command: () => {
+            loadData(gridRef.current)
+            gridRef.current!.api.resetColumnState()
+            Cookies.remove('columnDefs')
+          },
+        },
+      ],
+    },
+  ]
 
   return (
-    <div className='ag-theme-quartz' style={{height: '100vh'}}>
-      <AgGridReact
-        ref={gridRef}
-        defaultColDef={{
-          // resizable: false,
-          autoHeight: true,
-          minWidth: 150,
-          headerComponent: HeaderComponent,
-          headerComponentParams: {
-            checkMenuOnOff,
-            setCheckMenuOnOff,
-            outerVisibleCell,
-            setOuterVisibleCell,
-            outerVisibleHeader,
-            setOuterVisibleHeader,
-          },
-          cellRendererParams: {
-            checkMenuOnOff,
-            setCheckMenuOnOff,
-            outerVisibleHeader,
-            setOuterVisibleHeader,
-            outerVisibleCell,
-            setOuterVisibleCell,
-            selectRow,
-            setSelectRow,
-          },
-        }}
-        columnMenu={'legacy'}
-        rowHeight={53}
-        rowModelType='serverSide'
-        onGridReady={onGridReady}
-        onColumnMoved={handleColumnChange}
-        onColumnVisible={handleColumnChange}
-        columnDefs={colf}
-        loadingCellRenderer={Loading}
-        loadingCellRendererParams={Loading}
-      />
+    <div>
+      <div className='flex justify-end items-center m-5'>
+        <div>
+          <Menu
+            model={items}
+            className='bg-white p-[10px] min-w-[250px] gap-[10px] shadow-md flex flex-col'
+            popup
+            ref={menuLeft}
+            id='popup_menu_left'
+            aria-hidden='false'
+          />
+          <button
+            onClick={handleClick}
+            aria-controls='popup_menu_left'
+            aria-haspopup='true'
+            className='hover:bg-slate-200 p-2 rounded-md'
+          >
+            <HiDotsVertical />
+          </button>
+        </div>
+      </div>
+      <div>
+        <div className='ag-theme-quartz'>
+          <AgGridReact
+            ref={gridRef}
+            domLayout='autoHeight'
+            defaultColDef={{
+              // resizable: false,
+              autoHeight: true,
+              minWidth: 150,
+              headerComponent: HeaderComponent,
+              headerComponentParams: {
+                checkMenuOnOff,
+                setCheckMenuOnOff,
+                outerVisibleCell,
+                setOuterVisibleCell,
+                outerVisibleHeader,
+                setOuterVisibleHeader,
+              },
+              cellRendererParams: {
+                checkMenuOnOff,
+                setCheckMenuOnOff,
+                outerVisibleHeader,
+                setOuterVisibleHeader,
+                outerVisibleCell,
+                setOuterVisibleCell,
+                selectRow,
+                setSelectRow,
+              },
+            }}
+            columnMenu={'legacy'}
+            rowHeight={53}
+            rowModelType='serverSide'
+            onGridReady={onGridReady}
+            columnDefs={colf}
+            loadingCellRenderer={Loading}
+            loadingCellRendererParams={Loading}
+          />
+        </div>
+      </div>
+      <div onClick={handleLoadMore} className='flex items-center cursor-pointer'>
+        <FaLongArrowAltDown /> Load <span className=''>10 more</span> <BsThreeDotsVertical />
+      </div>
     </div>
   )
 }

@@ -1,14 +1,9 @@
-import React, {Dispatch, useRef, useState} from 'react'
-
+import React, {Dispatch, useRef} from 'react'
 import {BsThreeDotsVertical} from 'react-icons/bs'
-import {FaLongArrowAltUp, FaArrowDown} from 'react-icons/fa'
-import {RiMenuAddLine, RiMenuFoldFill} from 'react-icons/ri'
-import {TiPin} from 'react-icons/ti'
 import {Menu} from 'primereact/menu'
 
 import useClickOutside from '../../hooks/useClickOutside'
 import Cookies from 'js-cookie'
-import {ColDef} from 'ag-grid-community'
 
 export type MenuItemType = {
   label: string
@@ -36,14 +31,11 @@ const HoverTippyHeader = ({
   const menuLeft = useRef<any>(null)
   const configButton = useRef<any>(null)
 
-  const [innerVisible, setInnerVisible] = useState(false)
-
   const handleClick = (event: React.MouseEvent) => {
     menuLeft?.current.toggle(event)
   }
 
   const handleMenuShow = () => {
-    setInnerVisible(true)
     Cookies.set('menu', 'true')
   }
 
@@ -84,9 +76,7 @@ const HoverTippyHeader = ({
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
-              innerVisible ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
-            }`}
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
           >
             <div>
               <BsThreeDotsVertical />

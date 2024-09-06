@@ -43,26 +43,25 @@ export type PropsCell = {
 }
 
 function handleFormatValue(value: any, key: string, type: string, data: data_type) {
-  switch (true) {
-    case key === 'black_dot':
-      return <GoDotFill className='w-[10px]' />
-
-    case key === 'dash':
-      return '-'
-    case key === 'flag_country':
-      return <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
-
-    case key === 'country':
-      return `${countries.getName(value, 'en') || 'Unknown Country'}`
-
-    case type === 'date' && !['black_dot', 'dash'].includes(key):
-      return formatDate((value as string) || '')
-
-    case type === 'status':
-      return <Status status={value || 0} update_time={data?.update_time as string} />
-    default:
-      return value
+  if (key === 'black_dot') {
+    return <GoDotFill className='w-[10px]' />
   }
+  if (key === 'dash') {
+    return '-'
+  }
+  if (key === 'flag_country') {
+    return <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
+  }
+  if (key === 'country') {
+    return `${countries.getName(value, 'en') || 'Unknown Country'}`
+  }
+  if (type === 'date' && !['black_dot', 'dash'].includes(key)) {
+    return formatDate((value as string) || '')
+  }
+  if (key === 'status') {
+    return <Status status={value || 0} update_time={data?.update_time as string} />
+  }
+  return value
 }
 
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -153,11 +152,13 @@ const CellComponent = ({
 
   const handleMouseEnter = () => {
     if (Cookies.get('menu') !== 'true') {
-      setOuterVisibleCell({
-        idHeader: Number(id) || 0,
-        idTr: +data?.id || 0,
-      })
-      setOuterVisibleHeader(0)
+      if (outerVisibleCell.idTr !== +data?.id) {
+        setOuterVisibleCell({
+          idHeader: Number(id) || 0,
+          idTr: +data?.id || 0,
+        })
+        setOuterVisibleHeader(0)
+      }
     }
   }
 
@@ -172,7 +173,16 @@ const CellComponent = ({
           id={id || 0}
           classCSS='h-[100%] w-[100%]'
         >
-          <div className='h-[100%] w-[100%]' onMouseEnter={handleMouseEnter}>
+          <div
+            onClick={() => {
+              setOuterVisibleCell({
+                idHeader: 0,
+                idTr: 0,
+              })
+            }}
+            className='h-[100%] w-[100%]'
+            onMouseEnter={handleMouseEnter}
+          >
             {render}
           </div>
         </HoverTippyCell>
