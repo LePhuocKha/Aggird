@@ -66,3 +66,23 @@
 .ag-theme-quartz .ag-header-cell-resize::after {
   height: 0px;
 }
+
+//open Menu table Properties
+.column-chooser {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transform: translateX(calc(100% - 300px));
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  width: 0px;
+}
+
+.column-chooser.open {
+  transform: translateX(0);
+  opacity: 1;
+  width: 300px;
+  padding: 20px;
+  visibility: visible;
+}

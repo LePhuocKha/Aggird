@@ -1,0 +1,25 @@
+.button-check-insert-left {
+  border: 1px solid #d1d5db;
+  border-right: 0px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px !important;
+}
+
+.input-wrapper {
+  outline: none;
+  border: 1px solid #d1d5db;
+  min-height: 28px;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+.input-wrapper:focus {
+  border: 1px solid #d1d5db;
+}
+.check-insert-left {
+  border-left: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px !important;
+}
+.check-insert-left:focus {
+  border-left: 0px;
+}

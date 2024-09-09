@@ -15,12 +15,9 @@ import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
-import {Menu} from 'primereact/menu'
-import {HiDotsVertical} from 'react-icons/hi'
+
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {FaLongArrowAltDown} from 'react-icons/fa'
-import {TfiMenuAlt} from 'react-icons/tfi'
-import {GrPowerReset} from 'react-icons/gr'
 
 import './style.scss'
 
@@ -28,17 +25,19 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
+import MenuTable from './MenuTable'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
-  const menuLeft = useRef<any>(null)
+
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
   const [Data, setData] = useState<any[]>([])
   const [rowsToLoad, setRowsToLoad] = useState(10)
+  const [numberLoadApi, setNumberLoadApi] = useState(0)
   const [outerVisibleCell, setOuterVisibleCell] = useState<{
     idTr: number
     idHeader: number
@@ -47,9 +46,32 @@ const Aggird = () => {
     idHeader: 0,
   })
 
+  const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
+
   useEffect(() => {
+    setNumberLoadApi(0)
     Cookies.set('menu', 'false')
   }, [])
+
+  useEffect(() => {
+    if (gridRef.current) {
+      const columnDefs = gridRef?.current?.api?.getColumnDefs()
+      const initialSelectedColumns =
+        (columnDefs || [])
+          .map((c) => {
+            if ('colId' in c) {
+              return {
+                colId: c.colId as string,
+                hide: !!c.hide,
+              }
+            }
+            return undefined
+          })
+          .filter((col): col is {colId: string; hide: boolean} => col !== undefined) || []
+
+      setSelectedColumns(initialSelectedColumns)
+    }
+  }, [gridRef.current, Cookies.get('columnDefs')])
 
   const colf: ColDef[] = [
     {
@@ -329,8 +351,10 @@ const Aggird = () => {
       },
     }
   }
-
   const loadData = async (params: any) => {
+    // await saveColumnStateToCookies(params)
+
+    // setNumberLoadApi((prev) => prev + 1)
     const fakeData = (await generateData(rowsToLoad, params)) || []
     setData(fakeData || [])
     // setup the fake server with entire dataset
@@ -350,11 +374,26 @@ const Aggird = () => {
       })
     }
   }, [rowsToLoad])
+  // console.log(numberLoadApi, 'numberLoadApi')
+
+  const saveColumnStateToCookies = (params: any) => {
+    const colDefs = params.api.getColumnDefs()
+
+    const simpleColDefs = colDefs.map((colDef: any) => ({
+      colId: colDef.colId,
+      field: colDef.field,
+      width: colDef.width,
+      sort: colDef.sort,
+      sortIndex: colDef.sortIndex,
+      hide: colDef.hide,
+    }))
+
+    Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
+  }
 
   const onGridReady = useCallback(
     async (params: any) => {
-      loadData(params)
-      restoreState()
+      await loadData(params)
     },
     [rowsToLoad]
   )
@@ -364,54 +403,16 @@ const Aggird = () => {
     // gridRef.current!.api.refreshServerSide({purge: true})
   }
 
-  const handleClick = (event: React.MouseEvent) => {
-    menuLeft?.current.toggle(event)
-  }
-  const items = [
-    {
-      items: [
-        {
-          icon: <TfiMenuAlt />,
-          label: 'Properties',
-          command: () => {
-            gridRef.current!.api.showColumnChooser()
-          },
-        },
-        {
-          icon: <GrPowerReset />,
-          label: 'Reset all columns',
-          command: () => {
-            loadData(gridRef.current)
-            gridRef.current!.api.resetColumnState()
-            Cookies.remove('columnDefs')
-          },
-        },
-      ],
-    },
-  ]
-
   return (
     <div>
-      <div className='flex justify-end items-center m-5'>
-        <div>
-          <Menu
-            model={items}
-            className='bg-white p-[10px] min-w-[250px] gap-[10px] shadow-md flex flex-col'
-            popup
-            ref={menuLeft}
-            id='popup_menu_left'
-            aria-hidden='false'
-          />
-          <button
-            onClick={handleClick}
-            aria-controls='popup_menu_left'
-            aria-haspopup='true'
-            className='hover:bg-slate-200 p-2 rounded-md'
-          >
-            <HiDotsVertical />
-          </button>
-        </div>
-      </div>
+      <MenuTable
+        selectedColumns={selectedColumns}
+        setSelectedColumns={setSelectedColumns}
+        gridRef={gridRef}
+        handleClickResetColumn={() => {
+          loadData(gridRef?.current)
+        }}
+      />
       <div>
         <div className='ag-theme-quartz'>
           <AgGridReact
