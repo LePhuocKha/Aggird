@@ -33,16 +33,33 @@ const MenuTable = ({
   const [menuOpen, setMenuOpen] = useState(false)
 
   const columns = gridRef?.current!?.api?.getColumns() || []
-  // useEffect(() => {
-  //   if (inputRef.current) {
-  //     inputRef.current.value = ''
-  //   }
-  //   const columnDefsString = Cookies.get('columnDefs') || '[]'
-  //   const columnDefs = (JSON.parse(columnDefsString) as (ColDef<any, any> | any)[]) || []
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = ''
+    }
 
-  //   const columnsWithId = setSelectedColumns(columnsWithId)
-  //   setValueSearch('')
-  // }, [Cookies.get('columnDefs')])
+    setValueSearch('')
+  }, [Cookies.get('columnDefs')])
+
+  useEffect(() => {
+    if (gridRef?.current) {
+      const columnDefs = gridRef?.current?.api?.getColumnDefs()
+      const initialSelectedColumns =
+        (columnDefs || [])
+          .map((c) => {
+            if ('colId' in c) {
+              return {
+                colId: c.colId as string,
+                hide: !!c.hide,
+              }
+            }
+            return undefined
+          })
+          .filter((col): col is {colId: string; hide: boolean} => col !== undefined) || []
+
+      setSelectedColumns(initialSelectedColumns)
+    }
+  }, [openProperties])
 
   const items = [
     {
@@ -114,60 +131,61 @@ const MenuTable = ({
     <div className='flex justify-end items-center m-5 relative'>
       <div
         ref={menuPropertiesRef}
-        className={`column-chooser z-[99999] absolute flex flex-col gap-[10px] top-[30px] bg-white min-h-[400px] shadow-lg rounded-sm ${
+        className={`column-chooser z-[99999] absolute flex flex-col justify-between gap-[10px] top-[30px] bg-white min-h-[400px] shadow-lg rounded-sm ${
           openProperties ? 'open' : ''
         }`}
       >
-        <h1 className='font-semibold text-gray-500'>DIMENSION</h1>
-        <Input
-          ref={inputRef}
-          typeInput='search'
-          placeholder='Search'
-          handleInsertLeft={handleSearch}
-          onKeyDown={handleKeyDown}
-        />
-        <div>
-          {filteredColumns?.length > 0 && (
-            <div>
-              <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
-                <input
-                  type='checkbox'
-                  checked={selectedColumns.every((col) => !col.hide)}
-                  onChange={(e) => {
-                    const allVisible = e.target.checked
-
-                    const updatedColumns = filteredColumns.map((column) => ({
-                      colId: column.getColId(),
-                      hide: !allVisible,
-                    }))
-
-                    setSelectedColumns(updatedColumns)
-                  }}
-                />
-                All
-              </label>
-            </div>
-          )}
-          {filteredColumns.map((column) => {
-            const colDef = column?.getColDef()
-            const colId = column?.getColId()
-
-            const isHidden = selectedColumns.find((c) => c?.colId === colId)?.hide || false
-
-            return (
-              <div key={column.getColId()} className='flex gap-[10px] items-center'>
-                <CgMenuGridO />
+        <div className='flex flex-col gap-[10px]'>
+          <h1 className='font-semibold text-gray-500'>DIMENSION</h1>
+          <Input
+            ref={inputRef}
+            typeInput='search'
+            placeholder='Search'
+            handleInsertLeft={handleSearch}
+            onKeyDown={handleKeyDown}
+          />
+          <div className='h-[100%]'>
+            {filteredColumns?.length > 0 && (
+              <div>
                 <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
                   <input
                     type='checkbox'
-                    checked={!isHidden}
-                    onChange={() => handleColumnToggle(colId)}
+                    checked={selectedColumns.every((col) => !col.hide)}
+                    onChange={(e) => {
+                      const allVisible = e.target.checked
+                      const updatedColumns = filteredColumns.map((column) => ({
+                        colId: column.getColId(),
+                        hide: !allVisible,
+                      }))
+
+                      setSelectedColumns(updatedColumns)
+                    }}
                   />
-                  {colDef?.headerComponentParams?.title || column?.getColId()}
+                  All
                 </label>
               </div>
-            )
-          })}
+            )}
+            {filteredColumns.map((column) => {
+              const colDef = column?.getColDef()
+              const colId = column?.getColId()
+
+              const isHidden = selectedColumns.find((c) => c?.colId === colId)?.hide || false
+
+              return (
+                <div key={column.getColId()} className='flex gap-[10px] items-center'>
+                  <CgMenuGridO />
+                  <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
+                    <input
+                      type='checkbox'
+                      checked={!isHidden}
+                      onChange={() => handleColumnToggle(colId)}
+                    />
+                    {colDef?.headerComponentParams?.title || column?.getColId()}
+                  </label>
+                </div>
+              )
+            })}
+          </div>
         </div>
         <div className='flex gap-[10px] justify-end'>
           <Button
@@ -185,6 +203,7 @@ const MenuTable = ({
                   state: selectedColumns,
                   applyOrder: true,
                 })
+                gridRef?.current?.api.refreshServerSide({purge: true})
               }
               setOpenProperties(false)
             }}

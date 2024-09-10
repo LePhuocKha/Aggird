@@ -88,17 +88,6 @@ const HeaderComponent = ({
       icon: <RiMenuFoldFill />,
       command: () => {
         api.setColumnVisible(id.toString(), false)
-        // const colDefs = api.getColumnDefs()
-        // const simpleColDefs = colDefs.map((colDef: any) => ({
-        //   colId: colDef.colId,
-        //   field: colDef.field,
-        //   width: colDef.width,
-        //   sort: colDef.sort,
-        //   sortIndex: colDef.sortIndex,
-        //   hide: colDef.hide,
-        // }))
-
-        // Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
         api.refreshServerSide({purge: true})
       },
     },

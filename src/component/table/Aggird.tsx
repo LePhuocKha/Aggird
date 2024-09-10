@@ -4,6 +4,8 @@ import Loading from '../loading/Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import HeaderComponent from './HeaderComponent'
 import CellComponent from './CellComponent'
+import MenuTable from './MenuTable'
+import {formatDate} from '../../utils/common'
 
 import {AgGridReact} from 'ag-grid-react'
 import {SlExclamation} from 'react-icons/sl'
@@ -15,9 +17,9 @@ import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
-
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {FaLongArrowAltDown} from 'react-icons/fa'
+import countries from 'i18n-iso-countries'
 
 import './style.scss'
 
@@ -25,10 +27,9 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
-import MenuTable from './MenuTable'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
-
+countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
@@ -37,41 +38,20 @@ const Aggird = () => {
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
   const [Data, setData] = useState<any[]>([])
   const [rowsToLoad, setRowsToLoad] = useState(10)
-  const [numberLoadApi, setNumberLoadApi] = useState(0)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [outerVisibleCell, setOuterVisibleCell] = useState<{
-    idTr: number
+    idTr: string
     idHeader: number
   }>({
-    idTr: 0,
+    idTr: '',
     idHeader: 0,
   })
 
   const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
 
   useEffect(() => {
-    setNumberLoadApi(0)
     Cookies.set('menu', 'false')
   }, [])
-
-  useEffect(() => {
-    if (gridRef.current) {
-      const columnDefs = gridRef?.current?.api?.getColumnDefs()
-      const initialSelectedColumns =
-        (columnDefs || [])
-          .map((c) => {
-            if ('colId' in c) {
-              return {
-                colId: c.colId as string,
-                hide: !!c.hide,
-              }
-            }
-            return undefined
-          })
-          .filter((col): col is {colId: string; hide: boolean} => col !== undefined) || []
-
-      setSelectedColumns(initialSelectedColumns)
-    }
-  }, [gridRef.current, Cookies.get('columnDefs')])
 
   const colf: ColDef[] = [
     {
@@ -95,7 +75,6 @@ const Aggird = () => {
       },
       cellRenderer: CellComponent,
       cellRendererParams: {
-        id: 1,
         Tippy: false,
         type: 'checkbox',
       },
@@ -112,7 +91,6 @@ const Aggird = () => {
       },
       cellRenderer: CellComponent,
       cellRendererParams: {
-        id: 2,
         Tippy: false,
         type: 'red_dot',
       },
@@ -126,14 +104,10 @@ const Aggird = () => {
         title: 'Marketplace',
       },
       cellRenderer: CellComponent,
-      cellRendererParams: {
-        id: 3,
-        title: 'Marketplace',
-        configData: [
-          {
-            render_key: ['marketplace'],
-          },
-        ],
+      valueGetter: (p) => {
+        return JSON.stringify({
+          label: p.data.marketplace,
+        })
       },
       flex: 4,
       minWidth: 120,
@@ -145,15 +119,13 @@ const Aggird = () => {
         title: 'Ad Tool',
       },
       cellRenderer: CellComponent,
+      valueGetter: (p) => {
+        return JSON.stringify({
+          label: `${p.data.marketplace} . ${p.data.adTool}`,
+        })
+      },
       cellRendererParams: {
-        id: 4,
-        title: 'Ad Tool',
-        icons: <FaRectangleAd />,
-        configData: [
-          {
-            render_key: ['marketplace', 'black_dot', 'adTool'],
-          },
-        ],
+        icon: <FaRectangleAd />,
       },
       flex: 5,
       minWidth: 180,
@@ -166,24 +138,15 @@ const Aggird = () => {
         title: 'Campaign',
       },
       cellRenderer: CellComponent,
+      valueGetter: (p) => {
+        return JSON.stringify({
+          hashtag: `${p.data.shop} shop`,
+          label: `${p.data.title}`,
+          stubtext: `${p.data.marketplace} ${p.data.adTool} ${p.data.code}`,
+        })
+      },
       cellRendererParams: {
-        id: 5,
-        icons: <MdFolderCopy />,
-        configData: [
-          {
-            css: 'leading-[11px] text-[10px] text-sky-500',
-            render_key: ['shop'],
-            after_text: 'shop',
-          },
-          {
-            css: 'leading-[15px] font-semibold text-[14px] text-sky-800',
-            render_key: ['title'],
-          },
-          {
-            css: 'leading-[12px] text-[12px] text-gray-400',
-            render_key: ['marketplace', 'adTool', 'code'],
-          },
-        ],
+        icon: <MdFolderCopy />,
       },
       flex: 7,
       minWidth: 210,
@@ -195,16 +158,13 @@ const Aggird = () => {
         title: 'Country',
       },
       cellRenderer: CellComponent,
-      // valueGetter: (params) => {
-      //   kha: params.data?.country
-      // },
+      valueGetter: (p) => {
+        return JSON.stringify({
+          label: `${countries.getName(p.data.country, 'en') || 'Unknown Country'}`,
+        })
+      },
       cellRendererParams: {
-        id: 6,
-        configData: [
-          {
-            render_key: ['flag_country', 'country'],
-          },
-        ],
+        type: 'country',
       },
       flex: 4,
       minWidth: 120,
@@ -216,24 +176,15 @@ const Aggird = () => {
         title: 'Storefront',
       },
       cellRenderer: CellComponent,
+      valueGetter: (p) => {
+        return JSON.stringify({
+          hashtag: `${p.data.shop} shop`,
+          label: `${p.data.title}`,
+          stubtext: `${p.data.marketplace} ${p.data.adTool} ${p.data.number}`,
+        })
+      },
       cellRendererParams: {
-        id: 7,
-        icons: <MdFolderCopy />,
-        configData: [
-          {
-            css: 'leading-[11px] text-[10px] text-sky-500',
-            render_key: ['shop'],
-            after_text: 'shop',
-          },
-          {
-            css: 'leading-[15px] font-semibold text-[14px] text-sky-800',
-            render_key: ['title'],
-          },
-          {
-            css: 'leading-[12px] text-[12px] text-gray-400',
-            render_key: ['marketplace', 'adTool', 'number'],
-          },
-        ],
+        icon: <MdFolderCopy />,
       },
       flex: 6,
       minWidth: 210,
@@ -257,10 +208,9 @@ const Aggird = () => {
       },
       cellRenderer: CellComponent,
       cellRendererParams: {
-        id: 9,
         Tippy: false,
         classCSSWrapper: 'justify-end items-start p-2',
-        icons: <MdAdd className='text-[20px] cursor-pointer flex' />,
+        icon: <MdAdd className='text-[20px] cursor-pointer flex' />,
       },
       minWidth: 120,
     },
@@ -272,15 +222,14 @@ const Aggird = () => {
         children: <SlExclamation className='SlExclamation' />,
       },
       cellRenderer: CellComponent,
-      cellRendererParams: {
-        id: 10,
-        type: 'date',
-        configData: [
-          {
-            render_key: ['start_time', 'dash', 'end_time'],
-          },
-        ],
+      valueGetter: (p) => {
+        return JSON.stringify({
+          label: `${formatDate(p.data.start_time as string)} - ${formatDate(
+            p.data.end_time as string
+          )}`,
+        })
       },
+
       flex: 7,
       minWidth: 200,
     },
@@ -293,14 +242,7 @@ const Aggird = () => {
       },
       cellRenderer: CellComponent,
       cellRendererParams: {
-        id: 11,
-
         type: 'status',
-        configData: [
-          {
-            render_key: ['status'],
-          },
-        ],
       },
       flex: 5,
       minWidth: 190,
@@ -313,9 +255,6 @@ const Aggird = () => {
         id: 12,
         classCSS: 'justify-start',
         title: 'Test',
-      },
-      cellRendererParams: {
-        id: 12,
       },
       flex: 3,
     },
@@ -351,17 +290,16 @@ const Aggird = () => {
       },
     }
   }
-  const loadData = async (params: any) => {
-    // await saveColumnStateToCookies(params)
+  const loadData = async (params: any, numberRow = 10) => {
+    const fakeData = (await generateData(numberRow, params)) || []
 
-    // setNumberLoadApi((prev) => prev + 1)
-    const fakeData = (await generateData(rowsToLoad, params)) || []
-    setData(fakeData || [])
-    // setup the fake server with entire dataset
-    const fakeServer = createFakeServer(fakeData)
+    // Setup the fake server with the updated dataset
+    const fakeServer = createFakeServer([...fakeData])
+    setData((prevData) => [...fakeData])
     // create datasource with a reference to the fake server
-    const datasource = createServerSideDatasource(fakeServer)
+    const datasource = await createServerSideDatasource(fakeServer)
     // register the datasource with the grid
+
     params?.api?.setGridOption('serverSideDatasource', datasource)
   }
 
@@ -373,35 +311,49 @@ const Aggird = () => {
         applyOrder: true,
       })
     }
-  }, [rowsToLoad])
-  // console.log(numberLoadApi, 'numberLoadApi')
-
-  const saveColumnStateToCookies = (params: any) => {
-    const colDefs = params.api.getColumnDefs()
-
-    const simpleColDefs = colDefs.map((colDef: any) => ({
-      colId: colDef.colId,
-      field: colDef.field,
-      width: colDef.width,
-      sort: colDef.sort,
-      sortIndex: colDef.sortIndex,
-      hide: colDef.hide,
-    }))
-
-    Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
-  }
+  }, [])
 
   const onGridReady = useCallback(
     async (params: any) => {
-      await loadData(params)
+      await loadData(params, rowsToLoad)
+      await restoreState()
     },
     [rowsToLoad]
   )
 
-  const handleLoadMore = () => {
-    setRowsToLoad(rowsToLoad + 10) // Increase rowsToLoad by 10 on each click
-    // gridRef.current!.api.refreshServerSide({purge: true})
+  const handleLoadMore = async () => {
+    setLoadingMore(true)
+
+    // Generate 10 more rows of data
+    const newFakeData = await generateData(10, gridRef.current)
+
+    // Update the current data state with the new data
+    setData((prevData) => {
+      const updatedData = [...prevData, ...newFakeData]
+      console.log(updatedData)
+
+      // Directly update the AG Grid's row data
+      gridRef.current!.api.applyServerSideTransactionAsync({route: [], add: updatedData})
+      return updatedData
+    })
+
+    setLoadingMore(false)
   }
+
+  const handleColumnChange = useCallback((params: any) => {
+    setTimeout(() => {
+      const colDefs = gridRef.current!.api.getColumnDefs() || []
+      const simpleColDefs = colDefs.map((colDef: any) => ({
+        colId: colDef.colId,
+        field: colDef.field,
+        width: colDef.width,
+        sort: colDef.sort,
+        sortIndex: colDef.sortIndex,
+        hide: colDef.hide ? true : false,
+      }))
+      Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
+    }, 500)
+  }, [])
 
   return (
     <div>
@@ -410,13 +362,14 @@ const Aggird = () => {
         setSelectedColumns={setSelectedColumns}
         gridRef={gridRef}
         handleClickResetColumn={() => {
-          loadData(gridRef?.current)
+          loadData(gridRef?.current, rowsToLoad)
         }}
       />
       <div>
         <div className='ag-theme-quartz'>
           <AgGridReact
             ref={gridRef}
+            rowData={Data}
             domLayout='autoHeight'
             defaultColDef={{
               // resizable: false,
@@ -442,6 +395,8 @@ const Aggird = () => {
                 setSelectRow,
               },
             }}
+            onColumnMoved={handleColumnChange}
+            onColumnVisible={handleColumnChange}
             columnMenu={'legacy'}
             rowHeight={53}
             rowModelType='serverSide'
@@ -452,8 +407,19 @@ const Aggird = () => {
           />
         </div>
       </div>
-      <div onClick={handleLoadMore} className='flex items-center cursor-pointer'>
-        <FaLongArrowAltDown /> Load <span className=''>10 more</span> <BsThreeDotsVertical />
+
+      <div className='py-[10px] flex'>
+        {loadingMore ? (
+          <Loading />
+        ) : (
+          <div
+            onClick={handleLoadMore}
+            className='flex items-center cursor-pointer px-[30px] text-gray-400'
+          >
+            <FaLongArrowAltDown /> Load <span className='text-gray-900 ml-[3px]'> 10 more</span>{' '}
+            <BsThreeDotsVertical className='ml-[7px] text-gray-900' />
+          </div>
+        )}
       </div>
     </div>
   )

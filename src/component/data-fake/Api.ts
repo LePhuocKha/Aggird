@@ -1,8 +1,9 @@
 import {faker} from '@faker-js/faker'
-import {ColDef, GridReadyEvent} from 'ag-grid-community'
+import {ColDef} from 'ag-grid-community'
 import {formatDate} from '../../utils/common'
+import {v4 as uuidv4} from 'uuid'
 export interface data_type {
-  id: number
+  id: string
   marketplace: string
   adTool: string
   title: string
@@ -22,7 +23,7 @@ export const generateData = (count: number, params: any) => {
   const addFieldData = params?.api?.getColumnDefs().filter((el: ColDef) => !!el.type)
   const fakeData = Array.from({length: count}, (_, id) => {
     let data = {}
-    const mapUpdateField = (addFieldData || []).forEach((d: ColDef) => {
+    ;(addFieldData || []).forEach((d: ColDef) => {
       const fieldColData = d?.field
       if (d.type === 'date') {
         data = {
@@ -48,7 +49,7 @@ export const generateData = (count: number, params: any) => {
     })
 
     return {
-      id: id + 1,
+      id: uuidv4(),
       marketplace: faker.commerce.department(),
       adTool: faker.commerce.productMaterial(),
       title: faker.lorem.words(2),

@@ -18,12 +18,12 @@ type Props = {
   id: number
   setOuterVisibleCell: Dispatch<
     React.SetStateAction<{
-      idTr: number
+      idTr: string
       idHeader: number
     }>
   >
   outerVisibleCell: {
-    idTr: number
+    idTr: string
     idHeader: number
   }
   data: data_type

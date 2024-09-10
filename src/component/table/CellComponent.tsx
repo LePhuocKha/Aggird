@@ -4,9 +4,7 @@ import {data_type} from '../data-fake/Api'
 import HoverTippyCell from './HoverTippyCell'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import Status from './Status'
-import {formatDate} from '../../utils/common'
 
-import {GoDotFill} from 'react-icons/go'
 import countries from 'i18n-iso-countries'
 import Flag from 'react-world-flags'
 import Cookies from 'js-cookie'
@@ -17,6 +15,11 @@ type children_config_data = {
   after_text: string
 }
 
+type rowData = {
+  hashtag: string
+  label: string
+  stubtext: string
+}
 export type PropsCell = {
   data?: data_type | any
   children?: React.ReactElement
@@ -27,41 +30,20 @@ export type PropsCell = {
   selectRow: number[]
   setOuterVisibleCell: Dispatch<
     React.SetStateAction<{
-      idTr: number
+      idTr: string
       idHeader: number
     }>
   >
-  icons: React.ReactNode
+  icon: React.ReactNode
   configData?: children_config_data[]
   outerVisibleCell: {
-    idTr: number
+    idTr: string
     idHeader: number
   }
+  value: string
   classCSSWrapper?: string
   type?: string
   outerVisibleHeader: number
-}
-
-function handleFormatValue(value: any, key: string, type: string, data: data_type) {
-  if (key === 'black_dot') {
-    return <GoDotFill className='w-[10px]' />
-  }
-  if (key === 'dash') {
-    return '-'
-  }
-  if (key === 'flag_country') {
-    return <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
-  }
-  if (key === 'country') {
-    return `${countries.getName(value, 'en') || 'Unknown Country'}`
-  }
-  if (type === 'date' && !['black_dot', 'dash'].includes(key)) {
-    return formatDate((value as string) || '')
-  }
-  if (key === 'status') {
-    return <Status status={value || 0} update_time={data?.update_time as string} />
-  }
-  return value
 }
 
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -76,9 +58,11 @@ const CellComponent = ({
   setOuterVisibleCell,
   configData = [],
   outerVisibleHeader,
-  icons,
+  icon,
   type,
   classCSSWrapper,
+  value,
+  ...rest
 }: PropsCell) => {
   const handleCheckboxClick = () => {
     setSelectRow((prev: number[] | any) => {
@@ -94,6 +78,7 @@ const CellComponent = ({
     })
   }
 
+  const rowData: rowData = JSON.parse(value || '{}')
   const render = useMemo(() => {
     if (type === 'checkbox') {
       return (
@@ -110,52 +95,44 @@ const CellComponent = ({
         </div>
       )
     }
-    switch (!!configData) {
-      case configData.length > 0 || !!icons:
-        return (
-          <div
-            className={`flex gap-[3px] h-[100%] 
-              ${classCSSWrapper ? classCSSWrapper : ' justify-start items-center'}
-            `}
+    return (
+      <div
+        className={`flex gap-[3px] h-[100%] ${
+          classCSSWrapper ? classCSSWrapper : 'justify-start items-center'
+        }`}
+      >
+        {icon && icon}
+        {type === 'country' && (
+          <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
+        )}
+        {['status'].includes(type as string) && (
+          <Status status={Number(data?.status) || 0} update_time={data?.update_time as string} />
+        )}
+        <div className='flex flex-col gap-[3px]'>
+          <p className='leading-[11px] text-[10px] text-sky-500 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
+            {rowData?.hashtag}
+          </p>
+          <p
+            className={`text-[14px] ${
+              rowData?.hashtag ? 'text-sky-800 ' : 'text-gray-700'
+            } font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words`}
           >
-            {icons && icons}
-            <div
-              className={`${
-                configData.length > 1
-                  ? 'flex flex-col'
-                  : 'flex justify-start items-center gap-[3px]'
-              }`}
-            >
-              {configData.map((config: children_config_data, i: number) => (
-                <div key={i} className='flex justify-start items-center gap-[3px]'>
-                  {config?.render_key?.map((key: string, index: number) => {
-                    let value = data?.[key]
-                    value = handleFormatValue(data?.[key], key, type || '', data)
-                    return (
-                      <div
-                        key={index}
-                        className={`font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words ${config?.css}`}
-                      >
-                        {value} {config?.after_text}
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      default:
-        return <div className='flex font-medium'>No data</div>
-    }
+            {rowData?.label}
+          </p>
+          <p className='leading-[12px] text-[12px] text-gray-400 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
+            {rowData?.stubtext}
+          </p>
+        </div>
+      </div>
+    )
   }, [data, selectRow])
 
   const handleMouseEnter = () => {
     if (Cookies.get('menu') !== 'true') {
-      if (outerVisibleCell.idTr !== +data?.id) {
+      if (outerVisibleCell.idTr !== data?.id) {
         setOuterVisibleCell({
           idHeader: Number(id) || 0,
-          idTr: +data?.id || 0,
+          idTr: data?.id || 0,
         })
         setOuterVisibleHeader(0)
       }
@@ -177,7 +154,7 @@ const CellComponent = ({
             onClick={() => {
               setOuterVisibleCell({
                 idHeader: 0,
-                idTr: 0,
+                idTr: '',
               })
             }}
             className='h-[100%] w-[100%]'
