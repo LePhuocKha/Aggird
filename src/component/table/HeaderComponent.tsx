@@ -105,7 +105,7 @@ const HeaderComponent = ({
         >
           <div
             onMouseEnter={handleMouseEnter}
-            className={`flex items-center  h-[100%] px-[5px] gap-[3px] hover:bg-blue-100 ${classCSS}`}
+            className={`flex items-center  h-[100%] pl-[5px] pr-[6px] gap-[3px] hover:bg-blue-100 ${classCSS}`}
           >
             {title && <p className='p-0 m-0'>{title}</p>}
             {children}
@@ -113,7 +113,7 @@ const HeaderComponent = ({
         </HoverTippyHeader>
       ) : (
         <div
-          className={`flex items-center px-[5px] h-[100%] w-[100%] justify-start gap-2 ${classCSS}`}
+          className={`flex items-center pl-[5px] pr-[6px] h-[100%] w-[100%] justify-start gap-2 ${classCSS}`}
         >
           {title && <p className='p-0 m-0'>{title}</p>}
           {children}

@@ -128,14 +128,12 @@ const CellComponent = ({
   }, [data, selectRow])
 
   const handleMouseEnter = () => {
-    if (Cookies.get('menu') !== 'true') {
-      if (outerVisibleCell.idTr !== data?.id) {
-        setOuterVisibleCell({
-          idHeader: Number(id) || 0,
-          idTr: data?.id || 0,
-        })
-        setOuterVisibleHeader(0)
-      }
+    if (Cookies.get('menu') !== 'true' && outerVisibleCell.idTr !== data?.id) {
+      setOuterVisibleCell({
+        idHeader: Number(id) || 0,
+        idTr: data?.id || 0,
+      })
+      setOuterVisibleHeader(0)
     }
   }
 

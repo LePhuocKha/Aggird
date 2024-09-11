@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useRef, useState} from 'react'
-import {generateData} from '../data-fake/Api'
+import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import HeaderComponent from './HeaderComponent'
@@ -14,7 +14,7 @@ import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model
 import {ModuleRegistry} from '@ag-grid-community/core'
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
 import {MenuModule} from '@ag-grid-enterprise/menu'
-import {ColDef} from 'ag-grid-community'
+import {ColDef, GridReadyEvent, IGetRowsParams} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
 import {BsThreeDotsVertical} from 'react-icons/bs'
@@ -30,14 +30,21 @@ import 'ag-grid-enterprise'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+
+interface Server {
+  getData: (request: IGetRowsParams) => {
+    success: boolean
+    rows: any[]
+    totalRows: number
+  }
+}
 const Aggird = () => {
   const [selectRow, setSelectRow] = useState<number[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
-
+  const [pagination, setPagination] = useState(10)
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
   const [Data, setData] = useState<any[]>([])
-  const [rowsToLoad, setRowsToLoad] = useState(10)
   const [loadingMore, setLoadingMore] = useState(false)
   const [outerVisibleCell, setOuterVisibleCell] = useState<{
     idTr: string
@@ -56,6 +63,7 @@ const Aggird = () => {
   const colf: ColDef[] = [
     {
       colId: '1',
+      headerClass: 'custom-header',
       headerComponentParams: {
         id: 1,
         Tippy: false,
@@ -260,16 +268,18 @@ const Aggird = () => {
     },
   ]
 
-  const createServerSideDatasource = (server: any) => {
+  const createServerSideDatasource = (server: Server) => {
     return {
       getRows: (params: any) => {
-        // get data for request from our fake server
-        const response = server.getData(params?.request)
-        // simulating real server call with a 500ms delay
+        // Simulate server call
+        const response = server.getData(params.request)
+
         setTimeout(() => {
           if (response.success) {
-            // supply rows for requested block to grid
-            params.success({rowData: response?.rows})
+            params.success({
+              rowData: response.rows,
+              rowCount: response.totalRows,
+            })
           } else {
             params.fail()
           }
@@ -278,20 +288,23 @@ const Aggird = () => {
     }
   }
 
-  const createFakeServer = (allData: any) => {
+  const createFakeServer = (allData: data_type[]) => {
     return {
-      getData: (request: any) => {
-        // in this simplified fake server all rows are contained in an array
-        const requestedRows = allData.slice(request?.startRow, request?.endRow)
+      getData: (request: IGetRowsParams) => {
+        const {startRow, endRow} = request
+        const rowsThisPage = allData.slice(startRow, endRow)
+        const lastRow = allData.length
+
         return {
           success: true,
-          rows: requestedRows,
+          rows: rowsThisPage,
+          totalRows: lastRow, // Total number of rows available on the server
         }
       },
     }
   }
-  const loadData = async (params: any, numberRow = 10) => {
-    const fakeData = (await generateData(numberRow, params)) || []
+  const loadData = async (params: any) => {
+    const fakeData = (await generateData(100, params)) || []
 
     // Setup the fake server with the updated dataset
     const fakeServer = createFakeServer([...fakeData])
@@ -313,31 +326,17 @@ const Aggird = () => {
     }
   }, [])
 
-  const onGridReady = useCallback(
-    async (params: any) => {
-      await loadData(params, rowsToLoad)
-      await restoreState()
-    },
-    [rowsToLoad]
-  )
+  const onGridReady = useCallback(async (params: any) => {
+    await loadData(params)
+    await restoreState()
+  }, [])
 
   const handleLoadMore = async () => {
     setLoadingMore(true)
-
-    // Generate 10 more rows of data
-    const newFakeData = await generateData(10, gridRef.current)
-
-    // Update the current data state with the new data
-    setData((prevData) => {
-      const updatedData = [...prevData, ...newFakeData]
-      console.log(updatedData)
-
-      // Directly update the AG Grid's row data
-      gridRef.current!.api.applyServerSideTransactionAsync({route: [], add: updatedData})
-      return updatedData
-    })
-
-    setLoadingMore(false)
+    setTimeout(() => {
+      setPagination((prev) => prev + 10)
+      setLoadingMore(false)
+    }, 1000)
   }
 
   const handleColumnChange = useCallback((params: any) => {
@@ -356,20 +355,19 @@ const Aggird = () => {
   }, [])
 
   return (
-    <div>
+    <div className='px-[50px]'>
       <MenuTable
         selectedColumns={selectedColumns}
         setSelectedColumns={setSelectedColumns}
         gridRef={gridRef}
         handleClickResetColumn={() => {
-          loadData(gridRef?.current, rowsToLoad)
+          loadData(gridRef?.current)
         }}
       />
       <div>
         <div className='ag-theme-quartz'>
           <AgGridReact
             ref={gridRef}
-            rowData={Data}
             domLayout='autoHeight'
             defaultColDef={{
               // resizable: false,
@@ -395,11 +393,14 @@ const Aggird = () => {
                 setSelectRow,
               },
             }}
+            suppressModelUpdateAfterUpdateTransaction={true}
             onColumnMoved={handleColumnChange}
             onColumnVisible={handleColumnChange}
             columnMenu={'legacy'}
             rowHeight={53}
             rowModelType='serverSide'
+            pagination={true}
+            paginationPageSize={pagination}
             onGridReady={onGridReady}
             columnDefs={colf}
             loadingCellRenderer={Loading}

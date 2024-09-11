@@ -233,6 +233,14 @@
     "@ag-grid-community/core" "32.1.0"
     "@ag-grid-enterprise/core" "32.1.0"
 
+"@ag-grid-enterprise/server-side-row-model@^32.1.0":
+  "integrity" "sha512-l4MX/AMDRG0/uCzQ3CUu9hBG5fPw3NqhBbY/4aY8VbnEdSZ4TosTwMgoZQVbXY+Vg6o9GVR8j9+SQTbvCBnA7g=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/server-side-row-model/-/server-side-row-model-32.1.0.tgz"
+  "version" "32.1.0"
+  dependencies:
+    "@ag-grid-community/core" "32.1.0"
+    "@ag-grid-enterprise/core" "32.1.0"
+
 "@ag-grid-enterprise/server-side-row-model@~27.3.0":
   "integrity" "sha512-CAeCMNin2OIpNlzmO+9vZjgJAZ28wpUmSLW8DRfjq5IJyIsYLNoxAiK5f8nudyEVd+WjMxtMOlikC/RwnLbByg=="
   "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/server-side-row-model/-/server-side-row-model-27.3.0.tgz"

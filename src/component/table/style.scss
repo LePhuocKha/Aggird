@@ -1,7 +1,6 @@
 .ag-theme-quartz {
   width: 100%;
-  padding: 0px !important
-  ;
+  padding: 0px !important;
   min-height: 0px !important;
 }
 .ag-theme-quartz .ag-root-wrapper {
@@ -11,6 +10,7 @@
   background-color: white !important;
   height: 33px !important;
   min-height: 33px !important;
+  padding-left: 1px;
 }
 .ag-header-row {
   height: 100% !important;
@@ -22,6 +22,7 @@
 .ag-theme-quartz .ag-header-cell {
   padding: 0 !important;
 }
+
 .ag-theme-quartz .ag-root-wrapper {
   border-collapse: collapse;
 }
@@ -34,14 +35,18 @@
 }
 
 .ag-theme-quartz .ag-cell {
-  border-right: 1px solid rgb(209 213 219) !important;
+  border-left: 1px solid rgb(209 213 219);
   padding: 0 !important;
   padding: 3px !important;
   // transition: width 0.3s ease, height 0.3s ease;
 }
 
-.ag-theme-quartz .ag-cell :focus {
-  border-right: 1px solid rgb(209 213 219) !important;
+.ag-theme-quartz .ag-row .ag-cell:first-child {
+  border-left: none;
+}
+
+.ag-theme-quartz .ag-cell-focus {
+  border-left: 1px solid rgb(209 213 219) !important;
 }
 
 .ag-theme-quartz .ag-cell-value {
@@ -85,6 +90,17 @@
 .ag-theme-quartz-auto-dark .ag-layout-print .ag-center-cols-viewport,
 .ag-theme-quartz-auto-dark .ag-layout-print .ag-center-cols-container {
   min-height: 0px !important;
+}
+
+.ag-theme-quartz .ag-paging-panel {
+  display: none !important;
+}
+.ag-theme-quartz .ag-center-cols-container {
+  width: 100% !important;
+}
+
+.custom-header {
+  padding-left: 30px !important;
 }
 //open Menu table Properties
 .column-chooser {
