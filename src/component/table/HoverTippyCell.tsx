@@ -1,10 +1,14 @@
-import React, {Dispatch, useRef} from 'react'
+import React, {Dispatch, useRef, useState} from 'react'
+import useClickOutside from '../../hooks/useClickOutside'
+
+import Cookies from 'js-cookie'
+import {Menu} from 'primereact/menu'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {MdOutlineFilterList} from 'react-icons/md'
-import {Menu} from 'primereact/menu'
 import {data_type} from '../data-fake/Api'
-import Cookies from 'js-cookie'
-import useClickOutside from '../../hooks/useClickOutside'
+
+import {IoMdAdd} from 'react-icons/io'
+import TableChidlren from './TableChidlren'
 
 export type MenuItem = {
   label: string
@@ -30,21 +34,31 @@ type Props = {
   outerVisibleHeader: number
 }
 
-const HoverTippyCell = ({children, classCSS, outerVisibleCell, data, id}: Props) => {
+const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => {
   const configColumnRef = useRef<any>(null)
   const menuLeft = useRef<any>(null)
+
+  const [addAdObjects, setAddAdObjects] = useState(false)
+
   const items = [
     {
       items: [
         {
-          icons: <MdOutlineFilterList />,
+          icon: <MdOutlineFilterList />,
           label: 'Filter by',
           onclick: () => {},
         },
         {
-          icons: <MdOutlineFilterList />,
+          icon: <MdOutlineFilterList />,
           label: 'Click',
           onclick: () => {},
+        },
+        {
+          icon: <IoMdAdd />,
+          label: 'Add ad objects',
+          command: () => {
+            setAddAdObjects(true)
+          },
         },
       ],
     },
@@ -71,7 +85,12 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data, id}: Props)
   return (
     <div className={`${classCSS} flex relative`}>
       <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
-
+      <TableChidlren
+        open={addAdObjects}
+        handleClose={() => {
+          setAddAdObjects(false)
+        }}
+      />
       <div className='flex justify-content-center  bg-white'>
         <Menu
           model={items}

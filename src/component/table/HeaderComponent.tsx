@@ -87,8 +87,8 @@ const HeaderComponent = ({
       label: 'Hide this',
       icon: <RiMenuFoldFill />,
       command: () => {
-        api.setColumnVisible(id.toString(), false)
-        api.refreshServerSide({purge: true})
+        api?.setColumnVisible(id.toString(), false)
+        api?.refreshServerSide({purge: true})
       },
     },
   ]

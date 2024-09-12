@@ -3,7 +3,6 @@ import React, {Dispatch, useMemo} from 'react'
 import {data_type} from '../data-fake/Api'
 import HoverTippyCell from './HoverTippyCell'
 import InputCheckBox from '../checkbox/InputCheckBox'
-import Status from './Status'
 
 import countries from 'i18n-iso-countries'
 import Flag from 'react-world-flags'
@@ -46,6 +45,19 @@ export type PropsCell = {
   outerVisibleHeader: number
 }
 
+const status_type = [
+  {
+    value: 0,
+    class: 'bg-gray-500',
+    label: 'Ended',
+  },
+  {
+    value: 1,
+    class: 'bg-green-600',
+    label: 'Ongoing',
+  },
+]
+
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 const CellComponent = ({
   data,
@@ -62,8 +74,9 @@ const CellComponent = ({
   type,
   classCSSWrapper,
   value,
-  ...rest
 }: PropsCell) => {
+  const dataRender = status_type.filter((el) => el.value === (+data?.status || 0))?.[0]
+
   const handleCheckboxClick = () => {
     setSelectRow((prev: number[] | any) => {
       if (!Array.isArray(prev)) {
@@ -106,7 +119,8 @@ const CellComponent = ({
           <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
         )}
         {['status'].includes(type as string) && (
-          <Status status={Number(data?.status) || 0} update_time={data?.update_time as string} />
+          // <Status status={Number(data?.status) || 0} update_time={data?.update_time as string} />
+          <div className={`${dataRender?.class} w-[12px] h-[12px] rounded-full mt-[5px]`}></div>
         )}
         <div className='flex flex-col gap-[3px]'>
           <p className='leading-[11px] text-[10px] text-sky-500 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
@@ -114,7 +128,7 @@ const CellComponent = ({
           </p>
           <p
             className={`text-[14px] ${
-              rowData?.hashtag ? 'text-sky-800 ' : 'text-gray-700'
+              rowData?.hashtag || rowData?.stubtext ? 'text-sky-800 ' : 'text-gray-700'
             } font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words`}
           >
             {rowData?.label}

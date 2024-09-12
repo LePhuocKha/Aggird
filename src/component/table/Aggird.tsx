@@ -1,11 +1,10 @@
-import {useCallback, useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
-import HeaderComponent from './HeaderComponent'
 import CellComponent from './CellComponent'
 import MenuTable from './MenuTable'
-import {formatDate} from '../../utils/common'
+import {formatDate, getMonthsIsTheTime} from '../../utils/common'
 
 import {AgGridReact} from 'ag-grid-react'
 import {SlExclamation} from 'react-icons/sl'
@@ -14,7 +13,7 @@ import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model
 import {ModuleRegistry} from '@ag-grid-community/core'
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
 import {MenuModule} from '@ag-grid-enterprise/menu'
-import {ColDef, GridReadyEvent, IGetRowsParams} from 'ag-grid-community'
+import {ColDef, IGetRowsParams} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
 import {BsThreeDotsVertical} from 'react-icons/bs'
@@ -27,11 +26,12 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
+import Table from './Table'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
 
-interface Server {
+export interface Server {
   getData: (request: IGetRowsParams) => {
     success: boolean
     rows: any[]
@@ -39,20 +39,12 @@ interface Server {
   }
 }
 const Aggird = () => {
-  const [selectRow, setSelectRow] = useState<number[]>([])
+  const [selectRow, setSelectRow] = useState<string[]>([])
+  const [Data, setData] = useState<any[]>([])
   const gridRef = useRef<AgGridReact<any>>(null)
   const [pagination, setPagination] = useState(10)
-  const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
-  const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
-  const [Data, setData] = useState<any[]>([])
+  const [numberLoadData, setNumberLoadData] = useState<number>(0)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [outerVisibleCell, setOuterVisibleCell] = useState<{
-    idTr: string
-    idHeader: number
-  }>({
-    idTr: '',
-    idHeader: 0,
-  })
 
   const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
 
@@ -70,12 +62,19 @@ const Aggird = () => {
         classCSS: 'border-r-[1px] border-gray-300 justify-center gap-2',
         children: (
           <InputCheckBox
-            checked={selectRow.length === Data?.length}
+            checked={selectRow.length === pagination}
             onChange={() => {
               if (selectRow.length === Data.length) {
                 setSelectRow([])
               } else {
-                setSelectRow(Data?.map((el: any) => el?.id))
+                setSelectRow(
+                  Data?.map((el: any, index) => {
+                    if (index < pagination) {
+                      return el?.id
+                    }
+                    return '0'
+                  }).filter((el) => el !== '0')
+                )
               }
             }}
           />
@@ -249,6 +248,12 @@ const Aggird = () => {
         classCSS: 'justify-start',
       },
       cellRenderer: CellComponent,
+      valueGetter: (p) => {
+        return JSON.stringify({
+          label: `${p.data?.status === 1 ? 'Ongoing' : 'Ended'}`,
+          stubtext: `${getMonthsIsTheTime(p.data.update_time)}`,
+        })
+      },
       cellRendererParams: {
         type: 'status',
       },
@@ -305,7 +310,7 @@ const Aggird = () => {
   }
   const loadData = async (params: any) => {
     const fakeData = (await generateData(100, params)) || []
-
+    setNumberLoadData((prev) => prev + 1)
     // Setup the fake server with the updated dataset
     const fakeServer = createFakeServer([...fakeData])
     setData((prevData) => [...fakeData])
@@ -316,21 +321,6 @@ const Aggird = () => {
     params?.api?.setGridOption('serverSideDatasource', datasource)
   }
 
-  const restoreState = useCallback(() => {
-    const savedColumnState = JSON.parse(Cookies.get('columnDefs') || '[]')
-    if (savedColumnState) {
-      gridRef.current!.api.applyColumnState({
-        state: savedColumnState,
-        applyOrder: true,
-      })
-    }
-  }, [])
-
-  const onGridReady = useCallback(async (params: any) => {
-    await loadData(params)
-    await restoreState()
-  }, [])
-
   const handleLoadMore = async () => {
     setLoadingMore(true)
     setTimeout(() => {
@@ -338,21 +328,6 @@ const Aggird = () => {
       setLoadingMore(false)
     }, 1000)
   }
-
-  const handleColumnChange = useCallback((params: any) => {
-    setTimeout(() => {
-      const colDefs = gridRef.current!.api.getColumnDefs() || []
-      const simpleColDefs = colDefs.map((colDef: any) => ({
-        colId: colDef.colId,
-        field: colDef.field,
-        width: colDef.width,
-        sort: colDef.sort,
-        sortIndex: colDef.sortIndex,
-        hide: colDef.hide ? true : false,
-      }))
-      Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
-    }, 500)
-  }, [])
 
   return (
     <div className='px-[50px]'>
@@ -365,48 +340,18 @@ const Aggird = () => {
         }}
       />
       <div>
-        <div className='ag-theme-quartz'>
-          <AgGridReact
-            ref={gridRef}
-            domLayout='autoHeight'
-            defaultColDef={{
-              // resizable: false,
-              autoHeight: true,
-              minWidth: 150,
-              headerComponent: HeaderComponent,
-              headerComponentParams: {
-                checkMenuOnOff,
-                setCheckMenuOnOff,
-                outerVisibleCell,
-                setOuterVisibleCell,
-                outerVisibleHeader,
-                setOuterVisibleHeader,
-              },
-              cellRendererParams: {
-                checkMenuOnOff,
-                setCheckMenuOnOff,
-                outerVisibleHeader,
-                setOuterVisibleHeader,
-                outerVisibleCell,
-                setOuterVisibleCell,
-                selectRow,
-                setSelectRow,
-              },
-            }}
-            suppressModelUpdateAfterUpdateTransaction={true}
-            onColumnMoved={handleColumnChange}
-            onColumnVisible={handleColumnChange}
-            columnMenu={'legacy'}
-            rowHeight={53}
-            rowModelType='serverSide'
-            pagination={true}
-            paginationPageSize={pagination}
-            onGridReady={onGridReady}
-            columnDefs={colf}
-            loadingCellRenderer={Loading}
-            loadingCellRendererParams={Loading}
-          />
-        </div>
+        <Table
+          selectRow={selectRow}
+          setSelectRow={setSelectRow}
+          numberLoadData={numberLoadData}
+          setNumberLoadData={setNumberLoadData}
+          pagination={pagination}
+          setPagination={setPagination}
+          Data={Data}
+          gridRef={gridRef}
+          setData={setData}
+          colf={colf}
+        />
       </div>
 
       <div className='py-[10px] flex'>
