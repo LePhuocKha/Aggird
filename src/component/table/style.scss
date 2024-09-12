@@ -44,7 +44,9 @@
 .ag-theme-quartz .ag-row .ag-cell:first-child {
   border-left: none;
 }
-
+.ag-theme-quartz .ag-cell-focus:first-child {
+  border-left: none !important;
+}
 .ag-theme-quartz .ag-cell-focus {
   border-left: 1px solid rgb(209 213 219) !important;
 }
