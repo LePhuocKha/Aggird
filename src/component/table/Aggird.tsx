@@ -4,7 +4,9 @@ import Loading from '../loading/Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
 import CellComponent from './CellComponent'
 import MenuTable from './MenuTable'
+import Table from './Table'
 import {formatDate, getMonthsIsTheTime} from '../../utils/common'
+import {ColDef, IGetRowsParams} from 'ag-grid-community'
 
 import {AgGridReact} from 'ag-grid-react'
 import {SlExclamation} from 'react-icons/sl'
@@ -13,7 +15,6 @@ import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model
 import {ModuleRegistry} from '@ag-grid-community/core'
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
 import {MenuModule} from '@ag-grid-enterprise/menu'
-import {ColDef, IGetRowsParams} from 'ag-grid-community'
 import {FaRectangleAd} from 'react-icons/fa6'
 import {MdAdd, MdFolderCopy} from 'react-icons/md'
 import {BsThreeDotsVertical} from 'react-icons/bs'
@@ -26,7 +27,6 @@ import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the D
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
-import Table from './Table'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
@@ -332,6 +332,7 @@ const Aggird = () => {
   return (
     <div className='px-[50px]'>
       <MenuTable
+        saveColumnCookies='columnDefs'
         selectedColumns={selectedColumns}
         setSelectedColumns={setSelectedColumns}
         gridRef={gridRef}
@@ -341,6 +342,7 @@ const Aggird = () => {
       />
       <div>
         <Table
+          saveColumnCookies='columnDefs'
           selectRow={selectRow}
           setSelectRow={setSelectRow}
           numberLoadData={numberLoadData}

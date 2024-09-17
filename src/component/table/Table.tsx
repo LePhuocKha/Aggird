@@ -42,6 +42,7 @@ type Props = {
   setPagination: Dispatch<React.SetStateAction<number>>
   setSelectRow: Dispatch<React.SetStateAction<string[]>>
   setNumberLoadData: Dispatch<React.SetStateAction<number>>
+  saveColumnCookies: string
 }
 
 const Table = ({
@@ -54,6 +55,7 @@ const Table = ({
   selectRow,
   setSelectRow,
   numberLoadData,
+  saveColumnCookies,
 }: Props) => {
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
@@ -106,6 +108,7 @@ const Table = ({
   }
   const loadData = async (params: any) => {
     const fakeData = (await generateData(100, params)) || []
+
     setNumberLoadData((prev) => prev + 1)
     // Setup the fake server with the updated dataset
     const fakeServer = createFakeServer([...fakeData])
@@ -116,9 +119,9 @@ const Table = ({
 
     params?.api?.setGridOption('serverSideDatasource', datasource)
   }
-  const savedColumnState = JSON.parse(Cookies.get('columnDefs') || '[]')
+  const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
   const restoreState = useCallback(() => {
-    const savedColumnState = JSON.parse(Cookies.get('columnDefs') || '[]')
+    const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
     if (savedColumnState) {
       gridRef.current!.api.applyColumnState({
         state: savedColumnState,
@@ -143,7 +146,7 @@ const Table = ({
         sortIndex: colDef.sortIndex,
         hide: colDef.hide ? true : false,
       }))
-      Cookies.set('columnDefs', JSON.stringify(simpleColDefs), {expires: 7})
+      Cookies.set(saveColumnCookies, JSON.stringify(simpleColDefs), {expires: 7})
     }, 500)
   }, [])
 

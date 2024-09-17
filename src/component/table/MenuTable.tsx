@@ -10,10 +10,10 @@ import Input from '../input/Input'
 import useClickOutside from '../../hooks/useClickOutside'
 import {CgMenuGridO} from 'react-icons/cg'
 import Button from '../button/Button'
-import {ColDef} from '@ag-grid-community/core'
 
 type Props = {
   gridRef?: React.RefObject<AgGridReact<any>>
+  saveColumnCookies: string
   handleClickResetColumn: () => void
   selectedColumns: {colId: string; hide: boolean}[]
   setSelectedColumns: Dispatch<React.SetStateAction<{colId: string; hide: boolean}[]>>
@@ -24,6 +24,7 @@ const MenuTable = ({
   handleClickResetColumn,
   selectedColumns,
   setSelectedColumns,
+  saveColumnCookies,
 }: Props) => {
   const menuLeft = useRef<any>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -39,7 +40,7 @@ const MenuTable = ({
     }
 
     setValueSearch('')
-  }, [Cookies.get('columnDefs')])
+  }, [Cookies.get(saveColumnCookies)])
 
   useEffect(() => {
     if (gridRef?.current) {
@@ -78,7 +79,7 @@ const MenuTable = ({
           command: () => {
             handleClickResetColumn()
             gridRef?.current!.api.resetColumnState()
-            Cookies?.remove('columnDefs')
+            Cookies?.remove(saveColumnCookies)
           },
         },
       ],
@@ -97,10 +98,6 @@ const MenuTable = ({
     setSelectedColumns((prev) =>
       prev.map((col) => (col.colId === colId ? {...col, hide: !col.hide} : col))
     )
-    // const isVisible =
-    //   gridRef?.current!.api.getColumnState().find((c) => c.colId === colId)?.hide !== true
-    // gridRef?.current!.api.setColumnVisible(colId, !isVisible)
-    // setSelectedColumns((prev) => (isVisible ? prev.filter((id) => id !== colId) : [...prev, colId]))
   }
 
   const handleSearch = () => {

@@ -26,7 +26,7 @@ const Button: ForwardRefRenderFunction<HTMLButtonElement, Props> = ({
 
   return (
     <button
-      className={`font-medium px-[16px] py-[4px] rounded-sm text-[16px]  ${ojbectColorButton[colorButton]} ${className}`}
+      className={`font-medium px-[16px] py-[5px] rounded-sm text-[16px]  ${ojbectColorButton[colorButton]} ${className}`}
       {...rest}
     >
       {loading ? textLoading || 'Please wait...' : children}

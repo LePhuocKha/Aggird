@@ -21,6 +21,7 @@ export interface data_type {
 // Generate random data using faker
 export const generateData = (count: number, params: any) => {
   const addFieldData = params?.api?.getColumnDefs().filter((el: ColDef) => !!el.type)
+
   const fakeData = Array.from({length: count}, (_, id) => {
     let data = {}
     ;(addFieldData || []).forEach((d: ColDef) => {

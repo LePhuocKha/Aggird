@@ -36,9 +36,7 @@ const HeaderComponent = ({
   setOuterVisibleHeader,
   outerVisibleHeader,
   setOuterVisibleCell,
-  colDef,
   api,
-  ...res
 }: PropsHeader) => {
   const handleMouseEnter = () => {
     if ((Cookies.get('menu') || '') !== 'true') {
@@ -87,6 +85,7 @@ const HeaderComponent = ({
       label: 'Hide this',
       icon: <RiMenuFoldFill />,
       command: () => {
+        console.log(id.toString())
         api?.setColumnVisible(id.toString(), false)
         api?.refreshServerSide({purge: true})
       },
