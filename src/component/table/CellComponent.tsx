@@ -68,7 +68,6 @@ const CellComponent = ({
   outerVisibleCell,
   setOuterVisibleHeader,
   setOuterVisibleCell,
-  configData = [],
   outerVisibleHeader,
   icon,
   type,
@@ -119,21 +118,20 @@ const CellComponent = ({
           <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
         )}
         {['status'].includes(type as string) && (
-          // <Status status={Number(data?.status) || 0} update_time={data?.update_time as string} />
           <div className={`${dataRender?.class} w-[12px] h-[12px] rounded-full mt-[5px]`}></div>
         )}
         <div className='flex flex-col gap-[3px]'>
-          <p className='leading-[11px] text-[10px] text-sky-500 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
+          <p className='leading-[12px] text-[10px] min-h-[12px] text-sky-500 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
             {rowData?.hashtag}
           </p>
           <p
             className={`text-[14px] ${
               rowData?.hashtag || rowData?.stubtext ? 'text-sky-800 ' : 'text-gray-700'
-            } font-medium whitespace-break-spaces flex justify-start items-center leading-[15px] break-words`}
+            } font-medium flex justify-start items-center leading-[15px] break-words`}
           >
-            {rowData?.label}
+            {rowData?.label} qweqw qwe qwe qwe qwe qweqweqweqw qư wqe qư
           </p>
-          <p className='leading-[12px] text-[12px] text-gray-400 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
+          <p className='leading-[12px] text-[12px] min-h-[12px] text-gray-400 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
             {rowData?.stubtext}
           </p>
         </div>

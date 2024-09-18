@@ -85,12 +85,12 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
   return (
     <div className={`${classCSS} flex relative`}>
       <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
-      <TableChidlren
+      {/* <TableChidlren
         open={addAdObjects}
         handleClose={() => {
           setAddAdObjects(false)
         }}
-      />
+      /> */}
       <div className='flex justify-content-center  bg-white'>
         <Menu
           model={items}

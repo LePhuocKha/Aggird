@@ -104,7 +104,7 @@ const HeaderComponent = ({
         >
           <div
             onMouseEnter={handleMouseEnter}
-            className={`flex items-center  h-[100%] pl-[5px] pr-[6px] gap-[3px] hover:bg-blue-100 ${classCSS}`}
+            className={`flex items-center h-[100%] pl-[5px] pr-[6px] gap-[3px] hover:bg-blue-100 ${classCSS}`}
           >
             {title && <p className='p-0 m-0'>{title}</p>}
             {children}

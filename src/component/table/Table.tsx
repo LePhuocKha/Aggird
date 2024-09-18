@@ -110,6 +110,7 @@ const Table = ({
     const fakeData = (await generateData(100, params)) || []
 
     setNumberLoadData((prev) => prev + 1)
+
     // Setup the fake server with the updated dataset
     const fakeServer = createFakeServer([...fakeData])
     setData((prevData) => [...fakeData])
@@ -119,6 +120,7 @@ const Table = ({
 
     params?.api?.setGridOption('serverSideDatasource', datasource)
   }
+
   const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
   const restoreState = useCallback(() => {
     const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
@@ -135,19 +137,26 @@ const Table = ({
     await loadData(params)
   }, [])
 
-  const handleColumnChange = useCallback(() => {
+  const handleColumnChange = useCallback((event: any) => {
     setTimeout(() => {
       const colDefs = gridRef?.current!.api.getColumnDefs() || []
-      const simpleColDefs = colDefs.map((colDef: any) => ({
+      const simpleColDefs = colDefs.map((colDef: any, index: number) => ({
         colId: colDef.colId,
         field: colDef.field,
         width: colDef.width,
         sort: colDef.sort,
-        sortIndex: colDef.sortIndex,
+        sortIndex: index,
         hide: colDef.hide ? true : false,
       }))
+      console.log(simpleColDefs)
+
       Cookies.set(saveColumnCookies, JSON.stringify(simpleColDefs), {expires: 7})
     }, 500)
+  }, [])
+  const onRowDragEnd = useCallback((event: any) => {
+    console.log('Row dragged:')
+
+    // Bạn có thể thực hiện các hành động với dữ liệu bị kéo và thả ở đây
   }, [])
 
   return (
@@ -159,6 +168,8 @@ const Table = ({
           defaultColDef={{
             autoHeight: true,
             minWidth: 150,
+            resizable: true,
+            sortable: true,
             headerComponent: HeaderComponent,
             headerComponentParams: {
               checkMenuOnOff,
@@ -180,7 +191,21 @@ const Table = ({
             },
           }}
           suppressModelUpdateAfterUpdateTransaction={true}
-          onColumnMoved={handleColumnChange}
+          onColumnMoved={() => {
+            const simpleColDefs = (gridRef?.current!.api.getColumnDefs() || []).map(
+              (colDef: any, index: number) => ({
+                colId: colDef.colId,
+                field: colDef.field,
+                width: colDef.width,
+                sort: colDef.sort,
+                sortIndex: index,
+                hide: colDef.hide ? true : false,
+              })
+            )
+            console.log(simpleColDefs)
+          }}
+          rowDragManaged={true} // Bật quản lý kéo và thả hàng
+          onRowDragEnd={onRowDragEnd}
           onColumnVisible={handleColumnChange}
           columnMenu={'legacy'}
           rowHeight={53}

@@ -42,9 +42,9 @@ const TableChidlren = ({open, handleClose}: Props) => {
         classCSS: 'border-r-[1px] border-gray-300 justify-center gap-2',
         children: (
           <InputCheckBox
-            checked={selectRow.length === pagination}
+            checked={selectRow.length >= pagination}
             onChange={() => {
-              if (selectRow.length === Data.length) {
+              if (selectRow.length >= Data.length) {
                 setSelectRow([])
               } else {
                 setSelectRow(
@@ -124,7 +124,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
   ]
 
   return (
-    <Dialog modal={false} visible={open} style={{width: '50vw'}} onHide={() => {}} className=''>
+    <Dialog visible={open} style={{width: '50vw'}} onHide={() => {}}>
       <div className='mb-[10px] flex justify-center items-center gap-[15px] h-[100%] mh-[50px]'>
         <Select className='w-[150px]' value={1} options={[{value: 1, label: 'container'}]} />
         <div className='flex justify-center items-center w-[100%] gap-[10px]'>
@@ -151,7 +151,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
           selectRow={selectRow}
           setSelectRow={setSelectRow}
           setPagination={setPagination}
-          Data={Data}
+          Data={[]}
           setData={setData}
           pagination={pagination}
           gridRef={gridRef}
@@ -162,9 +162,9 @@ const TableChidlren = ({open, handleClose}: Props) => {
       </div>
       <div className='bg-white flex gap-[10px] justify-end mt-[10px]'>
         <Button onClick={handleClose} colorButton='white'>
-          Cencal
+          Cancel
         </Button>
-        <Button>Applly now</Button>
+        <Button>Apply now</Button>
       </div>
     </Dialog>
   )

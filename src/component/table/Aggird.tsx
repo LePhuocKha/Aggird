@@ -62,9 +62,9 @@ const Aggird = () => {
         classCSS: 'border-r-[1px] border-gray-300 justify-center gap-2',
         children: (
           <InputCheckBox
-            checked={selectRow.length === pagination}
+            checked={selectRow.length >= pagination}
             onChange={() => {
-              if (selectRow.length === Data.length) {
+              if (selectRow.length >= pagination) {
                 setSelectRow([])
               } else {
                 setSelectRow(
@@ -85,9 +85,9 @@ const Aggird = () => {
         Tippy: false,
         type: 'checkbox',
       },
-      flex: 1,
       minWidth: 30,
     },
+
     {
       colId: '2',
       headerComponentParams: {
@@ -101,8 +101,6 @@ const Aggird = () => {
         Tippy: false,
         type: 'red_dot',
       },
-      flex: 1,
-      minWidth: 30,
     },
     {
       colId: '3',
@@ -116,8 +114,6 @@ const Aggird = () => {
           label: p.data.marketplace,
         })
       },
-      flex: 4,
-      minWidth: 120,
     },
     {
       colId: '4',
@@ -134,8 +130,6 @@ const Aggird = () => {
       cellRendererParams: {
         icon: <FaRectangleAd />,
       },
-      flex: 5,
-      minWidth: 180,
     },
 
     {
@@ -155,8 +149,6 @@ const Aggird = () => {
       cellRendererParams: {
         icon: <MdFolderCopy />,
       },
-      flex: 7,
-      minWidth: 210,
     },
     {
       colId: '6',
@@ -173,8 +165,6 @@ const Aggird = () => {
       cellRendererParams: {
         type: 'country',
       },
-      flex: 4,
-      minWidth: 120,
     },
     {
       colId: '7',
@@ -193,8 +183,6 @@ const Aggird = () => {
       cellRendererParams: {
         icon: <MdFolderCopy />,
       },
-      flex: 6,
-      minWidth: 210,
     },
     {
       colId: '8',
@@ -203,11 +191,8 @@ const Aggird = () => {
         title: 'First search...',
         children: <SlExclamation className='SlExclamation' />,
       },
-      minWidth: 120,
-      flex: 4,
     },
     {
-      flex: 4,
       colId: '9',
       headerComponentParams: {
         id: 9,
@@ -219,7 +204,6 @@ const Aggird = () => {
         classCSSWrapper: 'justify-end items-start p-2',
         icon: <MdAdd className='text-[20px] cursor-pointer flex' />,
       },
-      minWidth: 120,
     },
     {
       colId: '10',
@@ -236,9 +220,6 @@ const Aggird = () => {
           )}`,
         })
       },
-
-      flex: 7,
-      minWidth: 200,
     },
     {
       colId: '11',
@@ -257,8 +238,6 @@ const Aggird = () => {
       cellRendererParams: {
         type: 'status',
       },
-      flex: 5,
-      minWidth: 190,
     },
     {
       colId: '12',
@@ -269,7 +248,6 @@ const Aggird = () => {
         classCSS: 'justify-start',
         title: 'Test',
       },
-      flex: 3,
     },
   ]
 
