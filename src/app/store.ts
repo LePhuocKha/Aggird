@@ -1,9 +1,13 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit'
+import {hoverTableAggirdHeader} from '../component/features/table-aggrid/setHoverHeader'
+import {hoverTableAggirdCell} from '../component/features/table-aggrid/setHoverCell'
 // import userSlice from 'src/features/user/userSlice'
-// import listDataSlice from 'src/features/data/listDataSlice'
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    hoverTableAggirdHeader: hoverTableAggirdHeader.reducer,
+    hoverTableAggirdCell: hoverTableAggirdCell.reducer,
+  },
 })
 
 export type AppDispatch = typeof store.dispatch

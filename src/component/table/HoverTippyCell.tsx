@@ -9,6 +9,8 @@ import {data_type} from '../data-fake/Api'
 
 import {IoMdAdd} from 'react-icons/io'
 import TableChidlren from './TableChidlren'
+import {useSelector} from 'react-redux'
+import {RootState} from '../../app/store'
 
 export type MenuItem = {
   label: string
@@ -37,6 +39,7 @@ type Props = {
 const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => {
   const configColumnRef = useRef<any>(null)
   const menuLeft = useRef<any>(null)
+  const ojb_cell = useSelector((state: RootState) => state.hoverTableAggirdCell)
 
   const [addAdObjects, setAddAdObjects] = useState(false)
 
@@ -83,14 +86,14 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
   }
 
   return (
-    <div className={`${classCSS} flex relative`}>
+    <div className={`${classCSS} w-[100%] flex relative`}>
       <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
-      {/* <TableChidlren
+      <TableChidlren
         open={addAdObjects}
         handleClose={() => {
           setAddAdObjects(false)
         }}
-      /> */}
+      />
       <div className='flex justify-content-center  bg-white'>
         <Menu
           model={items}
@@ -103,13 +106,13 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
           aria-hidden='false'
         />
 
-        {data?.id === outerVisibleCell?.idTr && (
+        {data?.id === ojb_cell?.id_Cell?.idTr && (
           <button
             ref={configColumnRef}
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-1/2 right-1/2 transform -translate-x-[calc(50%-30px)] -translate-y-1/2 hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
           >
             <div>
               <BsThreeDotsVertical />

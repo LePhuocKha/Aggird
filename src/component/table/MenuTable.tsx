@@ -17,6 +17,7 @@ type Props = {
   handleClickResetColumn: () => void
   selectedColumns: {colId: string; hide: boolean}[]
   setSelectedColumns: Dispatch<React.SetStateAction<{colId: string; hide: boolean}[]>>
+  setNumberLoadData: Dispatch<React.SetStateAction<number>>
 }
 
 const MenuTable = ({
@@ -24,6 +25,7 @@ const MenuTable = ({
   handleClickResetColumn,
   selectedColumns,
   setSelectedColumns,
+  setNumberLoadData,
   saveColumnCookies,
 }: Props) => {
   const menuLeft = useRef<any>(null)
@@ -77,9 +79,10 @@ const MenuTable = ({
           icon: <GrPowerReset />,
           label: 'Reset all columns',
           command: () => {
-            handleClickResetColumn()
-            gridRef?.current!.api.resetColumnState()
+            setNumberLoadData(0)
             Cookies?.remove(saveColumnCookies)
+            gridRef?.current!.api.resetColumnState()
+            handleClickResetColumn()
           },
         },
       ],

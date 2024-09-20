@@ -4,6 +4,9 @@ import {Menu} from 'primereact/menu'
 
 import useClickOutside from '../../hooks/useClickOutside'
 import Cookies from 'js-cookie'
+import {useDispatch, useSelector} from 'react-redux'
+import {RootState} from '../../app/store'
+import {setHoverHeaderTableHoverAggird} from '../features/table-aggrid/setHoverHeader'
 
 export type MenuItemType = {
   label: string
@@ -16,21 +19,13 @@ type Props = {
   classCSS: string
   id: number
   items: MenuItemType[]
-  outerVisibleHeader: number
-  setOuterVisibleHeader: Dispatch<React.SetStateAction<number>>
 }
 
-const HoverTippyHeader = ({
-  children,
-  classCSS,
-  setOuterVisibleHeader,
-  outerVisibleHeader,
-  items = [],
-  id,
-}: Props) => {
+const HoverTippyHeader = ({children, classCSS, items = [], id}: Props) => {
   const menuLeft = useRef<any>(null)
   const configButton = useRef<any>(null)
-
+  const dispatch = useDispatch()
+  const ojb_header = useSelector((state: RootState) => state.hoverTableAggirdHeader)
   const handleClick = (event: React.MouseEvent) => {
     menuLeft?.current.toggle(event)
   }
@@ -45,7 +40,7 @@ const HoverTippyHeader = ({
 
   useClickOutside(configButton, () => {
     setTimeout(() => {
-      setOuterVisibleHeader(0)
+      dispatch(setHoverHeaderTableHoverAggird(0))
       Cookies.set('menu', 'false')
     }, 150)
   })
@@ -70,7 +65,7 @@ const HoverTippyHeader = ({
           aria-hidden='false'
         />
 
-        {outerVisibleHeader === id && (
+        {+ojb_header?.id_header === id && (
           <button
             ref={configButton}
             onClick={handleClick}

@@ -1,16 +1,15 @@
-import {Dispatch, useCallback, useEffect, useRef, useState} from 'react'
+import {Dispatch, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import HeaderComponent from './HeaderComponent'
 
-import {AgGridReact} from 'ag-grid-react'
+import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
 import Cookies from 'js-cookie'
 import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model'
 import {ModuleRegistry} from '@ag-grid-community/core'
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
 import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
-
 import countries from 'i18n-iso-countries'
 
 import './style.scss'
@@ -70,6 +69,20 @@ const Table = ({
   useEffect(() => {
     Cookies.set('menu', 'false')
   }, [])
+  useEffect(() => {
+    const loadColumnStateFromCookies = () => {
+      const savedColState = Cookies.get(saveColumnCookies)
+      if (savedColState && gridRef.current && gridRef.current.api) {
+        const colState = JSON.parse(savedColState)
+        gridRef.current.api.applyColumnState({
+          state: colState,
+          applyOrder: true,
+        })
+      }
+    }
+    const kha = 'a'
+    loadColumnStateFromCookies()
+  }, [outerVisibleCell, checkMenuOnOff, outerVisibleHeader, selectRow, pagination])
 
   const createServerSideDatasource = (server: Server) => {
     return {
@@ -108,7 +121,6 @@ const Table = ({
   }
   const loadData = async (params: any) => {
     const fakeData = (await generateData(100, params)) || []
-
     setNumberLoadData((prev) => prev + 1)
 
     // Setup the fake server with the updated dataset
@@ -120,12 +132,12 @@ const Table = ({
 
     params?.api?.setGridOption('serverSideDatasource', datasource)
   }
-
-  const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
+  console.log(JSON.parse(Cookies.get(saveColumnCookies) || '[]'), 'kha')
   const restoreState = useCallback(() => {
     const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
+
     if (savedColumnState) {
-      gridRef.current!.api.applyColumnState({
+      gridRef?.current!.api.applyColumnState({
         state: savedColumnState,
         applyOrder: true,
       })
@@ -139,24 +151,8 @@ const Table = ({
 
   const handleColumnChange = useCallback((event: any) => {
     setTimeout(() => {
-      const colDefs = gridRef?.current!.api.getColumnDefs() || []
-      const simpleColDefs = colDefs.map((colDef: any, index: number) => ({
-        colId: colDef.colId,
-        field: colDef.field,
-        width: colDef.width,
-        sort: colDef.sort,
-        sortIndex: index,
-        hide: colDef.hide ? true : false,
-      }))
-      console.log(simpleColDefs)
-
-      Cookies.set(saveColumnCookies, JSON.stringify(simpleColDefs), {expires: 7})
+      Cookies.set(saveColumnCookies, JSON.stringify(gridRef.current.api.getColumnState()))
     }, 500)
-  }, [])
-  const onRowDragEnd = useCallback((event: any) => {
-    console.log('Row dragged:')
-
-    // Bạn có thể thực hiện các hành động với dữ liệu bị kéo và thả ở đây
   }, [])
 
   return (
@@ -165,9 +161,9 @@ const Table = ({
         <AgGridReact
           ref={gridRef}
           domLayout='autoHeight'
+          columnDefs={colf}
           defaultColDef={{
             autoHeight: true,
-            minWidth: 150,
             resizable: true,
             sortable: true,
             headerComponent: HeaderComponent,
@@ -190,40 +186,17 @@ const Table = ({
               setSelectRow,
             },
           }}
-          suppressModelUpdateAfterUpdateTransaction={true}
-          onColumnMoved={() => {
-            const simpleColDefs = (gridRef?.current!.api.getColumnDefs() || []).map(
-              (colDef: any, index: number) => ({
-                colId: colDef.colId,
-                field: colDef.field,
-                width: colDef.width,
-                sort: colDef.sort,
-                sortIndex: index,
-                hide: colDef.hide ? true : false,
-              })
-            )
-            console.log(simpleColDefs)
-          }}
-          rowDragManaged={true} // Bật quản lý kéo và thả hàng
-          onRowDragEnd={onRowDragEnd}
+          suppressMoveWhenRowDragging={true}
+          suppressDragLeaveHidesColumns={true}
+          onColumnMoved={handleColumnChange}
           onColumnVisible={handleColumnChange}
+          onDragStopped={handleColumnChange}
           columnMenu={'legacy'}
           rowHeight={53}
           rowModelType='serverSide'
           pagination={true}
           paginationPageSize={pagination}
           onGridReady={onGridReady}
-          columnDefs={
-            [0].includes(numberLoadData)
-              ? colf.map((el) => {
-                  const find = savedColumnState.find((e: ColDef) => e?.colId === el?.colId)
-                  return {
-                    ...el,
-                    ...find,
-                  }
-                })
-              : colf
-          }
           loadingCellRenderer={Loading}
           loadingCellRendererParams={Loading}
         />

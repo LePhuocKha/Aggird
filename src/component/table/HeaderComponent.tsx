@@ -4,6 +4,10 @@ import HoverTippyHeader from './HoverTippyHeader'
 import {TiPin} from 'react-icons/ti'
 import {RiMenuAddLine, RiMenuFoldFill} from 'react-icons/ri'
 import {FaArrowDown, FaLongArrowAltUp} from 'react-icons/fa'
+import {useDispatch, useSelector} from 'react-redux'
+import {setHoverHeaderTableHoverAggird} from '../features/table-aggrid/setHoverHeader'
+import {RootState} from '../../app/store'
+import {setHoverHeaderTableCellAggird} from '../features/table-aggrid/setHoverCell'
 
 export type PropsHeader = {
   id: number
@@ -27,24 +31,18 @@ export type PropsHeader = {
   api: any
 }
 
-const HeaderComponent = ({
-  id,
-  title,
-  children,
-  classCSS,
-  Tippy = true,
-  setOuterVisibleHeader,
-  outerVisibleHeader,
-  setOuterVisibleCell,
-  api,
-}: PropsHeader) => {
+const HeaderComponent = ({id, title, children, classCSS, Tippy = true, api}: PropsHeader) => {
+  const dispatch = useDispatch()
+
   const handleMouseEnter = () => {
     if ((Cookies.get('menu') || '') !== 'true') {
-      setOuterVisibleHeader(id || 0)
-      setOuterVisibleCell({
-        idHeader: 0,
-        idTr: 0,
-      })
+      dispatch(setHoverHeaderTableHoverAggird(id || 0))
+      dispatch(
+        setHoverHeaderTableCellAggird({
+          idTr: '',
+          idHeader: 0,
+        })
+      )
     }
   }
 
@@ -95,13 +93,7 @@ const HeaderComponent = ({
   return (
     <div className='w-[100%] h-[100%] '>
       {Tippy ? (
-        <HoverTippyHeader
-          items={items}
-          outerVisibleHeader={outerVisibleHeader}
-          setOuterVisibleHeader={setOuterVisibleHeader}
-          id={id || 0}
-          classCSS='h-[100%] w-[100%]'
-        >
+        <HoverTippyHeader items={items} id={id || 0} classCSS='h-[100%] w-[100%]'>
           <div
             onMouseEnter={handleMouseEnter}
             className={`flex items-center h-[100%] pl-[5px] pr-[6px] gap-[3px] hover:bg-blue-100 ${classCSS}`}

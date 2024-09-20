@@ -17,12 +17,12 @@
     "@ag-grid-community/csv-export" "~27.3.0"
     "@ag-grid-community/infinite-row-model" "~27.3.0"
 
-"@ag-grid-community/client-side-row-model@^32.1.0":
-  "integrity" "sha512-R/IA3chA/w9fy6/EeZhi42PTwVnb6bNjGMah1GWGvuNDTvfbPO4X9r4nhOMj6YH483bO+C7pPb4EoLECx0dfRQ=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-community/client-side-row-model/-/client-side-row-model-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-community/client-side-row-model@^32.2.0":
+  "integrity" "sha512-Wg/jOd9+luIvIw5Ha+q4hTLMq1zSYtOrSwWZTGS8TIiLcAP/zScoPaweYrcEbWcR72aQ4XmSEcwwgluiwTbPtQ=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-community/client-side-row-model/-/client-side-row-model-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
-    "@ag-grid-community/core" "32.1.0"
+    "@ag-grid-community/core" "32.2.0"
     "tslib" "^2.3.0"
 
 "@ag-grid-community/client-side-row-model@~27.3.0":
@@ -31,6 +31,14 @@
   "version" "27.3.0"
   dependencies:
     "@ag-grid-community/core" "~27.3.0"
+
+"@ag-grid-community/core@^32.2.0", "@ag-grid-community/core@32.2.0":
+  "integrity" "sha512-ng7qhDfF91ecT5TldQsb5lhJ6M1ZhSIB2c1hSSmY0kqQHxn0uAJo6lpjz7SIUqyy4PFupsOoPs98CsW0Dl9dHA=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-community/core/-/core-32.2.0.tgz"
+  "version" "32.2.0"
+  dependencies:
+    "ag-charts-types" "10.2.0"
+    "tslib" "^2.3.0"
 
 "@ag-grid-community/core@~27.3.0":
   "integrity" "sha512-77/bE2KdFlFI/ywEP46aSspXtgBteY/OPQyzU/lWqYrG2wC6cLfPSUB60t9e0FiqElwM/Vdcjz0TAjRwhZOPkw=="
@@ -59,10 +67,10 @@
   dependencies:
     "@ag-grid-community/core" "~27.3.0"
 
-"@ag-grid-community/react@^32.1.0":
-  "integrity" "sha512-ObaMk+g5IpfuiHSNar56IhJ0dLKkHaeMQYI9H1JlJyf5+3IafY1DiuGZ5mZTU7GyfNBgmMuRWrUxwOyt0tp7Lw=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-community/react/-/react-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-community/react@^32.2.0":
+  "integrity" "sha512-Lx1c9gHzIwhlxivCd6g4bBAQMyNLQCS+GJ6QkhddKoT2TUQcl/9ExMOptbrC/FguHP3gdYKntVKMcp/xmNmSSg=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-community/react/-/react-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
     "prop-types" "^15.8.1"
 
@@ -115,15 +123,15 @@
     "@ag-grid-community/csv-export" "~27.3.0"
     "@ag-grid-enterprise/core" "~27.3.0"
 
-"@ag-grid-enterprise/column-tool-panel@^32.1.0", "@ag-grid-enterprise/column-tool-panel@32.1.0":
-  "integrity" "sha512-OFgNKryVPV18HZtMRME5BfMvgP+4QbN/oqV8V+1tUU0DyZdAEwrr9HlZorpC5vOKnnzB7MEF7KmTl7rTOfM+hA=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/column-tool-panel/-/column-tool-panel-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-enterprise/column-tool-panel@^32.2.0", "@ag-grid-enterprise/column-tool-panel@32.2.0":
+  "integrity" "sha512-uWVrMxYUAMfH9dVFN0JFCqPyhH7kBh61uNX4DX7OHEzCJGKbZ+7AaBS9MazYBQTyNqRdpWrngxWDrC4RYdx1BA=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/column-tool-panel/-/column-tool-panel-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
-    "@ag-grid-community/core" "32.1.0"
-    "@ag-grid-enterprise/core" "32.1.0"
-    "@ag-grid-enterprise/row-grouping" "32.1.0"
-    "@ag-grid-enterprise/side-bar" "32.1.0"
+    "@ag-grid-community/core" "32.2.0"
+    "@ag-grid-enterprise/core" "32.2.0"
+    "@ag-grid-enterprise/row-grouping" "32.2.0"
+    "@ag-grid-enterprise/side-bar" "32.2.0"
 
 "@ag-grid-enterprise/column-tool-panel@~27.3.0":
   "integrity" "sha512-BujQza9bfbhJhTFhnhmyQkWQEC3FXPOr6aGOoN0FIV1Tv7DmQwhKVxC3VlE9Lx9QhcCC9hAlEb9C3ueSiIky1A=="
@@ -148,6 +156,13 @@
   "version" "32.1.0"
   dependencies:
     "@ag-grid-community/core" "32.1.0"
+
+"@ag-grid-enterprise/core@32.2.0":
+  "integrity" "sha512-3u6SqgrXMOV0Xmf0zK0zvtnlGzi9cGf+M9qvMN+bcBR64Hc8zjmOTwUGdpUtJgs7R1vX5vVoZUK39jEp2tMFhQ=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/core/-/core-32.2.0.tgz"
+  "version" "32.2.0"
+  dependencies:
+    "@ag-grid-community/core" "32.2.0"
 
 "@ag-grid-enterprise/excel-export@~27.3.0":
   "integrity" "sha512-2uCTAbioKcLuRkYZutYcgL1U3fEYeatp2eMa/vjGND6dz7cF8Dtomua02FSCiOU2jM5cUIGk8Pvr3QR6ocazkA=="
@@ -175,14 +190,14 @@
     "@ag-grid-community/core" "~27.3.0"
     "@ag-grid-enterprise/core" "~27.3.0"
 
-"@ag-grid-enterprise/menu@^32.1.0":
-  "integrity" "sha512-w2u1ch8crNa+AhoWsYqwpr3TBD6h2bvUYAGamxBavZWm1j1MKA7KwcdW1hJ3dgWO8MES4qf/+nq2EHuy9/HO2A=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/menu/-/menu-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-enterprise/menu@^32.2.0":
+  "integrity" "sha512-+Rdqqc0Z0750tO1VyKJlM0gbv8nqTcPg26RQK7X2KcOJFHzJo+G69IGwWl8jC78uLPVP6tLUjIcdHTRxm01RZQ=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/menu/-/menu-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
-    "@ag-grid-community/core" "32.1.0"
-    "@ag-grid-enterprise/column-tool-panel" "32.1.0"
-    "@ag-grid-enterprise/core" "32.1.0"
+    "@ag-grid-community/core" "32.2.0"
+    "@ag-grid-enterprise/column-tool-panel" "32.2.0"
+    "@ag-grid-enterprise/core" "32.2.0"
 
 "@ag-grid-enterprise/menu@~27.3.0":
   "integrity" "sha512-Fw5m3auf6cRkK3qk3qmGZ7AYRcmFd9oYGKMy6CsNfNvz7KXH6jnY9Mgl6urA+dD5sc4jqHooPXGFQSCbLWihtg=="
@@ -225,13 +240,13 @@
     "@ag-grid-community/core" "~27.3.0"
     "@ag-grid-enterprise/core" "~27.3.0"
 
-"@ag-grid-enterprise/row-grouping@32.1.0":
-  "integrity" "sha512-ij6C2FRf+sTwBRnn23yoTzI4IsCgdT9F6BTMc47F9uH7Zc9F8Qaidy2bUjBFTMcUODpfDhjZObkfCVuLhK/6Kw=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/row-grouping/-/row-grouping-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-enterprise/row-grouping@32.2.0":
+  "integrity" "sha512-7WjOpBv4f0q1ljFLzou/mQcXVi9ydu6h6qsY6AZ5oqxwSwnuwrZHMD1sZKeEn4Tg0Cr5vpFD0fT+C92utNSLyQ=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/row-grouping/-/row-grouping-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
-    "@ag-grid-community/core" "32.1.0"
-    "@ag-grid-enterprise/core" "32.1.0"
+    "@ag-grid-community/core" "32.2.0"
+    "@ag-grid-enterprise/core" "32.2.0"
 
 "@ag-grid-enterprise/server-side-row-model@^32.1.0":
   "integrity" "sha512-l4MX/AMDRG0/uCzQ3CUu9hBG5fPw3NqhBbY/4aY8VbnEdSZ4TosTwMgoZQVbXY+Vg6o9GVR8j9+SQTbvCBnA7g=="
@@ -265,13 +280,13 @@
     "@ag-grid-community/core" "~27.3.0"
     "@ag-grid-enterprise/core" "~27.3.0"
 
-"@ag-grid-enterprise/side-bar@32.1.0":
-  "integrity" "sha512-bJgPCbW0BXAFjAGKwPDj5aDQpZSBS7IMCJ4AltCI0Ng4CyUx7mRWK6ShM58Y9lfDk9JskLOlahKu05bx6iNPoQ=="
-  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/side-bar/-/side-bar-32.1.0.tgz"
-  "version" "32.1.0"
+"@ag-grid-enterprise/side-bar@32.2.0":
+  "integrity" "sha512-8DgJbj6xLbSGiEUl8nE1k9IICshQxHqOHeDmnU+LsUDRr7NzyjFIEXS4mymTfJxn+5FcRKiHqjrE3ghud/p4mw=="
+  "resolved" "https://registry.npmjs.org/@ag-grid-enterprise/side-bar/-/side-bar-32.2.0.tgz"
+  "version" "32.2.0"
   dependencies:
-    "@ag-grid-community/core" "32.1.0"
-    "@ag-grid-enterprise/core" "32.1.0"
+    "@ag-grid-community/core" "32.2.0"
+    "@ag-grid-enterprise/core" "32.2.0"
 
 "@ag-grid-enterprise/sparklines@~27.3.0":
   "integrity" "sha512-PF9ZCihRJ6ewrlAA5NXMhdm6ro7pp3h751EnW1PCjTBA7jWIBmh2X1z4kF5LMiXFW2pbTHXtTiafQJl2Bg+ybg=="
@@ -2881,6 +2896,11 @@
   "integrity" "sha512-pk9ft8hbgTXJ/thI/SEUR1BoauNplYExpcHh7tMOqVikoDsta1O15TB1ZL4XWnl4TPIzROBmONKsz7d8a2HBuQ=="
   "resolved" "https://registry.npmjs.org/ag-charts-types/-/ag-charts-types-10.1.0.tgz"
   "version" "10.1.0"
+
+"ag-charts-types@10.2.0":
+  "integrity" "sha512-PUqH1QtugpYLnlbMdeSZVf5PpT1XZVsP69qN1JXhetLtQpVC28zaj7ikwu9CMA9N9b+dBboA9QcjUQUJZVUokQ=="
+  "resolved" "https://registry.npmjs.org/ag-charts-types/-/ag-charts-types-10.2.0.tgz"
+  "version" "10.2.0"
 
 "ag-grid-community@^32.1.0", "ag-grid-community@32.1.0":
   "integrity" "sha512-RVvkjRH61nuCXwIqTKQPqNbKR+8cGBKw7S1qmmMXsy0pCBAJaQn4kL3v31hKHxDtV4bPscBXLFKGnKzHuss0GQ=="

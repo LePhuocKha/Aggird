@@ -7,6 +7,9 @@ import InputCheckBox from '../checkbox/InputCheckBox'
 import countries from 'i18n-iso-countries'
 import Flag from 'react-world-flags'
 import Cookies from 'js-cookie'
+import {setHoverHeaderTableCellAggird} from '../features/table-aggrid/setHoverCell'
+import {useDispatch} from 'react-redux'
+import {setHoverHeaderTableHoverAggird} from '../features/table-aggrid/setHoverHeader'
 
 type children_config_data = {
   css?: string
@@ -74,6 +77,8 @@ const CellComponent = ({
   classCSSWrapper,
   value,
 }: PropsCell) => {
+  const dispatch = useDispatch()
+
   const dataRender = status_type.filter((el) => el.value === (+data?.status || 0))?.[0]
 
   const handleCheckboxClick = () => {
@@ -129,7 +134,7 @@ const CellComponent = ({
               rowData?.hashtag || rowData?.stubtext ? 'text-sky-800 ' : 'text-gray-700'
             } font-medium flex justify-start items-center leading-[15px] break-words`}
           >
-            {rowData?.label} qweqw qwe qwe qwe qwe qweqweqweqw qư wqe qư
+            {rowData?.label}
           </p>
           <p className='leading-[12px] text-[12px] min-h-[12px] text-gray-400 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>
             {rowData?.stubtext}
@@ -142,11 +147,13 @@ const CellComponent = ({
   const handleMouseEnter = () => {
     if (Cookies.get('menu') !== 'true') {
       if (outerVisibleCell.idTr !== data?.id) {
-        setOuterVisibleCell({
-          idHeader: Number(id) || 0,
-          idTr: data?.id || 0,
-        })
-        setOuterVisibleHeader(0)
+        dispatch(
+          setHoverHeaderTableCellAggird({
+            idTr: data?.id,
+            idHeader: id,
+          })
+        )
+        dispatch(setHoverHeaderTableHoverAggird(0))
       }
     }
   }
