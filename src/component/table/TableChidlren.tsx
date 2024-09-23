@@ -147,11 +147,11 @@ const TableChidlren = ({open, handleClose}: Props) => {
       </div>
       <div className='max-h-[calc(100vh-200px)] overflow-y-auto'>
         <Table
+          defaultCol={[]}
           saveColumnCookies={'columnDefs_Table_Children'}
           selectRow={selectRow}
           setSelectRow={setSelectRow}
           setPagination={setPagination}
-          Data={[]}
           setData={setData}
           pagination={pagination}
           gridRef={gridRef}

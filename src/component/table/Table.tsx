@@ -1,39 +1,20 @@
-import {Dispatch, useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import {Dispatch, useCallback, useEffect, useState} from 'react'
 import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import HeaderComponent from './HeaderComponent'
-
-import {AgGridReact, AgGridReactProps} from 'ag-grid-react'
+import {AgGridReact} from 'ag-grid-react'
 import Cookies from 'js-cookie'
-import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model'
-import {ModuleRegistry} from '@ag-grid-community/core'
-import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel'
-import {MenuModule} from '@ag-grid-enterprise/menu'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
-import countries from 'i18n-iso-countries'
-
 import './style.scss'
-
-import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
-import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
+import 'ag-grid-community/styles/ag-grid.css'
+import 'ag-grid-community/styles/ag-theme-quartz.css'
 import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
 
-ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
-countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
-
-export interface Server {
-  getData: (request: IGetRowsParams) => {
-    success: boolean
-    rows: any[]
-    totalRows: number
-  }
-}
-
 type Props = {
   colf: ColDef[]
+  defaultCol: any[]
   gridRef: any
-  Data: data_type[]
   setData: Dispatch<React.SetStateAction<data_type[]>>
   pagination: number
   numberLoadData: number
@@ -47,21 +28,18 @@ type Props = {
 const Table = ({
   colf,
   gridRef,
-  //   Data,
   setData,
   pagination,
   setNumberLoadData,
   selectRow,
+  defaultCol = [],
   setSelectRow,
   numberLoadData,
   saveColumnCookies,
 }: Props) => {
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
-  const [outerVisibleCell, setOuterVisibleCell] = useState<{
-    idTr: string
-    idHeader: number
-  }>({
+  const [outerVisibleCell, setOuterVisibleCell] = useState<{idTr: string; idHeader: number}>({
     idTr: '',
     idHeader: 0,
   })
@@ -69,91 +47,64 @@ const Table = ({
   useEffect(() => {
     Cookies.set('menu', 'false')
   }, [])
-  useEffect(() => {
-    const loadColumnStateFromCookies = () => {
-      const savedColState = Cookies.get(saveColumnCookies)
-      if (savedColState && gridRef.current && gridRef.current.api) {
-        const colState = JSON.parse(savedColState)
-        gridRef.current.api.applyColumnState({
-          state: colState,
-          applyOrder: true,
-        })
+
+  const createFakeServer = (allData: data_type[]) => ({
+    getData: (request: IGetRowsParams) => {
+      const {startRow, endRow} = request
+      const rowsThisPage = allData.slice(startRow, endRow)
+      const lastRow = allData.length
+      return {
+        success: true,
+        rows: rowsThisPage,
+        totalRows: lastRow,
       }
-    }
-    const kha = 'a'
-    loadColumnStateFromCookies()
-  }, [outerVisibleCell, checkMenuOnOff, outerVisibleHeader, selectRow, pagination])
+    },
+  })
 
-  const createServerSideDatasource = (server: Server) => {
-    return {
+  const loadData = async (params: any) => {
+    const fakeData = (await generateData(100, params)) || []
+
+    const fakeServer = createFakeServer([...fakeData])
+    setData([...fakeData])
+
+    const datasource = {
       getRows: (params: any) => {
-        // Simulate server call
-        const response = server.getData(params.request)
-
+        const response = fakeServer.getData(params.request)
         setTimeout(() => {
           if (response.success) {
-            params.success({
-              rowData: response.rows,
-              rowCount: response.totalRows,
-            })
+            params.success({rowData: response.rows, rowCount: response.totalRows})
           } else {
             params.fail()
           }
         }, 500)
       },
     }
+    params.api.setGridOption('serverSideDatasource', datasource)
   }
 
-  const createFakeServer = (allData: data_type[]) => {
-    return {
-      getData: (request: IGetRowsParams) => {
-        const {startRow, endRow} = request
-        const rowsThisPage = allData.slice(startRow, endRow)
-        const lastRow = allData.length
-
-        return {
-          success: true,
-          rows: rowsThisPage,
-          totalRows: lastRow, // Total number of rows available on the server
-        }
-      },
-    }
-  }
-  const loadData = async (params: any) => {
-    const fakeData = (await generateData(100, params)) || []
-    setNumberLoadData((prev) => prev + 1)
-
-    // Setup the fake server with the updated dataset
-    const fakeServer = createFakeServer([...fakeData])
-    setData((prevData) => [...fakeData])
-    // create datasource with a reference to the fake server
-    const datasource = await createServerSideDatasource(fakeServer)
-    // register the datasource with the grid
-
-    params?.api?.setGridOption('serverSideDatasource', datasource)
-  }
-  console.log(JSON.parse(Cookies.get(saveColumnCookies) || '[]'), 'kha')
   const restoreState = useCallback(() => {
     const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
+    gridRef?.current!.api.applyColumnState({
+      state: savedColumnState.length ? savedColumnState : colf,
+      applyOrder: true,
+    })
+  }, [gridRef, saveColumnCookies, defaultCol])
 
-    if (savedColumnState) {
-      gridRef?.current!.api.applyColumnState({
-        state: savedColumnState,
-        applyOrder: true,
-      })
-    }
-  }, [])
+  const onGridReady = useCallback(
+    async (params: any) => {
+      setNumberLoadData(2)
+      await restoreState()
+      await loadData(params)
+    },
+    [restoreState]
+  )
 
-  const onGridReady = useCallback(async (params: any) => {
-    await restoreState()
-    await loadData(params)
-  }, [])
-
-  const handleColumnChange = useCallback((event: any) => {
+  const handleColumnChange = useCallback(() => {
+    setNumberLoadData(2)
     setTimeout(() => {
       Cookies.set(saveColumnCookies, JSON.stringify(gridRef.current.api.getColumnState()))
     }, 500)
-  }, [])
+  }, [gridRef, saveColumnCookies])
 
   return (
     <div>
@@ -161,7 +112,25 @@ const Table = ({
         <AgGridReact
           ref={gridRef}
           domLayout='autoHeight'
-          columnDefs={colf}
+          columnDefs={
+            Cookies.get(saveColumnCookies)
+              ? (JSON.parse(Cookies.get(saveColumnCookies) || '[]') || []).map((cookies: any) => {
+                  const findColf: any = colf.find((fin) => fin.colId === cookies?.colId)
+                  const {flex, ...find_colf} = findColf
+                  const {flex: flexCoookies, ...cookie} = cookies
+                  return {
+                    ...find_colf,
+                    ...cookie,
+                  }
+                })
+              : numberLoadData === 0
+              ? colf
+              : colf.map((el) => {
+                  const {flex, width, maxWidth, ...e} = el
+                  const {width: widthC} = gridRef.current.api.getColumnState()
+                  return {width: widthC, ...e}
+                })
+          }
           defaultColDef={{
             autoHeight: true,
             resizable: true,

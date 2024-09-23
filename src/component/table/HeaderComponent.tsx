@@ -15,6 +15,7 @@ export type PropsHeader = {
   children?: React.ReactElement
   classCSS?: string
   Tippy?: boolean
+  setSelectRow: Dispatch<React.SetStateAction<string[]>>
   outerVisibleHeader: number
   setOuterVisibleHeader: Dispatch<React.SetStateAction<number>>
   setOuterVisibleCell: Dispatch<
@@ -31,7 +32,15 @@ export type PropsHeader = {
   api: any
 }
 
-const HeaderComponent = ({id, title, children, classCSS, Tippy = true, api}: PropsHeader) => {
+const HeaderComponent = ({
+  id,
+  title,
+  children,
+  classCSS,
+  Tippy = true,
+  api,
+  setSelectRow,
+}: PropsHeader) => {
   const dispatch = useDispatch()
 
   const handleMouseEnter = () => {
@@ -83,6 +92,7 @@ const HeaderComponent = ({id, title, children, classCSS, Tippy = true, api}: Pro
       label: 'Hide this',
       icon: <RiMenuFoldFill />,
       command: () => {
+        setSelectRow([])
         console.log(id.toString())
         api?.setColumnVisible(id.toString(), false)
         api?.refreshServerSide({purge: true})

@@ -30,6 +30,176 @@ import 'ag-grid-enterprise'
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, ColumnsToolPanelModule, MenuModule])
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'))
+const d = [
+  {
+    colId: '1',
+    width: 40,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 1,
+  },
+  {
+    colId: '2',
+    width: 40,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 1,
+  },
+  {
+    colId: '3',
+    width: 161,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 4,
+  },
+  {
+    colId: '4',
+    width: 530,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: null,
+  },
+  {
+    colId: '5',
+    width: 243,
+    hide: true,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 7,
+  },
+  {
+    colId: '6',
+    width: 120,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 4,
+  },
+  {
+    colId: '7',
+    width: 210,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 6,
+  },
+  {
+    colId: '8',
+    width: 120,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 4,
+  },
+  {
+    colId: '9',
+    width: 120,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 4,
+  },
+  {
+    colId: '10',
+    width: 200,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 7,
+  },
+  {
+    colId: '11',
+    width: 190,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 5,
+  },
+  {
+    colId: '12',
+    width: 50,
+    hide: false,
+    pinned: null,
+    sort: null,
+    sortIndex: null,
+    aggFunc: null,
+    rowGroup: false,
+    rowGroupIndex: null,
+    pivot: false,
+    pivotIndex: null,
+    flex: 3,
+  },
+]
 
 export interface Server {
   getData: (request: IGetRowsParams) => {
@@ -269,6 +439,7 @@ const Aggird = () => {
         title: 'Test',
       },
       flex: 3,
+      minWidth: 90,
     },
   ]
 
@@ -341,6 +512,7 @@ const Aggird = () => {
       />
       <div>
         <Table
+          defaultCol={d}
           saveColumnCookies='columnDefs'
           selectRow={selectRow}
           setSelectRow={setSelectRow}
@@ -348,7 +520,6 @@ const Aggird = () => {
           setNumberLoadData={setNumberLoadData}
           pagination={pagination}
           setPagination={setPagination}
-          Data={Data}
           gridRef={gridRef}
           setData={setData}
           colf={colf}
