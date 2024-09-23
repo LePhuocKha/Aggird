@@ -18,6 +18,7 @@ type Props = {
   selectedColumns: {colId: string; hide: boolean}[]
   setSelectedColumns: Dispatch<React.SetStateAction<{colId: string; hide: boolean}[]>>
   setNumberLoadData: Dispatch<React.SetStateAction<number>>
+  setSelectRow: Dispatch<React.SetStateAction<string[]>>
 }
 
 const MenuTable = ({
@@ -27,6 +28,7 @@ const MenuTable = ({
   setSelectedColumns,
   setNumberLoadData,
   saveColumnCookies,
+  setSelectRow,
 }: Props) => {
   const menuLeft = useRef<any>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -72,6 +74,7 @@ const MenuTable = ({
           label: 'Properties',
           command: () => {
             // gridRef?.current!.api.showColumnChooser()
+
             setOpenProperties(true)
           },
         },
@@ -80,9 +83,12 @@ const MenuTable = ({
           label: 'Reset all columns',
           command: () => {
             setNumberLoadData(0)
+            setSelectRow([])
             Cookies?.remove(saveColumnCookies)
-            gridRef?.current!.api.resetColumnState()
-            handleClickResetColumn()
+            setTimeout(() => {
+              gridRef?.current!.api.resetColumnState()
+              handleClickResetColumn()
+            })
           },
         },
       ],
@@ -165,26 +171,28 @@ const MenuTable = ({
                 </label>
               </div>
             )}
-            {filteredColumns.map((column) => {
-              const colDef = column?.getColDef()
-              const colId = column?.getColId()
+            {filteredColumns
+              ?.sort((a, b) => a.getColId().localeCompare(b.getColId()))
+              ?.map((column) => {
+                const colDef = column?.getColDef()
+                const colId = column?.getColId()
 
-              const isHidden = selectedColumns.find((c) => c?.colId === colId)?.hide || false
+                const isHidden = selectedColumns.find((c) => c?.colId === colId)?.hide || false
 
-              return (
-                <div key={column.getColId()} className='flex gap-[10px] items-center'>
-                  <CgMenuGridO />
-                  <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
-                    <input
-                      type='checkbox'
-                      checked={!isHidden}
-                      onChange={() => handleColumnToggle(colId)}
-                    />
-                    {colDef?.headerComponentParams?.title || column?.getColId()}
-                  </label>
-                </div>
-              )
-            })}
+                return (
+                  <div key={column.getColId()} className='flex gap-[10px] items-center'>
+                    <CgMenuGridO />
+                    <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
+                      <input
+                        type='checkbox'
+                        checked={!isHidden}
+                        onChange={() => handleColumnToggle(colId)}
+                      />
+                      {colDef?.headerComponentParams?.title || column?.getColId()}
+                    </label>
+                  </div>
+                )
+              })}
           </div>
         </div>
         <div className='flex gap-[10px] justify-end'>

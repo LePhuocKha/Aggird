@@ -92,8 +92,6 @@ const HeaderComponent = ({
       label: 'Hide this',
       icon: <RiMenuFoldFill />,
       command: () => {
-        setSelectRow([])
-        console.log(id.toString())
         api?.setColumnVisible(id.toString(), false)
         api?.refreshServerSide({purge: true})
       },

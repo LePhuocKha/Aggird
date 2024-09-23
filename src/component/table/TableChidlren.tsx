@@ -82,6 +82,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
           label: `${p.data?.status === 1 ? 'Activated' : 'Disabled'}`,
         })
       },
+      minWidth: 30,
       flex: 2,
     },
     {
@@ -101,6 +102,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
           stubtext: `${p.data.number}`,
         })
       },
+      minWidth: 30,
       flex: 3,
     },
     {
@@ -119,6 +121,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
           label: `${p.data?.brand}`,
         })
       },
+      minWidth: 30,
       flex: 2,
     },
   ]

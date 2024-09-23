@@ -504,6 +504,7 @@ const Aggird = () => {
         setNumberLoadData={setNumberLoadData}
         saveColumnCookies='columnDefs'
         selectedColumns={selectedColumns}
+        setSelectRow={setSelectRow}
         setSelectedColumns={setSelectedColumns}
         gridRef={gridRef}
         handleClickResetColumn={() => {

@@ -5,10 +5,11 @@ import HeaderComponent from './HeaderComponent'
 import {AgGridReact} from 'ag-grid-react'
 import Cookies from 'js-cookie'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
+
 import './style.scss'
+
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-quartz.css'
-import 'tippy.js/dist/tippy.css'
 import 'ag-grid-enterprise'
 
 type Props = {
@@ -100,10 +101,7 @@ const Table = ({
   )
 
   const handleColumnChange = useCallback(() => {
-    setNumberLoadData(2)
-    setTimeout(() => {
-      Cookies.set(saveColumnCookies, JSON.stringify(gridRef.current.api.getColumnState()))
-    }, 500)
+    Cookies.set(saveColumnCookies, JSON.stringify(gridRef.current.api.getColumnState()))
   }, [gridRef, saveColumnCookies])
 
   return (
@@ -117,10 +115,11 @@ const Table = ({
               ? (JSON.parse(Cookies.get(saveColumnCookies) || '[]') || []).map((cookies: any) => {
                   const findColf: any = colf.find((fin) => fin.colId === cookies?.colId)
                   const {flex, ...find_colf} = findColf
-                  const {flex: flexCoookies, ...cookie} = cookies
+                  const {flex: flexCoookies, width, ...cookie} = cookies
+                  console.log(numberLoadData)
+
                   return {
                     ...find_colf,
-                    ...cookie,
                   }
                 })
               : numberLoadData === 0
