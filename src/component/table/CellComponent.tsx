@@ -123,7 +123,7 @@ const CellComponent = ({
           <Flag code={data?.country} className='w-[20px] min-w-[20px] flex-shrink-0' />
         )}
         {['status'].includes(type as string) && (
-          <div className={`${dataRender?.class} w-[12px] h-[12px] rounded-full mt-[5px]`}></div>
+          <div className={`${dataRender?.class} w-[12px] h-[12px] rounded-full`}></div>
         )}
         <div className='flex flex-col gap-[3px]'>
           <p className='leading-[12px] text-[10px] min-h-[12px] text-sky-500 font-medium whitespace-break-spaces flex justify-start items-center  break-words'>

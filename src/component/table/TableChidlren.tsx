@@ -1,6 +1,6 @@
 import {Dialog} from 'primereact/dialog'
 import {AgGridReact} from 'ag-grid-react'
-import {useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {ColDef} from 'ag-grid-community'
 
 import CellComponent from './CellComponent'
@@ -21,10 +21,16 @@ import moment from 'moment'
 
 type Props = {
   open: boolean
+  tablePlacet: {
+    top: number
+    left: number
+    right: number
+    bottom: number
+  }
   handleClose: () => void
 }
 
-const TableChidlren = ({open, handleClose}: Props) => {
+const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
   const gridRef = useRef<AgGridReact<any>>(null)
   const [pagination, setPagination] = useState(10)
   const [numberLoadData, setNumberLoadData] = useState<number>(0)
@@ -44,7 +50,7 @@ const TableChidlren = ({open, handleClose}: Props) => {
           <InputCheckBox
             checked={selectRow.length >= pagination}
             onChange={() => {
-              if (selectRow.length >= Data.length) {
+              if (selectRow.length >= pagination) {
                 setSelectRow([])
               } else {
                 setSelectRow(
@@ -125,9 +131,15 @@ const TableChidlren = ({open, handleClose}: Props) => {
       flex: 2,
     },
   ]
-
+  const leftTable = `left-[${tablePlacet?.left}px]`
   return (
-    <Dialog visible={open} style={{width: '50vw'}} onHide={() => {}}>
+    <Dialog
+      visible={open}
+      className={` w-[900px] absolute ${
+        window.innerWidth - 900 > tablePlacet?.left ? leftTable : 'right-[10px]'
+      } `}
+      onHide={() => {}}
+    >
       <div className='mb-[10px] flex justify-center items-center gap-[15px] h-[100%] mh-[50px]'>
         <Select className='w-[150px]' value={1} options={[{value: 1, label: 'container'}]} />
         <div className='flex justify-center items-center w-[100%] gap-[10px]'>
@@ -150,7 +162,6 @@ const TableChidlren = ({open, handleClose}: Props) => {
       </div>
       <div className='max-h-[calc(100vh-200px)] overflow-y-auto'>
         <Table
-          defaultCol={[]}
           saveColumnCookies={'columnDefs_Table_Children'}
           selectRow={selectRow}
           setSelectRow={setSelectRow}

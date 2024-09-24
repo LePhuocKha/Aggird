@@ -14,7 +14,6 @@ import 'ag-grid-enterprise'
 
 type Props = {
   colf: ColDef[]
-  defaultCol: any[]
   gridRef: any
   setData: Dispatch<React.SetStateAction<data_type[]>>
   pagination: number
@@ -33,7 +32,6 @@ const Table = ({
   pagination,
   setNumberLoadData,
   selectRow,
-  defaultCol = [],
   setSelectRow,
   numberLoadData,
   saveColumnCookies,
@@ -44,7 +42,30 @@ const Table = ({
     idTr: '',
     idHeader: 0,
   })
+  const [savedColumnState, setSavedColumnState] = useState<ColDef[]>([])
 
+  useEffect(() => {
+    const savedState = Cookies.get(saveColumnCookies)
+      ? (JSON.parse(Cookies.get(saveColumnCookies) || '[]') || []).map((cookies: any) => {
+          const findColf: any = colf.find((fin) => fin.colId === cookies?.colId)
+          const {flex, ...find_colf} = findColf
+          const {flex: flexCoookies, ...cookie} = cookies
+
+          return {
+            ...find_colf,
+            ...cookie,
+          }
+        })
+      : numberLoadData === 0
+      ? colf
+      : colf.map((el) => {
+          const {flex, width, maxWidth, ...e} = el
+          const {width: widthC} = gridRef?.current?.api?.getColumnState()
+
+          return {width: widthC, ...e}
+        })
+    setSavedColumnState(savedState.length ? savedState : colf)
+  }, [saveColumnCookies, colf, numberLoadData])
   useEffect(() => {
     Cookies.set('menu', 'false')
   }, [])
@@ -89,7 +110,7 @@ const Table = ({
       state: savedColumnState.length ? savedColumnState : colf,
       applyOrder: true,
     })
-  }, [gridRef, saveColumnCookies, defaultCol])
+  }, [gridRef, saveColumnCookies])
 
   const onGridReady = useCallback(
     async (params: any) => {
@@ -101,7 +122,7 @@ const Table = ({
   )
 
   const handleColumnChange = useCallback(() => {
-    Cookies.set(saveColumnCookies, JSON.stringify(gridRef.current.api.getColumnState()))
+    Cookies.set(saveColumnCookies, JSON.stringify(gridRef?.current?.api?.getColumnState()))
   }, [gridRef, saveColumnCookies])
 
   return (
@@ -110,26 +131,7 @@ const Table = ({
         <AgGridReact
           ref={gridRef}
           domLayout='autoHeight'
-          columnDefs={
-            Cookies.get(saveColumnCookies)
-              ? (JSON.parse(Cookies.get(saveColumnCookies) || '[]') || []).map((cookies: any) => {
-                  const findColf: any = colf.find((fin) => fin.colId === cookies?.colId)
-                  const {flex, ...find_colf} = findColf
-                  const {flex: flexCoookies, width, ...cookie} = cookies
-                  console.log(numberLoadData)
-
-                  return {
-                    ...find_colf,
-                  }
-                })
-              : numberLoadData === 0
-              ? colf
-              : colf.map((el) => {
-                  const {flex, width, maxWidth, ...e} = el
-                  const {width: widthC} = gridRef.current.api.getColumnState()
-                  return {width: widthC, ...e}
-                })
-          }
+          columnDefs={savedColumnState}
           defaultColDef={{
             autoHeight: true,
             resizable: true,

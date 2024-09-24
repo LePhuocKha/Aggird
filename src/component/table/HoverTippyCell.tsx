@@ -40,9 +40,14 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
   const configColumnRef = useRef<any>(null)
   const menuLeft = useRef<any>(null)
   const ojb_cell = useSelector((state: RootState) => state.hoverTableAggirdCell)
-
+  const [menuOpen, setMenuOpen] = useState(false)
   const [addAdObjects, setAddAdObjects] = useState(false)
-
+  const [tablePlacet, setTable_placet] = useState<{
+    top: number
+    left: number
+    right: number
+    bottom: number
+  }>({top: 0, left: 0, right: 0, bottom: 0})
   const items = [
     {
       items: [
@@ -69,9 +74,13 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
 
   const handleClick = (event: React.MouseEvent) => {
     menuLeft?.current.toggle(event)
+    const buttonRect = (event.target as HTMLElement).getBoundingClientRect()
+    const {top, left, right, bottom} = buttonRect
+    setTable_placet({top, left, right, bottom})
   }
 
   const handleMenuShow = () => {
+    setMenuOpen(true)
     Cookies.set('menu', 'true')
   }
 
@@ -83,12 +92,14 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
 
   const handleMenuHide = () => {
     Cookies.set('menu', 'false')
+    setMenuOpen(false)
   }
 
   return (
     <div className={`${classCSS} w-[100%] flex relative`}>
       <div className='cursor-pointer w-[100%] h-[100%]'>{children}</div>
       <TableChidlren
+        tablePlacet={tablePlacet}
         open={addAdObjects}
         handleClose={() => {
           setAddAdObjects(false)
@@ -112,7 +123,9 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-1/2 right-1/2 transform -translate-x-[calc(50%-30px)] -translate-y-1/2 hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
+              menuOpen ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
+            }`}
           >
             <div>
               <BsThreeDotsVertical />

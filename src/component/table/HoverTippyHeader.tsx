@@ -1,4 +1,4 @@
-import React, {Dispatch, useRef} from 'react'
+import React, {Dispatch, useRef, useState} from 'react'
 import {BsThreeDotsVertical} from 'react-icons/bs'
 import {Menu} from 'primereact/menu'
 
@@ -26,22 +26,27 @@ const HoverTippyHeader = ({children, classCSS, items = [], id}: Props) => {
   const configButton = useRef<any>(null)
   const dispatch = useDispatch()
   const ojb_header = useSelector((state: RootState) => state.hoverTableAggirdHeader)
+  const [menuOpen, setMenuOpen] = useState(false)
   const handleClick = (event: React.MouseEvent) => {
     menuLeft?.current.toggle(event)
   }
 
   const handleMenuShow = () => {
     Cookies.set('menu', 'true')
+
+    setMenuOpen(true)
   }
 
   const handleMenuHide = () => {
     Cookies.set('menu', 'false')
+    setMenuOpen(false)
   }
 
   useClickOutside(configButton, () => {
     setTimeout(() => {
       dispatch(setHoverHeaderTableHoverAggird(0))
       Cookies.set('menu', 'false')
+      setMenuOpen(false)
     }, 150)
   })
 
@@ -71,7 +76,9 @@ const HoverTippyHeader = ({children, classCSS, items = [], id}: Props) => {
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${'text-gray-900 bg-white'}`}
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
+              menuOpen ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
+            }`}
           >
             <div>
               <BsThreeDotsVertical />
