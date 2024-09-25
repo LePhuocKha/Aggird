@@ -9,7 +9,7 @@ import Button from '../button/Button'
 import HeaderComponent from './HeaderComponent'
 import Table from './Table'
 import Select from '../select/Select'
-import {data_type} from '../data-fake/Api'
+import {data_type, generateData} from '../data-fake/Api'
 
 import {FaRegCalendarMinus} from 'react-icons/fa6'
 import {IoCloseCircle} from 'react-icons/io5'
@@ -18,6 +18,10 @@ import './style.scss'
 import {HiDotsVertical} from 'react-icons/hi'
 import {formatDate} from '../../utils/common'
 import moment from 'moment'
+import Cookies from 'js-cookie'
+import MenuTable from './MenuTable'
+import {IGetRowsParams} from '@ag-grid-community/core'
+import {Server} from './Aggird'
 
 type Props = {
   open: boolean
@@ -36,6 +40,11 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
   const [numberLoadData, setNumberLoadData] = useState<number>(0)
   const [selectRow, setSelectRow] = useState<string[]>([])
   const [Data, setData] = useState<data_type[]>([])
+  const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
+
+  useEffect(() => {
+    Cookies.remove('columnDefs_Table_Children')
+  }, [])
 
   const colf: ColDef[] = [
     {
@@ -71,8 +80,8 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         Tippy: false,
         type: 'checkbox',
       },
-      flex: 1,
       minWidth: 30,
+      width: 40,
     },
     {
       colId: '22',
@@ -89,7 +98,6 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         })
       },
       minWidth: 30,
-      flex: 2,
     },
     {
       colId: '23',
@@ -109,7 +117,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         })
       },
       minWidth: 30,
-      flex: 3,
+      width: 400,
     },
     {
       colId: '24',
@@ -128,16 +136,62 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         })
       },
       minWidth: 30,
-      flex: 2,
     },
   ]
-  const leftTable = `left-[${tablePlacet?.left}px]`
+
+  const createServerSideDatasource = (server: Server) => {
+    return {
+      getRows: (params: any) => {
+        // Simulate server call
+        const response = server.getData(params.request)
+
+        setTimeout(() => {
+          if (response.success) {
+            params.success({
+              rowData: response.rows,
+              rowCount: response.totalRows,
+            })
+          } else {
+            params.fail()
+          }
+        }, 500)
+      },
+    }
+  }
+
+  const createFakeServer = (allData: data_type[]) => {
+    return {
+      getData: (request: IGetRowsParams) => {
+        const {startRow, endRow} = request
+        const rowsThisPage = allData.slice(startRow, endRow)
+        const lastRow = allData.length
+        return {
+          success: true,
+          rows: rowsThisPage,
+          totalRows: lastRow, // Total number of rows available on the server
+        }
+      },
+    }
+  }
+  const loadData = async (params: any) => {
+    const fakeData = (await generateData(100, params)) || []
+    setNumberLoadData((prev) => prev + 1)
+    // Setup the fake server with the updated dataset
+    const fakeServer = createFakeServer([...fakeData])
+    setData((prevData) => [...fakeData])
+    // create datasource with a reference to the fake server
+    const datasource = await createServerSideDatasource(fakeServer)
+    // register the datasource with the grid
+
+    params?.api?.setGridOption('serverSideDatasource', datasource)
+  }
   return (
     <Dialog
       visible={open}
-      className={` w-[900px] absolute ${
-        window.innerWidth - 900 > tablePlacet?.left ? leftTable : 'right-[10px]'
-      } `}
+      style={{
+        width: 'auto',
+        position: 'absolute',
+      }}
       onHide={() => {}}
     >
       <div className='mb-[10px] flex justify-center items-center gap-[15px] h-[100%] mh-[50px]'>
@@ -157,7 +211,17 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
               This month, {formatDate(moment())} - {formatDate(moment())}{' '}
             </p>
           </div>
-          <HiDotsVertical className='text-[20px]' />
+          <MenuTable
+            setNumberLoadData={setNumberLoadData}
+            saveColumnCookies='columnDefs'
+            selectedColumns={selectedColumns}
+            setSelectRow={setSelectRow}
+            setSelectedColumns={setSelectedColumns}
+            gridRef={gridRef}
+            handleClickResetColumn={() => {
+              loadData(gridRef?.current)
+            }}
+          />
         </div>
       </div>
       <div className='max-h-[calc(100vh-200px)] overflow-y-auto'>
@@ -167,6 +231,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
           setSelectRow={setSelectRow}
           setPagination={setPagination}
           setData={setData}
+          defaultColf={true}
           pagination={pagination}
           gridRef={gridRef}
           numberLoadData={numberLoadData}

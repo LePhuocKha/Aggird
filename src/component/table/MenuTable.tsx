@@ -88,7 +88,7 @@ const MenuTable = ({
             setTimeout(() => {
               gridRef?.current!.api.resetColumnState()
               handleClickResetColumn()
-            })
+            }, 100)
           },
         },
       ],
@@ -125,7 +125,7 @@ const MenuTable = ({
     const colTitle = colDef?.headerComponentParams?.title || column?.getColId()
     return (
       colTitle.toLowerCase().includes(valueSearch.toLowerCase()) &&
-      !['1', '2'].includes(column?.getColId())
+      !['1', '2', '21'].includes(column?.getColId())
     )
   })
 
@@ -137,7 +137,7 @@ const MenuTable = ({
     <div className='flex justify-end items-center m-5 relative'>
       <div
         ref={menuPropertiesRef}
-        className={`column-chooser z-[99999] absolute flex flex-col justify-between gap-[10px] top-[30px] bg-white min-h-[400px] shadow-lg rounded-sm ${
+        className={`column-chooser z-[99999] absolute flex flex-col justify-between gap-[10px] top-[30px] bg-white min-h-[100px] shadow-lg rounded-sm ${
           openProperties ? 'open' : ''
         }`}
       >

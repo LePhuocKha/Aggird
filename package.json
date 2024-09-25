@@ -2,12 +2,16 @@
   "name": "aggrid",
   "version": "0.1.0",
   "private": true,
+  "resolutions": {
+    "@reduxjs/toolkit/**/immer": "9.0.12"
+  },
   "dependencies": {
+    "@ag-grid-enterprise/all-modules": "27.1.0",
+    "@ag-grid-community/all-modules": "27.1.0",
     "@ag-grid-community/client-side-row-model": "^32.2.0",
     "@ag-grid-community/core": "^32.2.0",
     "@ag-grid-community/react": "^32.2.0",
     "@ag-grid-community/styles": "^32.1.0",
-    "@ag-grid-enterprise/all-modules": "^27.3.0",
     "@ag-grid-enterprise/column-tool-panel": "^32.2.0",
     "@ag-grid-enterprise/menu": "^32.2.0",
     "@ag-grid-enterprise/server-side-row-model": "^32.1.0",

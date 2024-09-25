@@ -17,6 +17,21 @@
 .ag-header-cell {
   height: 100% !important;
 }
+.ag-theme-quartz .ag-root-wrapper {
+  border: none !important;
+}
+
+.ag-theme-quartz .ag-root-wrapper-body {
+  border: none !important;
+}
+
+.ag-theme-quartz .ag-body-horizontal-scroll {
+  border-bottom: none !important;
+}
+
+.ag-theme-quartz .ag-body-viewport {
+  border-bottom: none !important;
+}
 
 .ag-theme-quartz .ag-header-cell {
   padding: 0 !important;
@@ -97,7 +112,6 @@
   display: none !important;
 }
 .ag-center-cols-container {
-  // width: 100% !important;
 }
 
 .custom-header {

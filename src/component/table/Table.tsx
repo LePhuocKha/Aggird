@@ -5,7 +5,18 @@ import HeaderComponent from './HeaderComponent'
 import {AgGridReact} from 'ag-grid-react'
 import Cookies from 'js-cookie'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
-
+import {
+  ColGroupDef,
+  GetRowIdFunc,
+  GetRowIdParams,
+  GridApi,
+  GridOptions,
+  ModuleRegistry,
+  RowSelectedEvent,
+  SelectionOptions,
+  ValueFormatterParams,
+  createGrid,
+} from '@ag-grid-community/core'
 import './style.scss'
 
 import 'ag-grid-community/styles/ag-grid.css'
@@ -15,6 +26,7 @@ import 'ag-grid-enterprise'
 type Props = {
   colf: ColDef[]
   gridRef: any
+  defaultColf?: boolean
   setData: Dispatch<React.SetStateAction<data_type[]>>
   pagination: number
   numberLoadData: number
@@ -59,13 +71,12 @@ const Table = ({
       : numberLoadData === 0
       ? colf
       : colf.map((el) => {
-          const {flex, width, maxWidth, ...e} = el
-          const {width: widthC} = gridRef?.current?.api?.getColumnState()
-
-          return {width: widthC, ...e}
+          const {...e} = el
+          return {...e}
         })
     setSavedColumnState(savedState.length ? savedState : colf)
   }, [saveColumnCookies, colf, numberLoadData])
+
   useEffect(() => {
     Cookies.set('menu', 'false')
   }, [])
@@ -124,7 +135,15 @@ const Table = ({
   const handleColumnChange = useCallback(() => {
     Cookies.set(saveColumnCookies, JSON.stringify(gridRef?.current?.api?.getColumnState()))
   }, [gridRef, saveColumnCookies])
-
+  const onRowSelected = useCallback((event: any) => {
+    // event.data: ICar | undefined
+    if (event.data && event.node.isSelected()) {
+      const price = event.data.price
+      // event.context: IContext
+      const discountRate = event.context.discount
+      console.log('Price with 10% discount:', price * discountRate)
+    }
+  }, [])
   return (
     <div>
       <div className='ag-theme-quartz'>
@@ -161,6 +180,7 @@ const Table = ({
           onColumnMoved={handleColumnChange}
           onColumnVisible={handleColumnChange}
           onDragStopped={handleColumnChange}
+          onRowSelected={onRowSelected}
           columnMenu={'legacy'}
           rowHeight={53}
           rowModelType='serverSide'
