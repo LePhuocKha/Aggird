@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import InputCheckBox from '../checkbox/InputCheckBox'
@@ -46,10 +46,6 @@ const Aggird = () => {
   const [numberLoadData, setNumberLoadData] = useState<number>(0)
   const [loadingMore, setLoadingMore] = useState(false)
   const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
-
-  useEffect(() => {
-    Cookies.set('menu', 'false')
-  }, [])
 
   const colf: ColDef[] = [
     {
@@ -272,6 +268,9 @@ const Aggird = () => {
       minWidth: 90,
     },
   ]
+  useEffect(() => {
+    Cookies.set('menu', 'false')
+  }, [])
 
   const createServerSideDatasource = (server: Server) => {
     return {

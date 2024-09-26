@@ -57,27 +57,6 @@ const Table = ({
   const [savedColumnState, setSavedColumnState] = useState<ColDef[]>([])
 
   useEffect(() => {
-    const savedState = Cookies.get(saveColumnCookies)
-      ? (JSON.parse(Cookies.get(saveColumnCookies) || '[]') || []).map((cookies: any) => {
-          const findColf: any = colf.find((fin) => fin.colId === cookies?.colId)
-          const {flex, ...find_colf} = findColf
-          const {flex: flexCoookies, ...cookie} = cookies
-
-          return {
-            ...find_colf,
-            ...cookie,
-          }
-        })
-      : numberLoadData === 0
-      ? colf
-      : colf.map((el) => {
-          const {...e} = el
-          return {...e}
-        })
-    setSavedColumnState(savedState.length ? savedState : colf)
-  }, [saveColumnCookies, colf, numberLoadData])
-
-  useEffect(() => {
     Cookies.set('menu', 'false')
   }, [])
 
@@ -96,6 +75,7 @@ const Table = ({
 
   const loadData = async (params: any) => {
     const fakeData = (await generateData(100, params)) || []
+    setNumberLoadData(2)
 
     const fakeServer = createFakeServer([...fakeData])
     setData([...fakeData])
@@ -114,47 +94,62 @@ const Table = ({
     }
     params.api.setGridOption('serverSideDatasource', datasource)
   }
-
   const restoreState = useCallback(() => {
     const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
-    gridRef?.current!.api.applyColumnState({
-      state: savedColumnState.length ? savedColumnState : colf,
+    gridRef?.current!?.api.applyColumnState({
+      state: savedColumnState.length
+        ? savedColumnState
+        : gridRef?.current?.api?.getColumnState().map((el: any) => {
+            return {
+              ...el,
+              flex: null,
+            }
+          }),
       applyOrder: true,
     })
-  }, [gridRef, saveColumnCookies])
+  }, [gridRef])
 
-  const onGridReady = useCallback(
-    async (params: any) => {
-      setNumberLoadData(2)
-      await restoreState()
-      await loadData(params)
-    },
-    [restoreState]
-  )
+  const onGridReady = useCallback(async (params: any) => {
+    await restoreState()
+    await loadData(params)
+  }, [])
 
-  const handleColumnChange = useCallback(() => {
+  const handleColumnChange = useCallback(async () => {
+    gridRef?.current!?.api.applyColumnState({
+      state: gridRef?.current?.api?.getColumnState().map((el: any) => {
+        return {
+          ...el,
+          flex: null,
+        }
+      }),
+      applyOrder: true,
+    })
     Cookies.set(saveColumnCookies, JSON.stringify(gridRef?.current?.api?.getColumnState()))
   }, [gridRef, saveColumnCookies])
-  const onRowSelected = useCallback((event: any) => {
-    // event.data: ICar | undefined
-    if (event.data && event.node.isSelected()) {
-      const price = event.data.price
-      // event.context: IContext
-      const discountRate = event.context.discount
-      console.log('Price with 10% discount:', price * discountRate)
-    }
-  }, [])
+
   return (
     <div>
       <div className='ag-theme-quartz'>
         <AgGridReact
           ref={gridRef}
           domLayout='autoHeight'
-          columnDefs={savedColumnState}
+          columnDefs={
+            [0].includes(numberLoadData)
+              ? colf
+              : gridRef?.current?.api?.getColumnState().map((el: any) => {
+                  const colfIndex: any = colf.find((col) => el?.colId === col?.colId)
+                  const {flex, ...colfI} = colfIndex
+                  const {flex: flexE, ...e} = el
+                  // console.log(e)
+                  return {
+                    ...colfI,
+                    ...e,
+                  }
+                })
+          }
           defaultColDef={{
-            autoHeight: true,
+            suppressAutoSize: true,
             resizable: true,
-            sortable: true,
             headerComponent: HeaderComponent,
             headerComponentParams: {
               checkMenuOnOff,
@@ -180,7 +175,6 @@ const Table = ({
           onColumnMoved={handleColumnChange}
           onColumnVisible={handleColumnChange}
           onDragStopped={handleColumnChange}
-          onRowSelected={onRowSelected}
           columnMenu={'legacy'}
           rowHeight={53}
           rowModelType='serverSide'

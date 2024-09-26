@@ -15,7 +15,6 @@ import {FaRegCalendarMinus} from 'react-icons/fa6'
 import {IoCloseCircle} from 'react-icons/io5'
 
 import './style.scss'
-import {HiDotsVertical} from 'react-icons/hi'
 import {formatDate} from '../../utils/common'
 import moment from 'moment'
 import Cookies from 'js-cookie'
@@ -81,7 +80,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         type: 'checkbox',
       },
       minWidth: 30,
-      width: 40,
+      flex: 1,
     },
     {
       colId: '22',
@@ -97,6 +96,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
           label: `${p.data?.status === 1 ? 'Activated' : 'Disabled'}`,
         })
       },
+      flex: 3,
       minWidth: 30,
     },
     {
@@ -117,7 +117,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         })
       },
       minWidth: 30,
-      width: 400,
+      flex: 5,
     },
     {
       colId: '24',
@@ -136,6 +136,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         })
       },
       minWidth: 30,
+      flex: 5,
     },
   ]
 
