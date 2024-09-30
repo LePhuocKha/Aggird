@@ -54,7 +54,6 @@ const Table = ({
     idTr: '',
     idHeader: 0,
   })
-  const [savedColumnState, setSavedColumnState] = useState<ColDef[]>([])
 
   useEffect(() => {
     Cookies.set('menu', 'false')
@@ -96,8 +95,8 @@ const Table = ({
   }
   const restoreState = useCallback(() => {
     const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
-    gridRef?.current!?.api.applyColumnState({
-      state: savedColumnState.length
+    gridRef?.current!?.api?.applyColumnState({
+      state: savedColumnState?.length
         ? savedColumnState
         : gridRef?.current?.api?.getColumnState().map((el: any) => {
             return {
@@ -136,16 +135,15 @@ const Table = ({
           columnDefs={
             [0].includes(numberLoadData)
               ? colf
-              : gridRef?.current?.api?.getColumnState().map((el: any) => {
-                  const colfIndex: any = colf.find((col) => el?.colId === col?.colId)
+              : gridRef?.current?.api?.getColumnState()?.map((el: any) => {
+                  const colfIndex: any = colf?.find((col) => el?.colId === col?.colId)
                   const {flex, ...colfI} = colfIndex
                   const {flex: flexE, ...e} = el
-                  // console.log(e)
                   return {
                     ...colfI,
                     ...e,
                   }
-                })
+                }) || colf
           }
           defaultColDef={{
             suppressAutoSize: true,
