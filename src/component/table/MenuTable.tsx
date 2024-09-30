@@ -151,7 +151,7 @@ const MenuTable = ({
             onKeyDown={handleKeyDown}
           />
           <div className='h-[100%]'>
-            {filteredColumns?.length > 0 && (
+            {columns?.length > 0 && (
               <div>
                 <label className='cursor-pointer flex gap-[10px] text-[16px] items-center font-normal text-gray-700'>
                   <input

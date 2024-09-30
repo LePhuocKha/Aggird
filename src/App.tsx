@@ -1,7 +1,5 @@
-import {useState} from 'react'
 import './App.css'
 import Aggird from './component/table/Aggird'
-
 function App() {
   return (
     <div>

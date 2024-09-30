@@ -42,7 +42,6 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
   const [selectedColumns, setSelectedColumns] = useState<{colId: string; hide: boolean}[]>([])
 
   useEffect(() => {
-    setNumberLoadData(0)
     Cookies.remove('columnDefs_Table_Children')
   }, [])
 
@@ -68,7 +67,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
                       return el?.id
                     }
                     return '0'
-                  })?.filter((el) => el !== '0')
+                  }).filter((el) => el !== '0')
                 )
               }
             }}
@@ -200,12 +199,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
         <Select className='w-[150px]' value={1} options={[{value: 1, label: 'container'}]} />
         <div className='flex justify-center items-center w-[100%] gap-[10px]'>
           <div className='flex gap-[10px] justify-center  w-[100%] items-center border-[1px] border-gray-300 px-[10px] py-[5px] h-[100%] min-h-[30px] rounded-sm'>
-            <input
-              className='outline-none border-none w-[100%]'
-              value={''}
-              onChange={() => {}}
-              placeholder='Search...'
-            />
+            <input className='outline-none border-none w-[100%]' placeholder='Search...' />
             <IoCloseCircle className='hover:cursor-pointer text-[20px]' />
             <p className='text-gray-400 m-[0] p-[0]'>0/100</p>
           </div>
@@ -220,7 +214,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
           </div>
           <MenuTable
             setNumberLoadData={setNumberLoadData}
-            saveColumnCookies='columnDefs_Table_Children'
+            saveColumnCookies='columnDefs'
             selectedColumns={selectedColumns}
             setSelectRow={setSelectRow}
             setSelectedColumns={setSelectedColumns}
