@@ -88,7 +88,7 @@ const MenuTable = ({
             setTimeout(() => {
               gridRef?.current!.api.resetColumnState()
               handleClickResetColumn()
-            }, 100)
+            }, 0)
           },
         },
       ],
@@ -159,7 +159,7 @@ const MenuTable = ({
                     checked={selectedColumns.every((col) => !col.hide)}
                     onChange={(e) => {
                       const allVisible = e.target.checked
-                      const updatedColumns = filteredColumns.map((column) => ({
+                      const updatedColumns = columns.map((column) => ({
                         colId: column.getColId(),
                         hide: !allVisible,
                       }))
@@ -206,7 +206,11 @@ const MenuTable = ({
           </Button>
           <Button
             onClick={() => {
-              if (selectedColumns.length > 0) {
+              if (selectedColumns?.length > 0) {
+                const d = (selectedColumns || [])?.filter((selectedColumn) => {
+                  return selectedColumn?.hide !== true
+                })
+
                 gridRef?.current!.api.applyColumnState({
                   state: selectedColumns,
                   applyOrder: true,

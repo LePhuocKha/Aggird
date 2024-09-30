@@ -5,18 +5,7 @@ import HeaderComponent from './HeaderComponent'
 import {AgGridReact} from 'ag-grid-react'
 import Cookies from 'js-cookie'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
-import {
-  ColGroupDef,
-  GetRowIdFunc,
-  GetRowIdParams,
-  GridApi,
-  GridOptions,
-  ModuleRegistry,
-  RowSelectedEvent,
-  SelectionOptions,
-  ValueFormatterParams,
-  createGrid,
-} from '@ag-grid-community/core'
+
 import './style.scss'
 
 import 'ag-grid-community/styles/ag-grid.css'
@@ -54,7 +43,6 @@ const Table = ({
     idTr: '',
     idHeader: 0,
   })
-  const [savedColumnState, setSavedColumnState] = useState<ColDef[]>([])
 
   useEffect(() => {
     Cookies.set('menu', 'false')
@@ -94,23 +82,8 @@ const Table = ({
     }
     params.api.setGridOption('serverSideDatasource', datasource)
   }
-  const restoreState = useCallback(() => {
-    const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
-    gridRef?.current!?.api.applyColumnState({
-      state: savedColumnState.length
-        ? savedColumnState
-        : gridRef?.current?.api?.getColumnState().map((el: any) => {
-            return {
-              ...el,
-              flex: null,
-            }
-          }),
-      applyOrder: true,
-    })
-  }, [gridRef])
 
   const onGridReady = useCallback(async (params: any) => {
-    await restoreState()
     await loadData(params)
   }, [])
 
@@ -135,17 +108,22 @@ const Table = ({
           domLayout='autoHeight'
           columnDefs={
             [0].includes(numberLoadData)
-              ? colf
+              ? colf.map((col) => {
+                  const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
+                  const savedCol =
+                    savedColumnState?.find((state: any) => state.colId === col?.colId) || {}
+
+                  return {...col, ...savedCol}
+                })
               : gridRef?.current?.api?.getColumnState()?.map((el: any) => {
                   const colfIndex: any = colf.find((col) => el?.colId === col?.colId)
                   const {flex, ...colfI} = colfIndex
                   const {flex: flexE, ...e} = el
-                  // console.log(e)
                   return {
                     ...colfI,
                     ...e,
                   }
-                })
+                }) || colf
           }
           defaultColDef={{
             suppressAutoSize: true,

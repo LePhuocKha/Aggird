@@ -92,6 +92,11 @@ const HeaderComponent = ({
       label: 'Hide this',
       icon: <RiMenuFoldFill />,
       command: () => {
+        const filteredColumns = (api?.getColumns() || []).filter((column: any) => {
+          const colDef = column?.getColDef()
+          return !['1', '2', '21'].includes(column?.getColId()) || !!colDef?.hide
+        })
+
         api?.setColumnVisible(id.toString(), false)
         api?.refreshServerSide({purge: true})
       },

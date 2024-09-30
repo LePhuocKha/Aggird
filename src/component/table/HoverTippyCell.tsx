@@ -123,7 +123,7 @@ const HoverTippyCell = ({children, classCSS, outerVisibleCell, data}: Props) => 
             onClick={handleClick}
             aria-controls='popup_menu_left'
             aria-haspopup='true'
-            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[1px] right-[10px] hover:text-white rounded shadow-lg ${
+            className={`p-[7px] hover:bg-sky-500 hover:cursor-help absolute top-[50%] right-[10px] transform -translate-y-1/2 hover:text-white rounded shadow-lg ${
               menuOpen ? 'bg-sky-500 text-white' : 'text-gray-900 bg-white'
             }`}
           >
