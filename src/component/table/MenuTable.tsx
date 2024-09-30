@@ -159,7 +159,7 @@ const MenuTable = ({
                     checked={selectedColumns.every((col) => !col.hide)}
                     onChange={(e) => {
                       const allVisible = e.target.checked
-                      const updatedColumns = columns.map((column) => ({
+                      const updatedColumns = filteredColumns.map((column) => ({
                         colId: column.getColId(),
                         hide: !allVisible,
                       }))

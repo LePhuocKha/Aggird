@@ -145,7 +145,7 @@ const Table = ({
                     ...colfI,
                     ...e,
                   }
-                }) || colf
+                })
           }
           defaultColDef={{
             suppressAutoSize: true,
