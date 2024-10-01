@@ -1,8 +1,7 @@
 import './App.css'
 import Aggird from './component/table/Aggird'
 import OpenAI from 'openai'
-const OPENAI_API_KEY =
-  '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'
+const OPENAI_API_KEY = ''
 
 function App() {
   const openai = new OpenAI({apiKey: OPENAI_API_KEY, dangerouslyAllowBrowser: true})
