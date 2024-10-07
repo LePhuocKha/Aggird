@@ -16,6 +16,7 @@ type Props = {
   saveColumnCookies: string
   handleClickResetColumn: () => void
   selectedColumns: {colId: string; hide: boolean}[]
+  filterHideColumn: string[]
   setSelectedColumns: Dispatch<React.SetStateAction<{colId: string; hide: boolean}[]>>
   setNumberLoadData: Dispatch<React.SetStateAction<number>>
   setSelectRow: Dispatch<React.SetStateAction<string[]>>
@@ -27,6 +28,7 @@ const MenuTable = ({
   selectedColumns,
   setSelectedColumns,
   setNumberLoadData,
+  filterHideColumn,
   saveColumnCookies,
   setSelectRow,
 }: Props) => {
@@ -125,7 +127,7 @@ const MenuTable = ({
     const colTitle = colDef?.headerComponentParams?.title || column?.getColId()
     return (
       colTitle.toLowerCase().includes(valueSearch.toLowerCase()) &&
-      !['1', '2', '21'].includes(column?.getColId())
+      !filterHideColumn.includes(column?.getColId())
     )
   })
 

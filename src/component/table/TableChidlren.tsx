@@ -213,6 +213,7 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
             </p>
           </div>
           <MenuTable
+            filterHideColumn={['21']}
             setNumberLoadData={setNumberLoadData}
             saveColumnCookies='columnDefs'
             selectedColumns={selectedColumns}
@@ -225,8 +226,9 @@ const TableChidlren = ({open, handleClose, tablePlacet}: Props) => {
           />
         </div>
       </div>
-      <div className='max-h-[calc(100vh-200px)] overflow-y-auto'>
+      <div className='max-h-[calc(100vh-220px)] overflow-y-auto'>
         <Table
+          idHideColf={['21']}
           saveColumnCookies={'columnDefs_Table_Children'}
           selectRow={selectRow}
           setSelectRow={setSelectRow}

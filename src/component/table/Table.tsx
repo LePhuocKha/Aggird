@@ -19,6 +19,7 @@ type Props = {
   setData: Dispatch<React.SetStateAction<data_type[]>>
   pagination: number
   numberLoadData: number
+  idHideColf: string[]
   selectRow: string[]
   setPagination: Dispatch<React.SetStateAction<number>>
   setSelectRow: Dispatch<React.SetStateAction<string[]>>
@@ -36,6 +37,7 @@ const Table = ({
   setSelectRow,
   numberLoadData,
   saveColumnCookies,
+  idHideColf,
 }: Props) => {
   const [outerVisibleHeader, setOuterVisibleHeader] = useState<number>(0)
   const [checkMenuOnOff, setCheckMenuOnOff] = useState(false)
@@ -88,15 +90,6 @@ const Table = ({
   }, [])
 
   const handleColumnChange = useCallback(async () => {
-    gridRef?.current!?.api.applyColumnState({
-      state: gridRef?.current?.api?.getColumnState().map((el: any) => {
-        return {
-          ...el,
-          flex: null,
-        }
-      }),
-      applyOrder: true,
-    })
     Cookies.set(saveColumnCookies, JSON.stringify(gridRef?.current?.api?.getColumnState()))
   }, [gridRef, saveColumnCookies])
 
@@ -119,6 +112,7 @@ const Table = ({
                   const colfIndex: any = colf.find((col) => el?.colId === col?.colId)
                   const {flex, ...colfI} = colfIndex
                   const {flex: flexE, ...e} = el
+
                   return {
                     ...colfI,
                     ...e,
@@ -150,8 +144,34 @@ const Table = ({
           }}
           suppressMoveWhenRowDragging={true}
           suppressDragLeaveHidesColumns={true}
-          onColumnMoved={handleColumnChange}
-          onColumnVisible={handleColumnChange}
+          onColumnMoved={() => {
+            gridRef?.current!?.api.applyColumnState({
+              state: gridRef?.current?.api?.getColumnState().map((el: any) => {
+                return {
+                  ...el,
+                  flex: null,
+                }
+              }),
+              applyOrder: true,
+            })
+            handleColumnChange()
+          }}
+          onColumnVisible={() => {
+            if (
+              gridRef?.current?.api
+                ?.getColumnState()
+                .filter((col: any) => !col.hide && !idHideColf.includes(col.colId))?.length === 0
+            ) {
+              idHideColf.forEach((el) => {
+                gridRef?.current!.api.setColumnVisible(el, false)
+              })
+            } else {
+              idHideColf.forEach((el) => {
+                gridRef?.current!.api.setColumnVisible(el, true)
+              })
+            }
+            handleColumnChange()
+          }}
           onDragStopped={handleColumnChange}
           columnMenu={'legacy'}
           rowHeight={53}

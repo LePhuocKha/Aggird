@@ -51,6 +51,7 @@ const Aggird = () => {
     {
       colId: '1',
       headerClass: 'custom-header',
+      suppressMovable: true,
       headerComponentParams: {
         id: 1,
         Tippy: false,
@@ -332,6 +333,7 @@ const Aggird = () => {
       <MenuTable
         setNumberLoadData={setNumberLoadData}
         saveColumnCookies='columnDefs'
+        filterHideColumn={['1', '2']}
         selectedColumns={selectedColumns}
         setSelectRow={setSelectRow}
         setSelectedColumns={setSelectedColumns}
@@ -342,6 +344,7 @@ const Aggird = () => {
       />
       <div>
         <Table
+          idHideColf={['1', '2']}
           saveColumnCookies='columnDefs'
           selectRow={selectRow}
           setSelectRow={setSelectRow}
