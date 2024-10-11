@@ -1,5 +1,5 @@
 import {Dialog} from 'primereact/dialog'
-import {AgGridReact} from 'ag-grid-react'
+import {AgGridReact} from '@ag-grid-community/react'
 import {useEffect, useRef, useState} from 'react'
 import {ColDef} from 'ag-grid-community'
 

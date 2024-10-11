@@ -2,7 +2,7 @@ import {Dispatch, useCallback, useEffect, useState} from 'react'
 import {data_type, generateData} from '../data-fake/Api'
 import Loading from '../loading/Loading'
 import HeaderComponent from './HeaderComponent'
-import {AgGridReact} from 'ag-grid-react'
+import {AgGridReact} from '@ag-grid-community/react'
 import Cookies from 'js-cookie'
 import {ColDef, IGetRowsParams} from 'ag-grid-community'
 
@@ -105,7 +105,6 @@ const Table = ({
                   const savedColumnState = JSON.parse(Cookies.get(saveColumnCookies) || '[]')
                   const savedCol =
                     savedColumnState?.find((state: any) => state.colId === col?.colId) || {}
-
                   return {...col, ...savedCol}
                 })
               : gridRef?.current?.api?.getColumnState()?.map((el: any) => {

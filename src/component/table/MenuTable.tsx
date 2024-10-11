@@ -1,5 +1,4 @@
-import {ColumnState} from 'ag-grid-community'
-import {AgGridReact} from 'ag-grid-react'
+import {AgGridReact} from '@ag-grid-community/react'
 import Cookies from 'js-cookie'
 import {Menu} from 'primereact/menu'
 import {Dispatch, useEffect, useRef, useState} from 'react'
