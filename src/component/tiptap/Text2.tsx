@@ -6,7 +6,6 @@ export default Node.create({
   name: 'ReactComponent2',
 
   group: 'block',
-  inline: true,
   content: 'inline*',
 
   parseHTML() {

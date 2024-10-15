@@ -1,19 +1,21 @@
 import {useState} from 'react'
 import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-
+import {BubbleMenu, FloatingMenu} from '@tiptap/react'
 import './styles.scss'
 import ReactComponent from './Test'
 import ReactComponent2 from './Text2'
+import Bold from '@tiptap/extension-bold'
+import Italic from '@tiptap/extension-italic'
 
 type Props = {}
 
 const TipTap = (props: Props) => {
   const editor = useEditor({
-    extensions: [StarterKit, ReactComponent, ReactComponent2],
+    extensions: [StarterKit, ReactComponent, ReactComponent2, Bold, Italic],
     content: `
       <p class="hoverable">
-        Try to select <em>this text</em> to see what we call the bubble menu.
+→ - Try to select <em>this text</em> to see what we call the bubble menu.
       </p>
        <react-component count="0"></react-component>
     <react-component-2>
@@ -31,6 +33,29 @@ const TipTap = (props: Props) => {
   return (
     <div className='p-[70px] '>
       <EditorContent className='border-none outline-none' editor={editor} />
+      {editor && (
+        <BubbleMenu className='bubble-menu' tippyOptions={{duration: 100}} editor={editor}>
+          <button
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={editor.isActive('bold') ? 'is-active' : ''}
+          >
+            Bold
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={editor.isActive('italic') ? 'is-active' : ''}
+          >
+            Italic
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className={editor.isActive('strike') ? 'is-active' : ''}
+          >
+            Strike
+          </button>
+        </BubbleMenu>
+      )}
+
       <div
         style={{
           position: 'absolute',

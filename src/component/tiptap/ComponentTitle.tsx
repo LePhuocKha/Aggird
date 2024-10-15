@@ -17,15 +17,15 @@ const MyComponent = (props: any) => {
         {
           icon: <TfiMenuAlt />,
           label: 'Toggle code block',
-          className: classNames({'is-active': props?.editor?.isActive('codeBlock')}),
           command: () => {
-            props?.editor.chain().focus().toggleCodeBlock().run()
+            setHovered(false)
           },
         },
         {
           icon: <GrPowerReset />,
           label: 'Reset all columns',
           command: () => {
+            setHovered(false)
             // logic cho reset
           },
         },

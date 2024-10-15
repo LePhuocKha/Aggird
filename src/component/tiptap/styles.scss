@@ -157,3 +157,14 @@
     display: block;
   }
 }
+.bubble-menu {
+  background-color: white;
+  border: 1px solid black;
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+}
+
+.is-active {
+  background-color: #d3d3d3;
+}
