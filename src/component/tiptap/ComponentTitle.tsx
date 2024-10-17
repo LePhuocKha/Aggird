@@ -10,6 +10,7 @@ const MyComponent = (props: any) => {
   const menuLeft = useRef<any>(null)
   const [hovered, setHovered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const {editor} = props
 
   const items = [
     {
@@ -18,6 +19,14 @@ const MyComponent = (props: any) => {
           icon: <TfiMenuAlt />,
           label: 'Toggle code block',
           command: () => {
+            // editor.commands.selectParentNode()
+            // const {from, to} = editor.state.selection
+
+            // const node = editor.state.doc.nodeAt(from)
+            // console.log('Node được chọn:', from, to)
+            // editor.commands.setTextSelection({from, to})
+            editor.commands.focus()
+            editor.chain().focus().setHardBreak().run()
             setHovered(false)
           },
         },
