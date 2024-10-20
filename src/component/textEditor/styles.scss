@@ -1,0 +1,112 @@
+.ProseMirror {
+  border: none !important;
+  outline: none;
+}
+
+.ProseMirror ::selection {
+  background-color: #a9a9a9;
+  color: white;
+}
+
+//button editor
+
+.p-submenu-header {
+  display: none;
+}
+.p-menuitem-link {
+  display: flex;
+  gap: 12px;
+}
+
+.tiptap-editor {
+  font-family: 'Inter', sans-serif;
+}
+
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  /* Heading styles */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: pretty;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 1rem;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+
+  /* Task list specific styles */
+  ul[data-type='taskList'] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+
+    li {
+      align-items: flex-start;
+      display: flex;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+
+    input[type='checkbox'] {
+      cursor: pointer;
+    }
+
+    ul[data-type='taskList'] {
+      margin: 0;
+    }
+  }
+  code {
+    background: #000;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-radius: 4px;
+    color: white;
+  }
+
+  a {
+    color: dodgerblue;
+    // cursor: pointer;
+
+    &:hover {
+      color: cadetblue;
+    }
+  }
+}
+
+html {
+  --title-font-family: 'Helvetica', sans-serif;
+}

@@ -5,7 +5,7 @@ import CommentEditor from './text'
 function App() {
   return (
     <div>
-      <TipTap />
+      <Edittor />
     </div>
   )
 }
