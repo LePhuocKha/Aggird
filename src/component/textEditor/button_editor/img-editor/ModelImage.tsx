@@ -1,10 +1,9 @@
-import React, {Dispatch} from 'react'
 import {Dialog} from 'primereact/dialog'
-import Input from '../../input/Input'
-import Button from '../../button/Button'
-import {useFormik} from 'formik'
-import * as Yup from 'yup'
+import React, {Dispatch} from 'react'
 import {Editor as TiptapEditor} from '@tiptap/core'
+import * as Yup from 'yup'
+import Button from '../../../button/Button'
+import {useFormik} from 'formik'
 
 type Props = {
   editor: TiptapEditor
@@ -12,8 +11,8 @@ type Props = {
   setVisible: Dispatch<React.SetStateAction<boolean>>
 }
 
-const LinkEditor = ({editor, visible, setVisible}: Props) => {
-  const formik = useFormik({
+const ModelImage = ({editor, visible, setVisible}: Props) => {
+  const {resetForm, handleSubmit} = useFormik({
     initialValues: {
       url: '',
     },
@@ -22,7 +21,7 @@ const LinkEditor = ({editor, visible, setVisible}: Props) => {
     }),
     onSubmit: (values) => {
       editor.chain().focus().extendMarkRange('link').setLink({href: values?.url}).run()
-      formik.resetForm()
+      resetForm()
       setVisible(false)
     },
   })
@@ -30,22 +29,15 @@ const LinkEditor = ({editor, visible, setVisible}: Props) => {
   const handleClose = () => {
     if (!visible) return
     setVisible(false)
-    formik.resetForm()
-    formik.setTouched({url: false})
+    // formik.resetForm()
+    // formik.setTouched({url: false})
   }
   return (
-    <Dialog header='URL' visible={visible} style={{width: '50vw'}} onHide={handleClose}>
-      <form onSubmit={formik.handleSubmit}>
-        <Input
-          value={formik.values.url}
-          placeholder='https://...'
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          name='url'
-        />
-        {formik.touched.url && formik.errors.url && (
-          <div className='text-red-500 text-[13px] mt-[10px]'>{formik.errors.url}</div>
-        )}
+    <Dialog header='Add image' visible={visible} style={{width: '50vw'}} onHide={handleClose}>
+      <form onSubmit={handleSubmit}>
+        <div className='flex border-[1px]  border-top  border-r-0 border-b-0 border-l-0 pt-[30px] '>
+          <div></div>
+        </div>
         <div className='pt-[30px] flex justify-end w-[100%] gap-[12px]'>
           <Button type='button' colorButton='white' onClick={handleClose}>
             Cancel
@@ -57,4 +49,4 @@ const LinkEditor = ({editor, visible, setVisible}: Props) => {
   )
 }
 
-export default LinkEditor
+export default ModelImage

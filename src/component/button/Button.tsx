@@ -20,7 +20,7 @@ const Button: ForwardRefRenderFunction<HTMLButtonElement, Props> = ({
 }: Props) => {
   const ojbectColorButton: Record<ColorButtonType, string> = {
     primary: 'text-white bg-sky-600 hover:bg-sky-700',
-    white: ' hover:bg-slate-100',
+    white: 'hover:bg-slate-100',
     gray: 'text-gray-600 bg-slate-200 hover:bg-slate-300',
   }
 

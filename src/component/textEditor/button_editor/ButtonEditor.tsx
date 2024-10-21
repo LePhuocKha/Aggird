@@ -9,8 +9,15 @@ import FontSize from './FontSize'
 import {IoCodeSharp} from 'react-icons/io5'
 import {CiLink} from 'react-icons/ci'
 import LinkEditor from './LinkEditor'
+import {PiCodeBlockDuotone} from 'react-icons/pi'
+import ColorEditor from './ColorEditor'
+import BackgroundEditor from './BackgroundEditor'
+import AlignEditor from './AlignEditor'
+import ScriptEditor from './ScriptEditor'
+import AddLoadFile from './AddLoadFile'
+import ImageEditor from './img-editor/ImageEditor'
 
-interface ButtonProps {
+export interface ButtonProps {
   onClick: () => void
   colorButton: ColorButtonType
   className: string
@@ -59,6 +66,12 @@ const ButtonEditor = ({editor}: Props) => {
     },
     {
       colorButton: 'white',
+      children: <PiCodeBlockDuotone />,
+      className: `px-[5px] py-[1px] italic rounded-full ${editor.isActive('codeBlock') ? is_active : ''}`,
+      onClick: () => editor.chain().focus().toggleCodeBlock().run(),
+    },
+    {
+      colorButton: 'white',
       children: <CiLink />,
       className: `px-[5px] py-[1px] italic rounded-full ${editor.isActive('link') ? is_active : ''}`,
       onClick: () => setLink(true),
@@ -83,6 +96,12 @@ const ButtonEditor = ({editor}: Props) => {
         )
       })}
       <LinkEditor editor={editor} setVisible={setLink} visible={link} />
+      <ColorEditor editor={editor} />
+      <BackgroundEditor editor={editor} />
+      <AlignEditor editor={editor} />
+      <ScriptEditor editor={editor} />
+      <ImageEditor editor={editor} />
+      <AddLoadFile editor={editor} />
     </div>
   )
 }

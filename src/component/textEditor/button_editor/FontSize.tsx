@@ -9,8 +9,6 @@ type Props = {editor: TiptapEditor}
 const FontSize = ({editor}: Props) => {
   const menuLeft = useRef<any>(null)
 
-  const is_active = 'bg-slate-100'
-
   const items = [
     {
       items: [

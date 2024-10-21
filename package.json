@@ -26,11 +26,14 @@
     "@tippyjs/react": "^4.0.0-alpha.1",
     "@tiptap-pro/extension-comments": "^2.11.9",
     "@tiptap-pro/extension-details": "^2.11.9",
+    "@tiptap-pro/extension-export": "^2.11.9",
     "@tiptap-pro/extension-unique-id": "^2.11.9",
     "@tiptap/extension-collaboration": "^2.8.0",
     "@tiptap/extension-collaboration-cursor": "^2.8.0",
     "@tiptap/extension-focus": "^2.8.0",
     "@tiptap/extension-font-family": "^2.8.0",
+    "@tiptap/extension-subscript": "^2.8.0",
+    "@tiptap/extension-superscript": "^2.8.0",
     "@tiptap/extension-task-item": "^2.8.0",
     "@tiptap/extension-task-list": "^2.8.0",
     "@tiptap/extension-text-align": "^2.8.0",
@@ -55,6 +58,7 @@
     "primeicons": "^7.0.0",
     "primereact": "^10.8.2",
     "react": "^18.3.1",
+    "react-color": "^2.19.3",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
     "react-redux": "^9.1.2",
@@ -66,6 +70,7 @@
     "typescript": "^4.9.5",
     "uuid": "^10.0.0",
     "web-vitals": "^2.1.4",
+    "yjs": "^13.6.20",
     "yup": "^1.4.0"
   },
   "scripts": {
@@ -95,6 +100,7 @@
   "devDependencies": {
     "@types/cookie": "^0.6.0",
     "@types/js-cookie": "^3.0.6",
+    "@types/react-color": "^3.0.12",
     "@types/react-world-flags": "^1.4.5",
     "@types/uuid": "^10.0.0",
     "prettier": "^3.3.3",

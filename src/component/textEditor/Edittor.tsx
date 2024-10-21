@@ -1,5 +1,4 @@
 import {EditorContent, useEditor} from '@tiptap/react'
-import React, {useEffect, useState} from 'react'
 import {TiptapCollabProvider} from '@hocuspocus/provider'
 import * as Y from 'yjs'
 import {v4 as uuid} from 'uuid'
@@ -18,7 +17,10 @@ import Paragraph from '@tiptap/extension-paragraph'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import ListItem from '@tiptap/extension-list-item'
+import Text from '@tiptap/extension-text'
+import CodeBlock from '@tiptap/extension-code-block'
 import FontFamily from '@tiptap/extension-font-family'
+import Document from '@tiptap/extension-document'
 import Loading from '../loading/Loading'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
@@ -28,9 +30,14 @@ import TextStyle from '@tiptap/extension-text-style'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import Code from '@tiptap/extension-code'
+import {Color} from '@tiptap/extension-color'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
+import {Export} from '@tiptap-pro/extension-export'
 
 import './styles.scss'
 import {TextStyleExtended} from './FontSize'
+import {BackgroundColor} from './BackgroundColor'
 
 type Props = {}
 const doc = new Y.Doc()
@@ -42,13 +49,22 @@ const provider = new TiptapCollabProvider({
 })
 
 const Edittor = (props: Props) => {
+  console.log(process.env.REACT_APP_TIPTAP_APP_ID)
+  console.log(process.env.REACT_APP_TIPTAP_TOKEN)
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure(),
       Bold,
+      Document,
       Underline,
+      Subscript,
       Paragraph,
+      Text,
       TextStyleExtended,
+      BackgroundColor,
+      Superscript,
+      Color,
       FontFamily.configure({
         types: ['textStyle'],
       }),
@@ -67,6 +83,7 @@ const Edittor = (props: Props) => {
       }),
       BulletList,
       TaskList,
+      CodeBlock,
       TaskItem.configure({
         nested: true,
       }),
@@ -95,8 +112,15 @@ const Edittor = (props: Props) => {
         },
       }),
       Highlight,
-      Image,
+      Image.configure({
+        allowBase64: true,
+      }),
       ImageResize,
+      Export.configure({
+        appId: process.env.REACT_APP_TIPTAP_APP_ID,
+        token: process.env.REACT_APP_TIPTAP_TOKEN,
+        // endpoint: '',
+      }),
     ],
     content: ` <p class="hoverable">
       → - Try to select <em>this text</em> to seecthe bubble menu.
